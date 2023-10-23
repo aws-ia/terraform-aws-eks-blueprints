@@ -1,6 +1,6 @@
 # Cell-Based Architecture for Amazon EKS
 
-This pattern how to configure a cell-based architecture for Amazon Elastic Kubernetes Service (Amazon EKS). It moves away from typical multiple Availability Zone (AZ) clusters to a single Availability Zone cluster. These single AZ clusters are called cells, and the aggregation of these cells in each Region is called a supercell. These cells help to ensure that a failure in one cell doesn't affect the cells in another, reducing data transfer costs and improving both the availability and resiliency against AZ failures for Amazon EKS workloads.
+This pattern demonstrates how to configure a cell-based architecture for Amazon Elastic Kubernetes Service (Amazon EKS). It moves away from typical multiple Availability Zone (AZ) clusters to a single Availability Zone cluster. These single AZ clusters are called cells, and the aggregation of these cells in each Region is called a supercell. These cells help to ensure that a failure in one cell doesn't affect the cells in another, reducing data transfer costs and improving both the availability and resiliency against AZ wide failures for Amazon EKS workloads.
 
 Refer to the [AWS Solution Guidance](https://aws.amazon.com/solutions/guidance/cell-based-architecture-for-amazon-eks/) for more details.
 
@@ -12,7 +12,7 @@ Refer to the [AWS Solution Guidance](https://aws.amazon.com/solutions/guidance/c
 
 ### [`0.vpc`](0.vpc/)
 
-This folder creates the VPC for all clusters. In this demonstration we are creating 2 cells. The VPC creation is not part of the cluster provisionig and therefore lives in a seperate folder.
+This folder creates the VPC for all clusters. In this demonstration we are creating 2 cells sharing the same VPC. So, the VPC creation is not part of the cluster provisionig and therefore lives in a seperate folder. You could also explore a VPC per cluster depending on your needs.
 
 ### [`1.cell1`](1.cell1/)
 
@@ -25,9 +25,9 @@ Configurations in this folder to be aware of:
 
 ### [`2.cell2`](2.cell2/)
 
-Same configuration as in `1.cell1` except the name of the cluster which is `cell-2` and deployed in `az-2`
+Same configuration as in `1.cell1` except the name of the cluster is `cell-2` and deployed in `az-2`
 
-### [`3.test-setup`](4.test-setup/)
+### [`3.test-setup`](3.test-setup/)
 
 This folder test the installation setup. It does by scaling the sample `inflate` application replicas and watch for Karpenter to launch EKS worker nodes in respective AZs.
 
@@ -76,17 +76,17 @@ cd 3.test-setup
 cd..
 ```
 
-This script scale the sample application `inflate` to 25 replicas in both cells. As replica pods go into pending state due to insufficient compute capacity, Karpenter will kick-in and bring up the EC2 worker nodes in respective AZs.
+This script scale the sample application `inflate` to 20 replicas in both cells. As replica pods go into pending state due to insufficient compute capacity, Karpenter will kick-in and bring up the EC2 worker nodes in respective AZs.
 
 ## Destroy
 
 To teardown and remove the resources created in this example:
 
 ```shell
-cd ../2.cell2
-terraform apply -destroy -autoapprove
+cd 2.cell2
+terraform apply -destroy -auto-approve
 cd ../1.cell1
-terraform apply -destroy -autoapprove
+terraform apply -destroy -auto-approve
 cd ../0.vpc
-terraform apply -destroy -autoapprove
+terraform apply -destroy -auto-approve
 ```
