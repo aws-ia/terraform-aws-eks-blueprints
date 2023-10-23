@@ -17,8 +17,8 @@ class StructuredMessage:
         return '%s >>> %s' % (self.message, json.dumps(self.kwargs))
 
 _ = StructuredMessage # optional, to improve readability
-logging.basicConfig(level=logging.DEBUG, format='%(message)s')
-
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 def handler(event, context):
     # Only modify on CreateNetworkInterface events
@@ -27,6 +27,7 @@ def handler(event, context):
 
         # Add the extracted private IP address of the ENI as an IP target in the target group
         try:
+            logger.info('IP address %s is identified as belonging to one of the cluster endpoint ENIs', ip)
             response = ELBV2_CLIENT.register_targets(
                 TargetGroupArn = TARGET_GROUP_ARN,
                 Targets=[{
@@ -34,7 +35,7 @@ def handler(event, context):
                     'Port': 443
                 }]
             )
-            logging.info(_(response))
+            logger.info(_(response))
         except Exception as e:
-            logging.error(_(e))
+            logger.error(_(e))
             raise(e)
