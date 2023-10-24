@@ -10,6 +10,10 @@ terraform {
       source  = "hashicorp/dns"
       version = ">= 3.0"
     }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = ">= 2.20"
+    }
   }
 
   # ##  Used for end-to-end testing on project; update to suit your needs
