@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: client 
+  name: client
   namespace: client
 spec:
   replicas: 1
@@ -11,14 +11,14 @@ spec:
   template:
     metadata:
       labels:
-        role: client 
+        role: client
     spec:
       containers:
-      - name: client 
+      - name: client
         image: calico/star-probe:v0.1.0
         imagePullPolicy: Always
         command:
         - probe
         - --urls=http://frontend.stars:80/status,http://backend.stars:6379/status
         ports:
-        - containerPort: 9000 
+        - containerPort: 9000
