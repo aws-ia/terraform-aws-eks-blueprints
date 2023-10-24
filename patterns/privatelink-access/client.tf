@@ -30,7 +30,9 @@ module "client_vpc" {
   manage_default_security_group = true
   default_security_group_tags   = { Name = "${local.client_name}-default" }
 
-  tags = local.tags
+  tags = merge(local.tags, {
+    Name = local.client_name
+  })
 }
 
 ################################################################################
@@ -44,6 +46,7 @@ module "client_ec2_instance" {
 
   create_iam_instance_profile = true
   iam_role_policies = {
+    EKSFullAccess                = aws_iam_policy.eks_full_access_policy.arn
     AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
   }
 
@@ -64,7 +67,28 @@ module "client_ec2_instance" {
     ./aws/install
   EOT
 
-  tags = local.tags
+  tags = merge(local.tags, {
+    Name = local.client_name
+  })
+}
+
+resource "aws_iam_policy" "eks_full_access_policy" {
+  name        = "EKSFullAccess"
+  path        = "/"
+  description = "EKS full-access policy"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "eks:*"
+        ]
+        Effect   = "Allow"
+        Resource = module.eks.cluster_arn
+      },
+    ]
+  })
 }
 
 module "client_security_group" {
@@ -84,5 +108,7 @@ module "client_security_group" {
     },
   ]
 
-  tags = local.tags
+  tags = merge(local.tags, {
+    Name = local.client_name
+  })
 }
