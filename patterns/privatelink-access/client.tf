@@ -82,7 +82,8 @@ resource "aws_iam_policy" "eks_full_access_policy" {
     Statement = [
       {
         Action = [
-          "eks:*"
+          "eks:DescribeCluster", 
+          "eks:ListClusters"
         ]
         Effect   = "Allow"
         Resource = module.eks.cluster_arn
