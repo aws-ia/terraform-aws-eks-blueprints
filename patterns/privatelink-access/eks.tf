@@ -2,12 +2,33 @@
 # EKS Cluster
 ################################################################################
 
+provider "kubernetes" {
+  host                   = module.eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    command     = "aws"
+    # This requires the awscli to be installed locally where Terraform is executed
+    args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
+  }
+}
+
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 19.16"
 
   cluster_name    = local.name
   cluster_version = "1.27"
+
+  cluster_endpoint_public_access = true
+  manage_aws_auth_configmap      = true
+
+  aws_auth_roles = [{
+    rolearn  = module.client_ec2_instance.iam_role_arn
+    username = "ec2-client"
+    groups   = ["system:masters"]
+  }]
 
   cluster_addons = {
     coredns    = {}

@@ -7,17 +7,37 @@ for further details on  `AWS PrivateLink`.
 
 ## Deploy
 
-See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#prerequisites) for the prerequisites and steps to deploy this pattern.
+See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#prerequisites) for the prerequisites and follow the steps below to deploy this pattern.
 
-## Validate
+```sh
+terraform init
+terraform apply -target=module.eventbridge -target=module.nlb --auto-approve
+terraform apply --auto-approve
+```
 
-### Network Connectivity
+Once the pattern has successfully deployed, you will be provided with multiple
+output values.
 
-An output `ssm_test` has been provided to aid in quickly testing the
-connectivity from the client EC2 instance to the private EKS cluster via AWS
-PrivateLink. Copy the output value and paste it into your terminal to execute
-and check the connectivity. If configured correctly, the value returned should
-be `ok`.
+Review the output value for `cluster_endpoint_private`, it should look similar
+to snippet below:
+
+```sh
+aws eks update-cluster-config \
+--region us-west-2 \
+--name privatelink-access \
+--resources-vpc-config endpointPublicAccess=false,endpointPrivateAccess=true
+```
+
+Copy the command and run it in a terminal session to take the cluster API endpoint 
+private.
+
+## Test access to EKS Kubernetes API server endpoint
+
+Of the other output values, the value `ssm_test` is provided to aid in quickly
+testing the connectivity from the client EC2 instance to the private EKS cluster
+via AWS PrivateLink. Copy the output value, which looks like the snippet shown
+below (as an example) and paste it into your terminal to execute and check the
+connectivity. If configured correctly, the value returned should be `ok`.
 
 ```sh
 COMMAND="curl -ks https://9A85B21811733524E3ABCDFEA8714642.gr7.us-west-2.eks.amazonaws.com/readyz"
@@ -36,78 +56,63 @@ aws ssm get-command-invocation --region us-west-2 \
    --output text
 ```
 
-### Cluster Access
-
-To test access to the cluster, you will need to execute Kubernetes API calls
-from within the private network to access the cluster. An EC2 instance has been
-deployed into a "client" VPC to simulate this scenario. However, since the EKS
-cluster was created with your local IAM identity, the `aws-auth` ConfigMap will
-only have your local identity that is permitted to access the cluster. Since
-cluster's API endpoint is private, we cannot use Terraform to reach it to
-add additional entries to the ConfigMap; we can only access the cluster from
-within the private network of the cluster's VPC or from the client VPC using AWS
-PrivateLink access.
-
-!!! info
-      The "client" EC2 instance provided and copying of AWS credentials to
-      that instance are merely for demonstration purposes only. Please consider
-      alternate methods of network access such as AWS Client VPN to provide more
-      secure access.
+## Test access to EKS Kubernetes API with `kubectl`
 
 Perform the following steps to access the cluster with `kubectl` from the
-provided "client" EC2 instance.
+provided Client EC2 instance.
 
-1. Execute the command below on your local machine to get temporary credentials
-that will be used on the "client" EC2 instance:
+### Log into the Client EC2 instance
+Start a new SSM session on the Client EC2 instance using the provided
+`ssm_start_session` output value. It should look similar to the snippet
+shown below. Copy the output value and paste it into your terminal to execute.
+Your terminal will now be connected to the Client EC2 instance.
 
-   ```sh
-   aws sts get-session-token --duration-seconds 3600 --output yaml
-   ```
+```sh
+aws ssm start-session --region us-west-2 --target i-0280cf604085f4a44
+```
 
-2. Start a new SSM session on the "client" EC2 instance using the provided
-`ssm_start_session` output value. Copy the output value and paste it into your
-terminal to execute. Your terminal will now be connected to the "client" EC2
-instance.
+### Update Kubeconfig
+On the Client EC2 machine, run the following command to update the local
+`~/.kube/config` file to enable access to the cluster:
 
-   ```sh
-   aws ssm start-session --region us-west-2 --target i-0280cf604085f4a44
-   ```
+```sh
+aws eks update-kubeconfig --region us-west-2 --name privatelink-access
+```
 
-3. Once logged in, export the following environment variables from the output
-of step #1:
+### Test complete access with `kubectl`
+Test access by listing the pods running on the cluster:
 
-    !!! warning
-        The session credentials are only valid for 1 hour; you can
-        adjust the session duration in the command provided in step #1
+```sh
+kubectl get pods -A
+```
 
-   ```sh
-   export AWS_ACCESS_KEY_ID=XXXX
-   export AWS_SECRET_ACCESS_KEY=YYYY
-   export AWS_SESSION_TOKEN=ZZZZ
-   ```
-
-4. Run the following command to update the local `~/.kube/config` file to enable
-access to the cluster:
-
-   ```sh
-   aws eks update-kubeconfig --region us-west-2 --name privatelink-access
-   ```
-
-5. Test access by listing the pods running on the cluster:
-
-   ```sh
-   kubectl get pods -A
-   ```
-
-   ```text
-   NAMESPACE     NAME                       READY   STATUS    RESTARTS   AGE
-   kube-system   aws-node-4f8g8             1/1     Running   0          1m
-   kube-system   coredns-6ff9c46cd8-59sqp   1/1     Running   0          1m
-   kube-system   coredns-6ff9c46cd8-svnpb   1/1     Running   0          2m
-   kube-system   kube-proxy-mm2zc           1/1     Running   0          1m
-   ```
+```text
+NAMESPACE     NAME                       READY   STATUS    RESTARTS   AGE
+kube-system   aws-node-4f8g8             1/1     Running   0          1m
+kube-system   coredns-6ff9c46cd8-59sqp   1/1     Running   0          1m
+kube-system   coredns-6ff9c46cd8-svnpb   1/1     Running   0          2m
+kube-system   kube-proxy-mm2zc           1/1     Running   0          1m
+```
 
 ## Destroy
+
+Before we could destroy/teardown all the resources created, we need to ensure
+that the cluster state is restored for the Terraform to do a complete cleanup.
+This would mean that we make cluster API endpoint public again.
+
+Review the output value for `cluster_endpoint_public`, it should look similar
+to snippet below:
+
+```sh
+aws eks update-cluster-config \
+--region us-west-2 \
+--name privatelink-access \
+--resources-vpc-config endpointPublicAccess=true,endpointPrivateAccess=true
+```
+
+Copy the command and run it in a terminal session to take the cluster API 
+endpoint public. After ensuring that the cluster API endpoint is public, continue
+with the steps below to destroy all the resources created by this pattern. 
 
 {%
    include-markdown "../../docs/_partials/destroy.md"
