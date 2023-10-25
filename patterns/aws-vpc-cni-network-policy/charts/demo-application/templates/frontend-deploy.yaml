@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend 
+  name: frontend
   namespace: stars
 spec:
   replicas: 1
@@ -11,10 +11,10 @@ spec:
   template:
     metadata:
       labels:
-        role: frontend 
+        role: frontend
     spec:
       containers:
-      - name: frontend 
+      - name: frontend
         image: calico/star-probe:v0.1.0
         imagePullPolicy: Always
         command:
