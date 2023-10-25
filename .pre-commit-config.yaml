@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v4.5.0
     hooks:
       - id: trailing-whitespace
         args: ['--markdown-linebreak-ext=md']
@@ -10,7 +10,7 @@ repos:
       - id: detect-aws-credentials
         args: ['--allow-missing-credentials']
   - repo: https://github.com/antonbabenko/pre-commit-terraform
-    rev: v1.83.4
+    rev: v1.83.5
     hooks:
       - id: terraform_fmt
       - id: terraform_docs
