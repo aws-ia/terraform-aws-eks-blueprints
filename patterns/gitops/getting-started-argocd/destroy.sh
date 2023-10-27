@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -euo pipefail
+set -uo pipefail
 
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ROOTDIR="$(cd ${SCRIPTDIR}/../..; pwd )"
@@ -14,7 +14,7 @@ if [[ ! $(cat $TMPFILE) == *"No outputs found"* ]]; then
   source "$TMPFILE"
   kubectl delete -n argocd applicationset workloads
   echo "Waiting for ingress and load balancer to be deleted"
-  sleep 240
+  sleep 120
   kubectl delete -n argocd applicationset cluster-addons
   kubectl delete -n argocd applicationset addons-argocd
   kubectl delete -n argocd svc argo-cd-argocd-server

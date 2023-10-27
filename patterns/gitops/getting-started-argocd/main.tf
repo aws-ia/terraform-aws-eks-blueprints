@@ -122,7 +122,7 @@ locals {
   )
 
   argocd_apps = {
-    # Uncomment to deploy GitOps bootstrap from Terraform, instead of kubectl (Recommended)
+    # Uncomment to deploy GitOps bootstrap from Terraform, instead of kubectl
     # addons    = file("${path.module}/bootstrap/addons.yaml")
     # workloads = file("${path.module}/bootstrap/workloads.yaml")
   }
