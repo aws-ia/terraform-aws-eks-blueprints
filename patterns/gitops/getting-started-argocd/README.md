@@ -1,6 +1,6 @@
 # ArgoCD on Amazon EKS
 
-This example shows how to deploy Amazon EKS with addons configured via ArgoCD using the GitOps Bridge Pattern
+This example shows how to deploy Amazon EKS with addons configured via ArgoCD using the [GitOps Bridge Pattern](https://github.com/gitops-bridge-dev)
 
 Deploy EKS Cluster
 ```shell
