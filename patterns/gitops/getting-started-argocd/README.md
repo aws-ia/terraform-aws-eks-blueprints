@@ -5,7 +5,7 @@ This example shows how to deploy Amazon EKS with addons configured via ArgoCD
 Deploy EKS Cluster
 ```shell
 terraform init
-terraform apply
+terraform apply -auto-approve
 ```
 
 Get `kubectl` config, and run the output
@@ -46,11 +46,11 @@ kubectl get -n game-2048 ingress
 
 Get the Ingress URL for the Application
 ```shell
-kubectl get ingress
+echo "Application URL: http://$(kubectl get -n game-2048 ingress ingress-2048 -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
 ```
-Verify Application on the Browser or Terminal
+Verify Application from Terminal
 ```shell
-curl ...
+curl -I $(kubectl get -n game-2048 ingress ingress-2048 -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
 ```
 
 Destroy EKS Cluster
