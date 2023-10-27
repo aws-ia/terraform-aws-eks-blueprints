@@ -1,13 +1,22 @@
 #!/bin/bash
 
-set -x
+set -euo pipefail
+
+SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+ROOTDIR="$(cd ${SCRIPTDIR}/../..; pwd )"
+[[ -n "${DEBUG:-}" ]] && set -x
 
 # Delete the Ingress/SVC before removing the addons
 TMPFILE=$(mktemp)
-terraform output -raw configure_kubectl > "$TMPFILE"
-source "$TMPFILE"
-
-kubectl delete svc -n argocd argo-cd-argocd-server
+terraform -chdir=$SCRIPTDIR output -raw configure_kubectl > "$TMPFILE"
+# check if TMPFILE contains the string "No outputs found"
+if [[ ! $(cat $TMPFILE) == *"No outputs found"* ]]; then
+  source "$TMPFILE"
+  kubectl delete -n argocd applicationset workloads
+  kubectl delete -n argocd applicationset cluster-addons
+  kubectl delete -n argocd application addon-dev-argo-cd
+  kubectl delete -n argocd svc argo-cd-argocd-server
+fi
 
 terraform destroy -target="module.gitops_bridge_bootstrap" -auto-approve
 terraform destroy -target="module.eks_blueprints_addons" -auto-approve

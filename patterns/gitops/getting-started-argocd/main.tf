@@ -76,7 +76,7 @@ locals {
     enable_ack_eventbridge                       = try(var.addons.enable_ack_eventbridge, false)
   }
   oss_addons = {
-    enable_argocd                          = try(var.addons.enable_argocd, false)
+    enable_argocd                          = try(var.addons.enable_argocd, true)
     enable_argo_rollouts                   = try(var.addons.enable_argo_rollouts, false)
     enable_argo_events                     = try(var.addons.enable_argo_events, false)
     enable_argo_workflows                  = try(var.addons.enable_argo_workflows, false)

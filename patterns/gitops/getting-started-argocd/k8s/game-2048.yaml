@@ -46,9 +46,7 @@ metadata:
   namespace: game-2048
   name: ingress-2048
   annotations:
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
     alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/ssl-redirect: '443'
     alb.ingress.kubernetes.io/target-type: ip
 spec:
   ingressClassName: alb
@@ -61,6 +59,4 @@ spec:
             service:
               name: service-2048
               port:
-                number: 80
-  tls:
-  - hosts: []
+                name: http

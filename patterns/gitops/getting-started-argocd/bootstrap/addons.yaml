@@ -17,6 +17,8 @@ spec:
         repoURL: '{{metadata.annotations.addons_repo_url}}'
         path: '{{metadata.annotations.addons_repo_basepath}}{{metadata.annotations.addons_repo_path}}'
         targetRevision: '{{metadata.annotations.addons_repo_revision}}'
+        directory:
+          recurse: true
       destination:
         namespace: argocd
         name: '{{name}}'
