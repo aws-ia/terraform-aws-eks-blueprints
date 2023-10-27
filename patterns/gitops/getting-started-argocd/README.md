@@ -43,7 +43,7 @@ Get ArgoCD UI and CLI access configuration, and run the output in a new terminal
 terraform output -raw configure_argocd
 ```
 
-Deploy Sample Application
+Deploy Sample Application located in [k8s/game-2048.yaml](k8s/game-2048.yaml)
 ```shell
 kubectl apply -f bootstrap/workloads.yaml
 ```
