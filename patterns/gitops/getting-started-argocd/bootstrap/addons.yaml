@@ -5,12 +5,12 @@ metadata:
   namespace: argocd
 spec:
   syncPolicy:
-    preserveResourcesOnDeletion: true
+    preserveResourcesOnDeletion: false
   generators:
     - clusters: {}
   template:
     metadata:
-      name:
+      name: cluster-addons
     spec:
       project: default
       source:

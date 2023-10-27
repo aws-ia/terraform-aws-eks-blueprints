@@ -10,7 +10,11 @@ spec:
     - clusters: {}
   template:
     metadata:
-      name: 'cluster-addons'
+      name: workload
+      finalizers:
+        # This finalizer is for demo purposes, in production remove apps using argocd CLI "argocd app delete workload --cascade"
+        # When you invoke argocd app delete with --cascade, the finalizer is added automatically.
+        - resources-finalizer.argocd.argoproj.io
     spec:
       project: default
       source:
@@ -18,7 +22,6 @@ spec:
         path: '{{metadata.annotations.workload_repo_basepath}}{{metadata.annotations.workload_repo_path}}'
         targetRevision: '{{metadata.annotations.workload_repo_revision}}'
       destination:
-        namespace: 'argocd'
         name: '{{name}}'
       syncPolicy:
         automated:
