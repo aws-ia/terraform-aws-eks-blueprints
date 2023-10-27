@@ -1,6 +1,6 @@
 # ArgoCD on Amazon EKS
 
-This example shows how to deploy Amazon EKS with addons configured via ArgoCD
+This example shows how to deploy Amazon EKS with addons configured via ArgoCD using the GitOps Bridge Pattern
 
 Deploy EKS Cluster
 ```shell
@@ -12,6 +12,15 @@ Get `kubectl` config, and run the output
 ```shell
 terraform output -raw configure_kubectl
 ```
+
+Terraform added the GitOps Bridge Metadata in the ArgoCD Secret.
+The annotations contains the metadata for the addons helm charts.
+The labels contains an easy way to enable or disable an addon for the cluster.
+```shell
+kubectl get secret -n argocd -l argocd.argoproj.io/secret-type=cluster -o jsonpath='{.metadata.annotations}'
+kubectl get secret -n argocd -l argocd.argoproj.io/secret-type=cluster -o jsonpath='{.metadata.labels}'
+```
+
 
 Deploy Addons using ArgoCD
 ```shell
