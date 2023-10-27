@@ -13,8 +13,10 @@ terraform -chdir=$SCRIPTDIR output -raw configure_kubectl > "$TMPFILE"
 if [[ ! $(cat $TMPFILE) == *"No outputs found"* ]]; then
   source "$TMPFILE"
   kubectl delete -n argocd applicationset workloads
+  echo "Waiting for ingress and load balancer to be deleted"
+  sleep 240
   kubectl delete -n argocd applicationset cluster-addons
-  kubectl delete -n argocd application addon-dev-argo-cd
+  kubectl delete -n argocd applicationset addons-argocd
   kubectl delete -n argocd svc argo-cd-argocd-server
 fi
 

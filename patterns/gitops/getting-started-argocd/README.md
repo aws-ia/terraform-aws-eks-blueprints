@@ -21,7 +21,9 @@ Verify Addons are ready
 ```shell
 kubectl get applications -n argocd \
   addon-getting-started-gitops-aws-load-balancer-controller \
-  addon-getting-started-gitops-metrics-server
+  addon-getting-started-gitops-metrics-server \
+  addon-getting-started-gitops-argo-cd
+kubectl get sts -n argocd
 kubectl get deployment -n kube-system \
   aws-load-balancer-controller \
   metrics-server
@@ -44,14 +46,16 @@ kubectl get -n game-2048 deployments
 kubectl get -n game-2048 ingress
 ```
 
-Get the Ingress URL for the Application
+Get the Ingress URL for the Application (You need to wait 2 minutes for Load Balancer to be created)
 ```shell
-echo "Application URL: http://$(kubectl get -n game-2048 ingress ingress-2048 -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
+echo "Application URL: http://$(kubectl get -n game-2048 ingress game-2048 -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
 ```
+
 Verify Application from Terminal
 ```shell
-curl -I $(kubectl get -n game-2048 ingress ingress-2048 -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+curl -I $(kubectl get -n game-2048 ingress game-2048 -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
 ```
+
 
 Destroy EKS Cluster
 ```shell

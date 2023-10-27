@@ -5,7 +5,7 @@ metadata:
   namespace: argocd
 spec:
   syncPolicy:
-    preserveResourcesOnDeletion: false
+    preserveResourcesOnDeletion: true
   generators:
     - clusters: {}
   template:
