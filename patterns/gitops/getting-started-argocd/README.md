@@ -46,9 +46,17 @@ kubectl get -n game-2048 deployments
 kubectl get -n game-2048 ingress
 ```
 
-Get the Ingress URL for the Application (You need to wait 2 minutes for Load Balancer to be created)
+Get the Ingress URL for the Application
 ```shell
 echo "Application URL: http://$(kubectl get -n game-2048 ingress game-2048 -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
+```
+
+!!! info
+    You might need to wait a few minutes, and then refresh your browser.
+    If your Ingress isn't created after several minutes, then run this command to view the AWS Load Balancer Controller logs:
+
+```shell
+kubectl logs -n kube-system deployment.apps/aws-load-balancer-controller
 ```
 
 Verify Application from Terminal
