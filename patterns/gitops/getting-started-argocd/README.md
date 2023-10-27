@@ -56,7 +56,6 @@ Verify Application from Terminal
 curl -I $(kubectl get -n game-2048 ingress game-2048 -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
 ```
 
-
 Destroy EKS Cluster
 ```shell
 ./destroy.sh
