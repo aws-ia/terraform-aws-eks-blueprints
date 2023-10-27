@@ -13,7 +13,7 @@ Get `kubectl` config, and run the output
 terraform output -raw configure_kubectl
 ```
 
-Terraform added the GitOps Bridge Metadata in the ArgoCD Secret.
+Terraform adds the GitOps Bridge Metadata in the ArgoCD Secret.
 The annotations contains the metadata for the addons helm charts.
 The labels contains an easy way to enable or disable an addon for the cluster.
 ```shell
