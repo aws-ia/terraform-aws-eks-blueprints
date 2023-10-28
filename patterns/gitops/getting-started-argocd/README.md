@@ -2,7 +2,27 @@
 
 This example shows how to deploy Amazon EKS with addons configured via ArgoCD using the [GitOps Bridge Pattern](https://github.com/gitops-bridge-dev)
 
-Deploy EKS Cluster
+
+## Fork the git repositories
+
+### Fork the addon gitops repo
+Fork the git repository for addons https://github.com/aws-samples/eks-blueprints-add-ons
+Set the followign variables to point to your fork, change the deafult values below:
+```shell
+export TF_VAR_gitops_addons_org=https://github.com/aws-samples
+export TF_VAR_gitops_addons_repo=eks-blueprints-add-ons
+```
+
+### Fork the workloads gitops repo
+For the git repository for this pattern https://github.com/aws-ia/terraform-aws-eks-blueprints
+Set the followign variables to point to your fork, change the default values below:
+```shell
+export TF_VAR_gitops_workload_org=https://github.com/aws-ia
+export TF_VAR_gitops_workload_repo=terraform-aws-eks-blueprints
+```
+
+## Deploy the EKS Cluster
+
 ```shell
 terraform init
 terraform apply -auto-approve
@@ -13,16 +33,17 @@ Get `kubectl` config, and run the output
 terraform output -raw configure_kubectl
 ```
 
-Terraform adds the GitOps Bridge Metadata in the ArgoCD Secret.
+Terraform added the GitOps Bridge Metadata in the ArgoCD Secret.
 The annotations contains the metadata for the addons helm charts.
-The labels contains an easy way to enable or disable an addon for the cluster.
+The labels contains an easy way to enable or disable an addon in ArgoCD for the cluster.
 ```shell
 kubectl get secret -n argocd -l argocd.argoproj.io/secret-type=cluster -o jsonpath='{.metadata.annotations}'
 kubectl get secret -n argocd -l argocd.argoproj.io/secret-type=cluster -o jsonpath='{.metadata.labels}'
 ```
 
+## Deploy the Addons
 
-Deploy Addons using ArgoCD
+Bootstrap the Addons using ArgoCD
 ```shell
 kubectl apply -f bootstrap/addons.yaml
 ```
@@ -43,7 +64,9 @@ Get ArgoCD UI and CLI access configuration, and run the output in a new terminal
 terraform output -raw configure_argocd
 ```
 
-Deploy Sample Application located in [k8s/game-2048.yaml](k8s/game-2048.yaml)
+## Deploy the Workloads
+
+Deploy Sample Application located in [k8s/game-2048.yaml](k8s/game-2048.yaml) using ArgoCD
 ```shell
 kubectl apply -f bootstrap/workloads.yaml
 ```
@@ -78,7 +101,7 @@ Verify Application CPU and Memory metrics
 kubectl top pods -n game-2048
 ```
 
-Destroy EKS Cluster
+## Destroy the EKS Cluster
 ```shell
 ./destroy.sh
 ```
