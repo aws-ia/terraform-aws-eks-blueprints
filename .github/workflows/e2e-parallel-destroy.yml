@@ -28,7 +28,6 @@ jobs:
         include:
           - example_path: patterns/agones-game-controller
           - example_path: patterns/fargate-serverless
-          - example_path: patterns/argocd
           - example_path: patterns/ipv6-eks-cluster
           - example_path: patterns/karpenter
           - example_path: patterns/multi-tenancy-with-teams
