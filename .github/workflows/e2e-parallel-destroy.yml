@@ -28,6 +28,7 @@ jobs:
         include:
           - example_path: patterns/agones-game-controller
           - example_path: patterns/fargate-serverless
+          - example_path: patterns/gitops/getting-started-argocd
           - example_path: patterns/ipv6-eks-cluster
           - example_path: patterns/karpenter
           - example_path: patterns/multi-tenancy-with-teams
@@ -64,6 +65,7 @@ jobs:
         run: |
           terraform init -upgrade=true
           terraform destroy -target=module.eks_blueprints_kubernetes_addons  -no-color -input=false -auto-approve
-          terraform destroy -target=module.eks_blueprints  -no-color -input=false -auto-approve
+          terraform destroy -target=module.eks_blueprints_addons -no-color -input=false -auto-approve
+          terraform destroy -target=module.eks_blueprints -no-color -input=false -auto-approve
           terraform destroy -target=module.eks -no-color -input=false -auto-approve
           terraform destroy -no-color -input=false -auto-approve
