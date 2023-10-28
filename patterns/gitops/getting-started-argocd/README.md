@@ -119,7 +119,7 @@ Deploy a sample application located in [k8s/game-2048.yaml](k8s/game-2048.yaml) 
 kubectl apply -f bootstrap/workloads.yaml
 ```
 
-## Monitor GitOps Progress for Workloads
+### Monitor GitOps Progress for Workloads
 Watch the Workloads ArgoCD Application
 ```shell
 watch kubectl get -n argocd applications workloads
