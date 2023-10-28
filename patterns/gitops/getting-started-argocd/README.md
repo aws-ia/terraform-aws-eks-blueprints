@@ -83,12 +83,19 @@ The output looks like the following:
 }
 ```
 
+## Access ArgoCD
+Access ArgoCD's UI and CLI configuration, on a new Terminal window run the following command
+```shell
+terraform output -raw configure_argocd
+```
+
 ## Deploy the Addons
 Bootstrap the addons using ArgoCD:
 ```shell
 kubectl apply -f bootstrap/addons.yaml
 ```
-Monitor the ArgoCD Addon Applications
+
+### Monitor GitOps Progress for Addons
 ```shell
 watch kubectl get applications -n argocd \
   addon-getting-started-gitops-aws-load-balancer-controller \
@@ -97,6 +104,7 @@ watch kubectl get applications -n argocd \
 ```
 Wait until the ArgoCD Applications `HEALTH STATUS` is `Healthy`. Crl+C to exit the `watch` command
 
+### Verify the Addons
 Verify that the addons are ready:
 ```shell
 kubectl get sts,deployment -n argocd
@@ -105,23 +113,20 @@ kubectl get deployment -n kube-system \
   metrics-server
 ```
 
-Access ArgoCD's UI and CLI configuration, on a new Terminal window run the following command
-```shell
-terraform output -raw configure_argocd
-```
-
 ## Deploy the Workloads
-
 Deploy a sample application located in [k8s/game-2048.yaml](k8s/game-2048.yaml) using ArgoCD:
 ```shell
 kubectl apply -f bootstrap/workloads.yaml
 ```
+
+## Monitor GitOps Progress for Workloads
 Watch the Workloads ArgoCD Application
 ```shell
 watch kubectl get -n argocd applications workloads
 ```
 Wait until the ArgoCD Applications `HEALTH STATUS` is `Healthy`. Crl+C to exit the `watch` command
 
+### Verify the Application
 Verify that the application configuration is present and the pod is running:
 ```shell
 kubectl get -n game-2048 deployments,service,ep,ingress
@@ -132,18 +137,19 @@ kubectl events -n game-2048 --for ingress/game-2048 --watch
 ```
 Wait until the Ingress/game-2048 `MESSAGE` column value is `Successfully reconciled`. Crl+C to exit the `watch` command
 
+
+### Access the Application using AWS Load Balancer
 Retrieve the ingress URL for the application:
 ```shell
 echo "Application URL: http://$(kubectl get -n game-2048 ingress game-2048 -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
 ```
-
-
 Verify the application enpoint health using `curl`:
 ```shell
 curl -I $(kubectl get -n game-2048 ingress game-2048 -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
 ```
 The first line of the output should have `HTTP/1.1 200 OK`.
 
+### Container Metrics
 Check the application's CPU and memory metrics:
 ```shell
 kubectl top pods -n game-2048
