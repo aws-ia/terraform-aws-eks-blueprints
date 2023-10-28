@@ -13,11 +13,6 @@ variable "kubernetes_version" {
   type        = string
   default     = "1.28"
 }
-variable "environment" {
-  description = "Kubernetes environment"
-  type        = string
-  default     = "dev"
-}
 variable "addons" {
   description = "Kubernetes addons"
   type        = any

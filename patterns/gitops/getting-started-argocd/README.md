@@ -74,11 +74,11 @@ The output looks like the following:
   "aws_load_balancer_controller_service_account": "aws-load-balancer-controller-sa",
   "aws_region": "us-west-2",
   "aws_vpc_id": "vpc-001d3f00151bbb731",
-  "cluster_name": "getting-started-gitops",
+  "cluster_name": "in-cluster",
   "environment": "dev",
   "workload_repo_basepath": "patterns/gitops/",
   "workload_repo_path": "getting-started-argocd/k8s",
-  "workload_repo_revision": "gitops-bridge-1st-example",
+  "workload_repo_revision": "main",
   "workload_repo_url": "https://github.com/csantanapr/terraform-aws-eks-blueprints"
 }
 ```
@@ -93,15 +93,8 @@ The output looks like the following:
   "enable_argocd": "true",
   "enable_aws_load_balancer_controller": "true",
   "enable_metrics_server": "true",
-  "environment": "dev",
   "kubernetes_version": "1.28",
 }
-```
-
-## Access ArgoCD
-Access ArgoCD's UI and CLI configuration, on a new Terminal window run the following command
-```shell
-terraform output -raw configure_argocd
 ```
 
 ## Deploy the Addons
@@ -111,22 +104,26 @@ kubectl apply -f bootstrap/addons.yaml
 ```
 
 ### Monitor GitOps Progress for Addons
+Wait until all the ArgoCD applications' `HEALTH STATUS` is `Healthy`. Use Crl+C to exit the `watch` command
 ```shell
-watch kubectl get applications -n argocd \
-  addon-getting-started-gitops-aws-load-balancer-controller \
-  addon-getting-started-gitops-metrics-server \
-  addon-getting-started-gitops-argo-cd
+watch kubectl get applications -n argocd
 ```
-Wait until the ArgoCD Applications `HEALTH STATUS` is `Healthy`. Crl+C to exit the `watch` command
+
+## Access ArgoCD
+Access ArgoCD's UI, run the command from the output:
+```shell
+terraform output -raw access_argocd
+```
 
 ### Verify the Addons
 Verify that the addons are ready:
 ```shell
-kubectl get sts,deployment -n argocd
 kubectl get deployment -n kube-system \
   aws-load-balancer-controller \
   metrics-server
 ```
+
+
 
 ## Deploy the Workloads
 Deploy a sample application located in [k8s/game-2048.yaml](k8s/game-2048.yaml) using ArgoCD:
@@ -135,7 +132,7 @@ kubectl apply -f bootstrap/workloads.yaml
 ```
 
 ### Monitor GitOps Progress for Workloads
-Watch the Workloads ArgoCD Application
+Watch until the Workloads ArgoCD Application is `Healthy`
 ```shell
 watch kubectl get -n argocd applications workloads
 ```
@@ -146,11 +143,11 @@ Verify that the application configuration is present and the pod is running:
 ```shell
 kubectl get -n game-2048 deployments,service,ep,ingress
 ```
-Watch the events for the Ingress, this take a few minutes
+Wait until the Ingress/game-2048 `MESSAGE` column value is `Successfully reconciled`. Crl+C to exit the `watch` command
 ```shell
 kubectl events -n game-2048 --for ingress/game-2048 --watch
 ```
-Wait until the Ingress/game-2048 `MESSAGE` column value is `Successfully reconciled`. Crl+C to exit the `watch` command
+
 
 
 ### Access the Application using AWS Load Balancer

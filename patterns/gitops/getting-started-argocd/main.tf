@@ -31,11 +31,13 @@ provider "kubernetes" {
 }
 
 locals {
-  name            = "getting-started-gitops"
-  environment     = var.environment
-  region          = var.region
+  name   = "getting-started-gitops"
+  region = var.region
+
   cluster_version = var.kubernetes_version
-  vpc_cidr        = var.vpc_cidr
+
+  vpc_cidr = var.vpc_cidr
+  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
   gitops_addons_url      = "${var.gitops_addons_org}/${var.gitops_addons_repo}"
   gitops_addons_basepath = var.gitops_addons_basepath
@@ -46,7 +48,6 @@ locals {
   gitops_workload_basepath = var.gitops_workload_basepath
   gitops_workload_path     = var.gitops_workload_path
   gitops_workload_revision = var.gitops_workload_revision
-
 
   aws_addons = {
     enable_cert_manager                          = try(var.addons.enable_cert_manager, false)
@@ -95,8 +96,7 @@ locals {
     local.aws_addons,
     local.oss_addons,
     { kubernetes_version = local.cluster_version },
-    { aws_cluster_name = module.eks.cluster_name },
-    { workloads = "true" }
+    { aws_cluster_name = module.eks.cluster_name }
   )
 
   addons_metadata = merge(
@@ -121,17 +121,9 @@ locals {
     }
   )
 
-  argocd_apps = {
-    # Uncomment to deploy GitOps bootstrap from Terraform, instead of kubectl
-    # addons    = file("${path.module}/bootstrap/addons.yaml")
-    # workloads = file("${path.module}/bootstrap/workloads.yaml")
-  }
-
-  azs = slice(data.aws_availability_zones.available.names, 0, 3)
-
   tags = {
     Blueprint  = local.name
-    GithubRepo = "github.com/csantanapr/terraform-gitops-bridge"
+    GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
   }
 }
 
@@ -142,12 +134,9 @@ module "gitops_bridge_bootstrap" {
   source = "github.com/gitops-bridge-dev/gitops-bridge-argocd-bootstrap-terraform?ref=v2.0.0"
 
   cluster = {
-    cluster_name = module.eks.cluster_name
-    environment  = local.environment
-    metadata     = local.addons_metadata
-    addons       = local.addons
+    metadata = local.addons_metadata
+    addons   = local.addons
   }
-  apps = local.argocd_apps
 }
 
 ################################################################################
@@ -166,21 +155,21 @@ module "eks_blueprints_addons" {
   create_kubernetes_resources = false
 
   # EKS Blueprints Addons
-  enable_cert_manager                 = try(local.aws_addons.enable_cert_manager, false)
-  enable_aws_efs_csi_driver           = try(local.aws_addons.enable_aws_efs_csi_driver, false)
-  enable_aws_fsx_csi_driver           = try(local.aws_addons.enable_aws_fsx_csi_driver, false)
-  enable_aws_cloudwatch_metrics       = try(local.aws_addons.enable_aws_cloudwatch_metrics, false)
-  enable_aws_privateca_issuer         = try(local.aws_addons.enable_aws_privateca_issuer, false)
-  enable_cluster_autoscaler           = try(local.aws_addons.enable_cluster_autoscaler, false)
-  enable_external_dns                 = try(local.aws_addons.enable_external_dns, false)
-  enable_external_secrets             = try(local.aws_addons.enable_external_secrets, false)
-  enable_aws_load_balancer_controller = try(local.aws_addons.enable_aws_load_balancer_controller, false)
-  enable_fargate_fluentbit            = try(local.aws_addons.enable_fargate_fluentbit, false)
-  enable_aws_for_fluentbit            = try(local.aws_addons.enable_aws_for_fluentbit, false)
-  enable_aws_node_termination_handler = try(local.aws_addons.enable_aws_node_termination_handler, false)
-  enable_karpenter                    = try(local.aws_addons.enable_karpenter, false)
-  enable_velero                       = try(local.aws_addons.enable_velero, false)
-  enable_aws_gateway_api_controller   = try(local.aws_addons.enable_aws_gateway_api_controller, false)
+  enable_cert_manager                 = local.aws_addons.enable_cert_manager
+  enable_aws_efs_csi_driver           = local.aws_addons.enable_aws_efs_csi_driver
+  enable_aws_fsx_csi_driver           = local.aws_addons.enable_aws_fsx_csi_driver
+  enable_aws_cloudwatch_metrics       = local.aws_addons.enable_aws_cloudwatch_metrics
+  enable_aws_privateca_issuer         = local.aws_addons.enable_aws_privateca_issuer
+  enable_cluster_autoscaler           = local.aws_addons.enable_cluster_autoscaler
+  enable_external_dns                 = local.aws_addons.enable_external_dns
+  enable_external_secrets             = local.aws_addons.enable_external_secrets
+  enable_aws_load_balancer_controller = local.aws_addons.enable_aws_load_balancer_controller
+  enable_fargate_fluentbit            = local.aws_addons.enable_fargate_fluentbit
+  enable_aws_for_fluentbit            = local.aws_addons.enable_aws_for_fluentbit
+  enable_aws_node_termination_handler = local.aws_addons.enable_aws_node_termination_handler
+  enable_karpenter                    = local.aws_addons.enable_karpenter
+  enable_velero                       = local.aws_addons.enable_velero
+  enable_aws_gateway_api_controller   = local.aws_addons.enable_aws_gateway_api_controller
 
   tags = local.tags
 }
@@ -203,15 +192,17 @@ module "eks" {
 
   eks_managed_node_groups = {
     initial = {
-      instance_types = ["t3.medium"]
+      instance_types = ["m5.large"]
 
-      min_size     = 3
-      max_size     = 10
-      desired_size = 3
+      min_size     = 1
+      max_size     = 3
+      desired_size = 2
     }
   }
   # EKS Addons
   cluster_addons = {
+    coredns    = {}
+    kube-proxy = {}
     vpc-cni = {
       # Specify the VPC CNI addon should be deployed before compute to ensure
       # the addon is configured before data plane compute resources are created
