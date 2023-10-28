@@ -53,12 +53,11 @@ variable "gitops_addons_path" {
   default     = "bootstrap/control-plane/addons"
 }
 
-# Workload Git
-# TODO: Replace values from fork to upstream
+# Workloads Git
 variable "gitops_workload_org" {
   description = "Git repository org/user contains for workload"
   type        = string
-  default     = "https://github.com/csantanapr"
+  default     = "https://github.com/aws-ia"
 }
 variable "gitops_workload_repo" {
   description = "Git repository contains for workload"
@@ -68,7 +67,7 @@ variable "gitops_workload_repo" {
 variable "gitops_workload_revision" {
   description = "Git repository revision/branch/ref for workload"
   type        = string
-  default     = "gitops-bridge-1st-example"
+  default     = "main"
 }
 variable "gitops_workload_basepath" {
   description = "Git repository base path for workload"
