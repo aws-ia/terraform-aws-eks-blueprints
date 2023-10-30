@@ -121,6 +121,16 @@ locals {
     }
   )
 
+  argocd_app_of_appsets_addons = var.enable_gitops_auto_addons ? {
+    addons = file("${path.module}/bootstrap/addons.yaml")
+  } : {}
+  argocd_app_of_appsets_workloads = var.enable_gitops_auto_workloads ? {
+    workloads = file("${path.module}/bootstrap/workloads.yaml")
+  } : {}
+
+  argocd_apps = merge(local.argocd_app_of_appsets_addons, local.argocd_app_of_appsets_workloads)
+
+
   tags = {
     Blueprint  = local.name
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
@@ -137,6 +147,7 @@ module "gitops_bridge_bootstrap" {
     metadata = local.addons_metadata
     addons   = local.addons
   }
+  apps = local.argocd_apps
 }
 
 ################################################################################

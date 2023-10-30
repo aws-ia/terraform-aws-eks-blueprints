@@ -89,16 +89,19 @@ The output looks like the following:
 ```
 The labels offer a straightforward way to enable or disable an addon in ArgoCD for the cluster.
 ```shell
-kubectl get secret -n argocd -l argocd.argoproj.io/secret-type=cluster -o json | jq '.items[0].metadata.labels'
+kubectl get secret -n argocd -l argocd.argoproj.io/secret-type=cluster -o json | jq '.items[0].metadata.labels' | grep -v false | jq .
 ```
 The output looks like the following:
 ```json
 {
+  "argocd.argoproj.io/secret-type": "cluster",
   "aws_cluster_name": "getting-started-gitops",
+  "cluster_name": "in-cluster",
   "enable_argocd": "true",
   "enable_aws_load_balancer_controller": "true",
   "enable_metrics_server": "true",
-  "kubernetes_version": "1.28",
+  "environment": "dev",
+  "kubernetes_version": "1.28"
 }
 ```
 
@@ -168,6 +171,10 @@ echo "Application URL: http://$(kubectl get -n game-2048 ingress game-2048 -o js
 Check the application's CPU and memory metrics:
 ```shell
 kubectl top pods -n game-2048
+```
+Check all pods CPU and memory metrics:
+```shell
+kubectl top pods -A
 ```
 
 ## Destroy the EKS Cluster
