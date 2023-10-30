@@ -34,6 +34,7 @@ Before you begin, make sure you have the following command line tools installed:
 ```shell
 export TF_VAR_gitops_addons_org=https://github.com/aws-samples
 export TF_VAR_gitops_addons_repo=eks-blueprints-add-ons
+export TF_VAR_gitops_addons_revision=main
 ```
 
 ### Fork the Workloads GitOps Repo
@@ -42,12 +43,16 @@ export TF_VAR_gitops_addons_repo=eks-blueprints-add-ons
 ```shell
 export TF_VAR_gitops_workload_org=https://github.com/aws-ia
 export TF_VAR_gitops_workload_repo=terraform-aws-eks-blueprints
+export TF_VAR_gitops_workload_revision=main
 ```
 
 ## Deploy the EKS Cluster
 Initialize Terraform and deploy the EKS cluster:
 ```shell
 terraform init
+terraform apply -target="module.vpc" -auto-approve
+terraform apply -target="module.eks" -auto-approve
+terraform apply -target="module.eks_blueprints_addons" -auto-approve
 terraform apply -auto-approve
 ```
 Retrieve `kubectl` config, then execute the output command:
