@@ -26,6 +26,7 @@ Before you begin, make sure you have the following command line tools installed:
 - kubectl
 - argocd
 
+TODO: move fork to the bottom appendix
 ## Fork the Git Repositories
 
 ### Fork the Addon GitOps Repo
@@ -52,7 +53,6 @@ Initialize Terraform and deploy the EKS cluster:
 terraform init
 terraform apply -target="module.vpc" -auto-approve
 terraform apply -target="module.eks" -auto-approve
-terraform apply -target="module.eks_blueprints_addons" -auto-approve
 terraform apply -auto-approve
 ```
 Retrieve `kubectl` config, then execute the output command:
@@ -125,6 +125,7 @@ kubectl get deployment -n kube-system \
   metrics-server
 ```
 
+TODO: UI is not required, they can even disable the ui.
 ## Access ArgoCD
 Access ArgoCD's UI, run the command from the output:
 ```shell

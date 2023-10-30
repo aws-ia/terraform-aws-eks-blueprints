@@ -15,8 +15,6 @@ if [[ ! $(cat $TMPFILE) == *"No outputs found"* ]]; then
   kubectl delete -n argocd applicationset workloads
   echo "Deleting ingress/svc for game-2048, takes a few minutes for Load Balancer to be deleted"
   kubectl delete -n game-2048 ing game-2048
-  echo "Waiting for ingress and load balancer to be deleted"
-  sleep 120
   kubectl delete -n argocd applicationset cluster-addons
   kubectl delete -n argocd applicationset addons-argocd
   echo "Deleting ingress/svc for argo-cd-argocd-server, takes a few minutes for Load Balancer to be deleted"

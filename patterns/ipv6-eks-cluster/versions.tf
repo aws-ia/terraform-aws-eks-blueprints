@@ -20,6 +20,6 @@ terraform {
   # backend "s3" {
   #   bucket = "terraform-ssp-github-actions-state"
   #   region = "us-west-2"
-  #   key    = "e2e/getting-started-argocd/terraform.tfstate"
+  #   key    = "e2e/ipv6-eks-cluster/terraform.tfstate"
   # }
 }
