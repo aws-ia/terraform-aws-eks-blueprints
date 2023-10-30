@@ -26,6 +26,8 @@ Before you begin, make sure you have the following command line tools installed:
 - kubectl
 - argocd
 
+## (Optional) Fork the GitOps git repositories
+See the appendix section [Fork GitOps Repositories](#fork-gitops-repositories) for more info on the terraform variables to override.
 
 
 ## Deploy the EKS Cluster
@@ -131,23 +133,38 @@ Verify that the application configuration is present and the pod is running:
 ```shell
 kubectl get -n game-2048 deployments,service,ep,ingress
 ```
-Wait until the Ingress/game-2048 `MESSAGE` column value is `Successfully reconciled`. Crl+C to exit the `watch` command
+The expected output should look like the following:
+```text
+NAME                        READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/game-2048   1/1     1            1           7h59m
+
+NAME                TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+service/game-2048   ClusterIP   172.20.155.47   <none>        80/TCP    7h59m
+
+NAME                  ENDPOINTS       AGE
+endpoints/game-2048   10.0.13.64:80   7h59m
+
+NAME                CLASS   HOSTS   ADDRESS                              PORTS   AGE
+ingress/game-2048   alb     *       k8s-<>.us-west-2.elb.amazonaws.com   80      7h59m
+```
+
+Wait until and event for ingress `game-2048` contains `Successfully reconciled`. Crl+C to exit the `watch` command
 ```shell
 kubectl events -n game-2048 --for ingress/game-2048 --watch
 ```
 
 ### Access the Application using AWS Load Balancer
-Verify the application endpoint health using `curl`:
+Verify the application endpoint health using `wget`:
 ```shell
-curl -I $(kubectl get -n game-2048 ingress game-2048 -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+kubectl exec -n game-2048 deploy/game-2048 -- \
+wget -S --spider $(kubectl get -n game-2048 ingress game-2048 -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
 ```
-The first line of the output should be `HTTP/1.1 200 OK`.
+The output should contain `HTTP/1.1 200 OK`.
 
-Retrieve the ingress URL for the application:
+Retrieve the ingress URL:
 ```shell
 echo "Application URL: http://$(kubectl get -n game-2048 ingress game-2048 -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
 ```
-
 
 ### Container Metrics
 Check the application's CPU and memory metrics:
@@ -168,11 +185,9 @@ To tear down all the resources and the EKS cluster, run the following command:
 ## Appendix
 
 ## Fork GitOps Repositories
-To be able to modify the addons `values.yaml` or the workload manifest files, you will need to fork
-the addons git repository [aws-samples/eks-blueprints-add-ons](https://github.com/aws-samples/eks-blueprints-add-ons) and
-the patterns repository [github.com/aws-ia/terraform-aws-eks-blueprints](https://github.com/aws-ia/terraform-aws-eks-blueprints)
+To modify the `values.yaml` file for addons or the workload manifest files (.ie yaml), you'll need to fork two repositories: [aws-samples/eks-blueprints-add-ons](https://github.com/aws-samples/eks-blueprints-add-ons) for addons and [github.com/aws-ia/terraform-aws-eks-blueprints](https://github.com/aws-ia/terraform-aws-eks-blueprints) for workloads located in this pattern directory.
 
-Update the following environment variables to point to your forks by changing the default values:
+After forking, update the following environment variables to point to your forks, replacing the default values.
 ```shell
 export TF_VAR_gitops_addons_org=https://github.com/aws-samples
 export TF_VAR_gitops_addons_repo=eks-blueprints-add-ons
