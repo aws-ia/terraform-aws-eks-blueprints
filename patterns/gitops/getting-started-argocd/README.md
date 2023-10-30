@@ -26,26 +26,7 @@ Before you begin, make sure you have the following command line tools installed:
 - kubectl
 - argocd
 
-TODO: move fork to the bottom appendix
-## Fork the Git Repositories
 
-### Fork the Addon GitOps Repo
-1. Fork the git repository for addons [here](https://github.com/aws-samples/eks-blueprints-add-ons).
-2. Update the following environment variables to point to your fork by changing the default values:
-```shell
-export TF_VAR_gitops_addons_org=https://github.com/aws-samples
-export TF_VAR_gitops_addons_repo=eks-blueprints-add-ons
-export TF_VAR_gitops_addons_revision=main
-```
-
-### Fork the Workloads GitOps Repo
-1. Fork the git repository for this pattern [here](https://github.com/aws-ia/terraform-aws-eks-blueprints)
-2. Update the following environment variables to point to your fork by changing the default values:
-```shell
-export TF_VAR_gitops_workload_org=https://github.com/aws-ia
-export TF_VAR_gitops_workload_repo=terraform-aws-eks-blueprints
-export TF_VAR_gitops_workload_revision=main
-```
 
 ## Deploy the EKS Cluster
 Initialize Terraform and deploy the EKS cluster:
@@ -182,4 +163,22 @@ kubectl top pods -A
 To tear down all the resources and the EKS cluster, run the following command:
 ```shell
 ./destroy.sh
+```
+
+## Appendix
+
+## Fork GitOps Repositories
+To be able to modify the addons `values.yaml` or the workload manifest files, you will need to fork
+the addons git repository [aws-samples/eks-blueprints-add-ons](https://github.com/aws-samples/eks-blueprints-add-ons) and
+the patterns repository [github.com/aws-ia/terraform-aws-eks-blueprints](https://github.com/aws-ia/terraform-aws-eks-blueprints)
+
+Update the following environment variables to point to your forks by changing the default values:
+```shell
+export TF_VAR_gitops_addons_org=https://github.com/aws-samples
+export TF_VAR_gitops_addons_repo=eks-blueprints-add-ons
+export TF_VAR_gitops_addons_revision=main
+
+export TF_VAR_gitops_workload_org=https://github.com/aws-ia
+export TF_VAR_gitops_workload_repo=terraform-aws-eks-blueprints
+export TF_VAR_gitops_workload_revision=main
 ```
