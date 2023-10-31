@@ -57,18 +57,18 @@ data "aws_iam_policy_document" "aws_lb" {
       "acm:DescribeCertificate",
       "iam:ListServerCertificates",
       "iam:GetServerCertificate",
-      # "waf-regional:GetWebACL",
-      # "waf-regional:GetWebACLForResource",
-      # "waf-regional:AssociateWebACL",
-      # "waf-regional:DisassociateWebACL",
-      # "wafv2:GetWebACL",
-      # "wafv2:GetWebACLForResource",
-      # "wafv2:AssociateWebACL",
-      # "wafv2:DisassociateWebACL",
-      # "shield:GetSubscriptionState",
-      # "shield:DescribeProtection",
-      # "shield:CreateProtection",
-      # "shield:DeleteProtection",
+      "waf-regional:GetWebACL",
+      "waf-regional:GetWebACLForResource",
+      "waf-regional:AssociateWebACL",
+      "waf-regional:DisassociateWebACL",
+      "wafv2:GetWebACL",
+      "wafv2:GetWebACLForResource",
+      "wafv2:AssociateWebACL",
+      "wafv2:DisassociateWebACL",
+      "shield:GetSubscriptionState",
+      "shield:DescribeProtection",
+      "shield:CreateProtection",
+      "shield:DeleteProtection",
     ]
     resources = ["*"]
   }
@@ -200,26 +200,6 @@ data "aws_iam_policy_document" "aws_lb" {
   }
 
   statement {
-    actions = [
-      "elasticloadbalancing:ModifyLoadBalancerAttributes",
-      "elasticloadbalancing:SetIpAddressType",
-      "elasticloadbalancing:SetSecurityGroups",
-      "elasticloadbalancing:SetSubnets",
-      "elasticloadbalancing:DeleteLoadBalancer",
-      "elasticloadbalancing:ModifyTargetGroup",
-      "elasticloadbalancing:ModifyTargetGroupAttributes",
-      "elasticloadbalancing:DeleteTargetGroup",
-    ]
-    resources = ["*"]
-
-    condition {
-      test     = "Null"
-      variable = "aws:ResourceTag/elbv2.k8s.aws/cluster"
-      values   = ["false"]
-    }
-  }
-
-  statement {
     actions = ["elasticloadbalancing:AddTags"]
     resources = [
       "arn:${local.partition}:elasticloadbalancing:*:*:targetgroup/*/*",
@@ -239,6 +219,26 @@ data "aws_iam_policy_document" "aws_lb" {
     condition {
       test     = "Null"
       variable = "aws:RequestTag/elbv2.k8s.aws/cluster"
+      values   = ["false"]
+    }
+  }
+
+    statement {
+    actions = [
+      "elasticloadbalancing:ModifyLoadBalancerAttributes",
+      "elasticloadbalancing:SetIpAddressType",
+      "elasticloadbalancing:SetSecurityGroups",
+      "elasticloadbalancing:SetSubnets",
+      "elasticloadbalancing:DeleteLoadBalancer",
+      "elasticloadbalancing:ModifyTargetGroup",
+      "elasticloadbalancing:ModifyTargetGroupAttributes",
+      "elasticloadbalancing:DeleteTargetGroup",
+    ]
+    resources = ["*"]
+
+    condition {
+      test     = "Null"
+      variable = "aws:ResourceTag/elbv2.k8s.aws/cluster"
       values   = ["false"]
     }
   }
