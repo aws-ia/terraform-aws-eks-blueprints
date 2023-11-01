@@ -196,7 +196,10 @@ NAME                CLASS   HOSTS   ADDRESS                              PORTS  
 ingress/game-2048   alb     *       k8s-<>.us-west-2.elb.amazonaws.com   80      7h59m
 ```
 
-Wait until and event for ingress `game-2048` contains `Successfully reconciled`. Crl+C to exit the `watch` command
+Wait until and event for ingress `game-2048` contains `Successfully reconciled`.
+Use the Crl+C to exit the `watch` command. AWS Load Balancer can take a couple of
+minutes in order to be created.
+Hit Ctrl+C or Cmd+C to exit the watch command.
 ```shell
 kubectl events -n game-2048 --for ingress/game-2048 --watch
 ```
@@ -221,7 +224,7 @@ The expected output should look like the following:
 ```
 >A success response should contain `HTTP/1.1 200 OK`.
 
-Retrieve the ingress URL:
+Retrieve the ingress URL to access the application in your local web browser.
 ```shell
 echo "Application URL: http://$(kubectl get -n game-2048 ingress game-2048 -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
 ```
