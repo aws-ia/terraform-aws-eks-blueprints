@@ -42,6 +42,17 @@ Retrieve `kubectl` config, then execute the output command:
 ```shell
 terraform output -raw configure_kubectl
 ```
+The expected output will have two lines you run in your terminal
+```text
+export KUBECONFIG="/tmp/getting-started-gitops"
+aws eks --region us-west-2 update-kubeconfig --name getting-started-gitops
+```
+>The first line sets the `KUBECONFIG` environment variable to a temporary file
+that includes the cluster name. The second line uses the `aws` CLI to populate
+that temporary file with the `kubectl` configuration. This approach offers the
+advantage of not altering your existing `kubectl` context, allowing you to work
+in other terminal windows without interference.
+
 
 Terraform will add GitOps Bridge Metadata to the ArgoCD secret.
 The annotations contain metadata for the addons' Helm charts and ArgoCD ApplicationSets.
@@ -95,9 +106,19 @@ kubectl apply -f bootstrap/addons.yaml
 ```
 
 ### Monitor GitOps Progress for Addons
-Wait until all the ArgoCD applications' `HEALTH STATUS` is `Healthy`. Use Crl+C to exit the `watch` command
+Wait until all the ArgoCD applications' `HEALTH STATUS` is `Healthy`.
+Use `Ctrl+C` or `Cmd+C` to exit the `watch` command. ArgoCD Applications
+can take a couple of minutes in order to achieve the Healthy status.
 ```shell
 watch kubectl get applications -n argocd
+```
+The expected output should look like the following:
+```text
+NAME                                            SYNC STATUS   HEALTH STATUS
+addon-in-cluster-argo-cd                        Synced        Healthy
+addon-in-cluster-aws-load-balancer-controller   Synced        Healthy
+addon-in-cluster-metrics-server                 Synced        Healthy
+cluster-addons                                  Synced        Healthy
 ```
 
 ### Verify the Addons
@@ -106,13 +127,34 @@ Verify that the addons are ready:
 kubectl get deployment -n kube-system \
   aws-load-balancer-controller \
   metrics-server
+kubectl get deploy -n argocd \
+  argo-cd-argocd-applicationset-controller \
+  argo-cd-argocd-repo-server \
+  argo-cd-argocd-server
+```
+The expected output should look like the following:
+```text
+NAME                                       READY   UP-TO-DATE   AVAILABLE   AGE
+aws-load-balancer-controller               2/2     2            2           7m21s
+metrics-server                             1/1     1            1           7m41s
+argo-cd-argocd-applicationset-controller   1/1     1            1           109m
+argo-cd-argocd-repo-server                 1/1     1            1           109m
+argo-cd-argocd-server                      1/1     1            1           109m
 ```
 
-TODO: UI is not required, they can even disable the ui.
-## Access ArgoCD
-Access ArgoCD's UI, run the command from the output:
+
+## (Optional) Access ArgoCD
+Access to the ArgoCD's UI is completely optional, if you want to do it,
+run the commands shown in the Terraform output as the example below:
 ```shell
 terraform output -raw access_argocd
+```
+The expected output should contain the `kubectl` config followed by `kubectl` command to retrieve
+the URL, username, password to login into ArgoCD UI or CLI.
+```text
+echo "ArgoCD Username: admin"
+echo "ArgoCD Password: $(kubectl get secrets argocd-initial-admin-secret -n argocd --template="{{index .data.password | base64decode}}")"
+echo "ArgoCD URL: https://$(kubectl get svc -n argocd argo-cd-argocd-server -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
 ```
 
 ## Deploy the Workloads
@@ -122,11 +164,17 @@ kubectl apply -f bootstrap/workloads.yaml
 ```
 
 ### Monitor GitOps Progress for Workloads
-Watch until the Workloads ArgoCD Application is `Healthy`
+Wait until all the ArgoCD applications' `HEALTH STATUS` is `Healthy`.
+Use `Ctrl+C` or `Cmd+C` to exit the `watch` command. ArgoCD Applications
+can take a couple of minutes in order to achieve the Healthy status.
 ```shell
 watch kubectl get -n argocd applications workloads
 ```
-Wait until the ArgoCD Applications `HEALTH STATUS` is `Healthy`. Crl+C to exit the `watch` command
+The expected output should look like the following:
+```text
+NAME        SYNC STATUS   HEALTH STATUS
+workloads   Synced        Healthy
+```
 
 ### Verify the Application
 Verify that the application configuration is present and the pod is running:
@@ -152,6 +200,11 @@ Wait until and event for ingress `game-2048` contains `Successfully reconciled`.
 ```shell
 kubectl events -n game-2048 --for ingress/game-2048 --watch
 ```
+The expected output should look like the following:
+```text
+LAST SEEN   TYPE     REASON                   OBJECT              MESSAGE
+11m         Normal   SuccessfullyReconciled   Ingress/game-2048   Successfully reconciled
+```
 
 ### Access the Application using AWS Load Balancer
 Verify the application endpoint health using `wget`:
@@ -159,7 +212,14 @@ Verify the application endpoint health using `wget`:
 kubectl exec -n game-2048 deploy/game-2048 -- \
 wget -S --spider $(kubectl get -n game-2048 ingress game-2048 -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
 ```
-The output should contain `HTTP/1.1 200 OK`.
+The expected output should look like the following:
+```text
+  HTTP/1.1 200 OK
+  Date: Wed, 01 Nov 2023 22:44:57 GMT
+  Content-Type: text/html
+  Content-Length: 3988
+```
+>A success response should contain `HTTP/1.1 200 OK`.
 
 Retrieve the ingress URL:
 ```shell
@@ -171,9 +231,35 @@ Check the application's CPU and memory metrics:
 ```shell
 kubectl top pods -n game-2048
 ```
-Check all pods CPU and memory metrics:
+The expected output should look like the following:
+```text
+NAME                         CPU(cores)   MEMORY(bytes)
+game-2048-66fb78b995-hqbjv   1m           2Mi
+```
+Check the CPU and memory metrics for all pods for Addons and Workloads:
 ```shell
 kubectl top pods -A
+```
+The expected output should look like the following:
+```text
+NAMESPACE     NAME                                                        CPU(cores)   MEMORY(bytes)
+argocd        argo-cd-argocd-application-controller-0                     43m          138Mi
+argocd        argo-cd-argocd-applicationset-controller-5db688844c-79skp   1m           25Mi
+argocd        argo-cd-argocd-dex-server-cd48d7bc-x7flf                    1m           16Mi
+argocd        argo-cd-argocd-notifications-controller-7d7ccc6b9d-dg9r6    1m           17Mi
+argocd        argo-cd-argocd-redis-7f89c69877-6mmcj                       2m           3Mi
+argocd        argo-cd-argocd-repo-server-644b9b5668-m9ddg                 8m           62Mi
+argocd        argo-cd-argocd-server-57cbbd6f94-lp4wx                      2m           26Mi
+game-2048     game-2048-66fb78b995-hqbjv                                  1m           2Mi
+kube-system   aws-load-balancer-controller-8488df87c-4nxv6                2m           26Mi
+kube-system   aws-load-balancer-controller-8488df87c-zs4p6                1m           19Mi
+kube-system   aws-node-ck6vq                                              3m           57Mi
+kube-system   aws-node-fvvsg                                              3m           56Mi
+kube-system   coredns-59754897cf-5rlxp                                    1m           13Mi
+kube-system   coredns-59754897cf-fn7jb                                    1m           13Mi
+kube-system   kube-proxy-lzbdc                                            1m           11Mi
+kube-system   kube-proxy-pdvlm                                            1m           12Mi
+kube-system   metrics-server-5b76987ff-5gzsv                              4m           17Mi
 ```
 
 ## Destroy the EKS Cluster
