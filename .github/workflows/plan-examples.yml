@@ -1,10 +1,6 @@
 name: plan-examples
 
 on:
-  # Review https://securitylab.github.com/research/github-actions-preventing-pwn-requests/ and better understand the risks of using pull_request_target before making major changes to this workflow.
-  pull_request_target:
-    branches:
-      - main
   workflow_dispatch:
 
 concurrency:
@@ -97,7 +93,7 @@ jobs:
           role-session-name: GithubActions-Session
 
       - name: Terraform Job
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@v3
         if: steps.changes.outputs.src== 'true'
         with:
           terraform_version: 1.0.0

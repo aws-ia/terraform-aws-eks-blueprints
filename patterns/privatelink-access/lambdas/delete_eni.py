@@ -18,8 +18,8 @@ class StructuredMessage:
         return '%s >>> %s' % (self.message, json.dumps(self.kwargs))
 
 _ = StructuredMessage # optional, to improve readability
-logging.basicConfig(level=logging.DEBUG, format='%(message)s')
-
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 def handler(event, context):
 
@@ -32,7 +32,7 @@ def handler(event, context):
     )['TargetHealthDescriptions']
 
     if not targetHealthDescriptions:
-        logging.info("Did not find any TargetHealthDescriptions, quitting!")
+        logger.info("Did not find any TargetHealthDescriptions, quitting!")
         return
 
     # Iterate over the list of TargetHealthDescriptions and extract the list of
@@ -54,7 +54,7 @@ def handler(event, context):
     )['NetworkInterfaces']
 
     if not networkInterfaces:
-        logging.info("Did not find any EKS API ENIs to compare with, quitting!")
+        logger.info("Did not find any EKS API ENIs to compare with, quitting!")
         return
 
     for networkInterface in networkInterfaces:
@@ -71,17 +71,17 @@ def handler(event, context):
             unhealthyTargetsToDeregister.append(unhealthyTarget)
 
     if not unhealthyTargetsToDeregister:
-        logging.info("There are no unhealthy targets to deregister, quitting!")
+        logger.info("There are no unhealthy targets to deregister, quitting!")
         return
 
-    logging.info("Targets are to be deregistered: %s", unhealthyTargetsToDeregister)
+    logger.info("Targets to be deregistered are: %s", unhealthyTargetsToDeregister)
 
     try:
         response = ELBV2_CLIENT.deregister_targets(
             TargetGroupArn = TARGET_GROUP_ARN,
             Targets=unhealthyTargetsToDeregister
         )
-        logging.info(_(response))
+        logger.info(_(response))
     except Exception as e:
-        logging.error(_(e))
+        logger.error(_(e))
         raise(e)
