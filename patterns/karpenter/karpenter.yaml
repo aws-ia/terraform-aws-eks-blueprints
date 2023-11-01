@@ -5,7 +5,7 @@ metadata:
   name: default
 spec:
   amiFamily: AL2
-  role: karpenter-ex-karpenter 
+  role: karpenter-ex-karpenter
   subnetSelectorTerms:
     - tags:
         karpenter.sh/discovery: ex-karpenter
