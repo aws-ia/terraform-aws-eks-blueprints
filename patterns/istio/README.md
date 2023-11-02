@@ -17,6 +17,7 @@ concepts.
 See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#prerequisites) for the prerequisites and run the following command to deploy this pattern.
 
 ```sh
+terraform init
 terraform apply --auto-approve
 ```
 
