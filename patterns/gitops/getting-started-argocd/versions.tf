@@ -4,23 +4,15 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = ">= 4.47"
+      version = ">= 4.67.0"
     }
     helm = {
       source  = "hashicorp/helm"
-      version = ">= 2.9"
+      version = ">= 2.10.1"
     }
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = ">= 2.20"
-    }
-    random = {
-      source  = "hashicorp/random"
-      version = ">= 3.5"
-    }
-    bcrypt = {
-      source  = "viktorradnai/bcrypt"
-      version = ">= 0.1.2"
+      version = "2.22.0"
     }
   }
 
@@ -28,6 +20,6 @@ terraform {
   # backend "s3" {
   #   bucket = "terraform-ssp-github-actions-state"
   #   region = "us-west-2"
-  #   key    = "e2e/argocd/terraform.tfstate"
+  #   key    = "e2e/getting-started-argocd/terraform.tfstate"
   # }
 }

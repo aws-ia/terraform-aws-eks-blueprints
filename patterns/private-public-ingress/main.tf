@@ -243,7 +243,7 @@ module "ingres_nginx_internal" {
   }
 }
 
-module "eks_blueprints_kubernetes_addons" {
+module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
   version = "~> 1.0"
 
