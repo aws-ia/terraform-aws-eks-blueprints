@@ -196,10 +196,10 @@ NAME                CLASS   HOSTS   ADDRESS                              PORTS  
 ingress/game-2048   alb     *       k8s-<>.us-west-2.elb.amazonaws.com   80      7h59m
 ```
 
-Wait until and event for ingress `game-2048` contains `Successfully reconciled`.
-Use the Crl+C to exit the `watch` command. AWS Load Balancer can take a couple of
-minutes in order to be created.
-Hit Ctrl+C or Cmd+C to exit the watch command.
+AWS Load Balancer can take a couple of minutes in order to be created.
+
+Run the following command and wait until and event for ingress `game-2048` contains `Successfully reconciled`.
+Use `Ctrl+C` or `Cmd+C`to exit the `watch` command. 
 ```shell
 kubectl events -n game-2048 --for ingress/game-2048 --watch
 ```
