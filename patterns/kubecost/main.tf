@@ -103,6 +103,24 @@ module "eks" {
 }
 
 ################################################################################
+# Addons
+################################################################################
+
+module "eks_blueprints_addons" {
+  source  = "aws-ia/eks-blueprints-addons/aws"
+  version = "1.8.0"
+
+  cluster_name          = module.eks.cluster_name
+  cluster_endpoint      = module.eks.cluster_endpoint
+  cluster_version       = module.eks.cluster_version
+  oidc_provider_arn     = module.eks.oidc_provider_arn
+
+  enable_metrics_server            = true
+
+  depends_on = [module.eks.eks_managed_node_groups]
+}
+  
+################################################################################
 # CUR
 ################################################################################
 
