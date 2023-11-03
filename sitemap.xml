@@ -71,6 +71,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/gitops-multi-cluster-hub-spoke-argocd/</loc>
+         <lastmod>2023-11-03</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/ipv6-eks-cluster/</loc>
          <lastmod>2023-11-03</lastmod>
          <changefreq>daily</changefreq>

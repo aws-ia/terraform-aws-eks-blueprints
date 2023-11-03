@@ -16,7 +16,7 @@
         <link rel="prev" href="../fully-private-cluster/">
       
       
-        <link rel="next" href="../ipv6-eks-cluster/">
+        <link rel="next" href="../gitops-multi-cluster-hub-spoke-argocd/">
       
       
       <link rel="icon" href="../../images/colored-logo.png">
@@ -680,6 +680,26 @@
   
   
     <li class="md-nav__item">
+      <a href="../gitops-multi-cluster-hub-spoke-argocd/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    GitOps Multi-Cluster Hub-Spoke Topology (ArgoCD)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../ipv6-eks-cluster/" class="md-nav__link">
         
   
@@ -1306,7 +1326,7 @@
 <!-- BEGIN INCLUDE ../../patterns/gitops/getting-started-argocd/README.md -->
 <h1 id="argocd-on-amazon-eks">ArgoCD on Amazon EKS<a class="headerlink" href="#argocd-on-amazon-eks" title="Permanent link">&para;</a></h1>
 <p>This tutorial guides you through deploying an Amazon EKS cluster with addons configured via ArgoCD, employing the <a href="https://github.com/gitops-bridge-dev">GitOps Bridge Pattern</a>.</p>
-<p><img src="static/gitops-bridge.drawio.png" width=100%></p>
+<p><img src="https://raw.githubusercontent.com/aws-ia/terraform-aws-eks-blueprints/main/patterns/gitops/getting-started-argocd/static/gitops-bridge.drawio.png" width=100%></p>
 <p>The <a href="https://github.com/gitops-bridge-dev">GitOps Bridge Pattern</a> enables Kubernetes administrators to utilize Infrastructure as Code (IaC) and GitOps tools for deploying Kubernetes Addons and Workloads. Addons often depend on Cloud resources that are external to the cluster. The configuration metadata for these external resources is required by the Addons' Helm charts. While IaC is used to create these cloud resources, it is not used to install the Helm charts. Instead, the IaC tool stores this metadata either within GitOps resources in the cluster or in a Git repository. The GitOps tool then extracts these metadata values and passes them to the Helm chart during the Addon installation process. This mechanism forms the bridge between IaC and GitOps, hence the term "GitOps Bridge."</p>
 <p>Additional examples available on the <a href="https://github.com/gitops-bridge-dev">GitOps Bridge Pattern</a>:
 - <a href="https://github.com/gitops-bridge-dev/gitops-bridge/tree/main/argocd/iac/terraform/examples/eks/argocd-ingress">argocd-ingress</a>
@@ -1332,7 +1352,7 @@
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>terraform<span class="w"> </span>apply<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks&quot;</span><span class="w"> </span>-auto-approve
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>terraform<span class="w"> </span>apply<span class="w"> </span>-auto-approve
 </span></code></pre></div>
-Retrieve <code>kubectl</code> config, then execute the output command:
+To retrieve <code>kubectl</code> config, execute the terraform output command:
 <div class="language-shell highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>terraform<span class="w"> </span>output<span class="w"> </span>-raw<span class="w"> </span>configure_kubectl
 </span></code></pre></div>
 The expected output will have two lines you run in your terminal
@@ -1394,7 +1414,7 @@ The output looks like the following:
 <p>Wait until all the ArgoCD applications' <code>HEALTH STATUS</code> is <code>Healthy</code>.
 Use <code>Ctrl+C</code> or <code>Cmd+C</code> to exit the <code>watch</code> command. ArgoCD Applications
 can take a couple of minutes in order to achieve the Healthy status.
-<div class="language-shell highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>watch<span class="w"> </span>kubectl<span class="w"> </span>get<span class="w"> </span>applications<span class="w"> </span>-n<span class="w"> </span>argocd
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>applications<span class="w"> </span>-n<span class="w"> </span>argocd<span class="w"> </span>-w
 </span></code></pre></div>
 The expected output should look like the following:
 <div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>NAME                                            SYNC STATUS   HEALTH STATUS
