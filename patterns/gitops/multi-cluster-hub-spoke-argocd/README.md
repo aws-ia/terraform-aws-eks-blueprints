@@ -2,7 +2,7 @@
 
 This tutorial guides you through deploying an Amazon EKS cluster with addons configured via ArgoCD in a Multi-Cluster Hub-Spoke topoloy, employing the [GitOps Bridge Pattern](https://github.com/gitops-bridge-dev).
 
-<img src="static/gitops-bridge-multi-cluster-hup-spoke.drawio.png" width=100%>
+<img src="https://raw.githubusercontent.com/aws-ia/terraform-aws-eks-blueprints/main/patterns/gitops/multi-cluster-hub-spoke-argocd/static/gitops-bridge-multi-cluster-hup-spoke.drawio.png" width=100%>
 
 
 This example deploys ArgoCD on the Hub cluster (i.e. management/control-plane cluster).
@@ -40,7 +40,7 @@ terraform output -raw configure_kubectl
 The expected output will have two lines you run in your terminal
 ```text
 export KUBECONFIG="/tmp/getting-started-gitops"
-aws eks --region us-west-2 update-kubeconfig --name getting-started-gitops
+aws eks --region us-west-2 update-kubeconfig --name getting-started-gitops --alias hub
 ```
 >The first line sets the `KUBECONFIG` environment variable to a temporary file
 that includes the cluster name. The second line uses the `aws` CLI to populate
@@ -53,7 +53,7 @@ Wait until all the ArgoCD applications' `HEALTH STATUS` is `Healthy`.
 Use `Ctrl+C` or `Cmd+C` to exit the `watch` command. ArgoCD Applications
 can take a couple of minutes in order to achieve the Healthy status.
 ```shell
-kubectl get applications -n argocd -w
+kubectl --context hub get applications -n argocd -w
 ```
 
 ## (Optional) Access ArgoCD
@@ -66,15 +66,15 @@ The expected output should contain the `kubectl` config followed by `kubectl` co
 the URL, username, password to login into ArgoCD UI or CLI.
 ```text
 echo "ArgoCD Username: admin"
-echo "ArgoCD Password: $(kubectl get secrets argocd-initial-admin-secret -n argocd --template="{{index .data.password | base64decode}}")"
-echo "ArgoCD URL: https://$(kubectl get svc -n argocd argo-cd-argocd-server -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
+echo "ArgoCD Password: $(kubectl --context hub get secrets argocd-initial-admin-secret -n argocd --template="{{index .data.password | base64decode}}")"
+echo "ArgoCD URL: https://$(kubectl --context hub get svc -n argocd argo-cd-argocd-server -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
 ```
 
 
 ## Verify that ArgoCD Service Accouts has the annotation for IRSA
 ```shell
-kubectl get sa -n argocd argocd-application-controller -o json | jq '.metadata.annotations."eks.amazonaws.com/role-arn"'
-kubectl get sa -n argocd argocd-server  -o json | jq '.metadata.annotations."eks.amazonaws.com/role-arn"'
+kubectl --context hub get sa -n argocd argocd-application-controller -o json | jq '.metadata.annotations."eks.amazonaws.com/role-arn"'
+kubectl --context hub get sa -n argocd argocd-server  -o json | jq '.metadata.annotations."eks.amazonaws.com/role-arn"'
 ```
 The output should match the `arn` for the IAM Role that will assume the IAM Role in spoke/remote clusters
 ```text
