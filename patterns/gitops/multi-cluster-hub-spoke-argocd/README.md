@@ -5,9 +5,9 @@ This tutorial guides you through deploying an Amazon EKS cluster with addons con
 <img src="static/gitops-bridge-multi-cluster-hup-spoke.drawio.png" width=100%>
 
 
-This example deploys ArgoCD on the Hub cluster (ie. management/control-plane cluster).
+This example deploys ArgoCD on the Hub cluster (i.e. management/control-plane cluster).
 The spoke clusters are registered as remote clusters in the Hub Cluster's ArgoCD
-The ArgoCD on the Hub Cluster deploy addons and workloads to the spoke clusters
+The ArgoCD on the Hub Cluster deploys addons and workloads to the spoke clusters
 
 Each spoke cluster gets deployed an app of apps ArgoCD Application with the name `workloads-${env}`
 
@@ -18,18 +18,11 @@ Before you begin, make sure you have the following command line tools installed:
 - kubectl
 - argocd
 
-## Fork the Git Repositories
-
-### Fork the Addon GitOps Repo
-1. Fork the git repository for addons [here](https://github.com/gitops-bridge-dev/gitops-bridge-argocd-control-plane-template).
-2. Update the following environment variables to point to your fork by changing the default values:
-```shell
-export TF_VAR_gitops_addons_org=https://github.com/gitops-bridge-dev
-export TF_VAR_gitops_addons_repo=gitops-bridge-argocd-control-plane-template
-```
+## (Optional) Fork the GitOps git repositories
+See the appendix section [Fork GitOps Repositories](#fork-gitops-repositories) for more info on the terraform variables to override.
 
 ## Deploy the Hub EKS Cluster
-Change Director to `hub`
+Change directory to `hub`
 ```shell
 cd hub
 ```
@@ -38,7 +31,7 @@ Initialize Terraform and deploy the EKS cluster:
 terraform init
 terraform apply -auto-approve
 ```
-Retrieve `kubectl` config, then execute the output command:
+To retrieve `kubectl` config, execute the terraform output command:
 ```shell
 terraform output -raw configure_kubectl
 ```
@@ -46,7 +39,7 @@ terraform output -raw configure_kubectl
 ### Monitor GitOps Progress for Addons
 Wait until **all** the ArgoCD applications' `HEALTH STATUS` is `Healthy`. Use Crl+C to exit the `watch` command
 ```shell
-watch kubectl get applications -n argocd
+kubectl get applications -n argocd -w
 ```
 
 ## Access ArgoCD on Hub Cluster
@@ -66,7 +59,7 @@ The output should match the `arn` for the IAM Role that will assume the IAM Role
 ```
 
 ## Deploy the Spoke EKS Cluster
-Initialize Terraform and deploy the EKS clusters:
+Use the `deploy.sh` script to create terraform workspace, initialize Terraform, and deploy the EKS clusters:
 ```shell
 cd ../spokes
 ./deploy.sh dev
@@ -94,11 +87,10 @@ Retrieve `kubectl` config, then execute the output command:
 terraform output -raw configure_kubectl
 ```
 
-### Verify ArgoCD Cluster Secret for Spoke has the correct IAM Role to be assume by Hub Cluster
+### Verify ArgoCD Cluster Secret for Spokes have the correct IAM Role to be assume by Hub Cluster
 ```shell
-kubectl get secret -n argocd hub-spoke-dev --template='{{index .data.config | base64decode}}'
+for i in dev staging prod ; do echo $i && kubectl --context hub get secret -n argocd spoke-$i --template='{{index .data.config | base64decode}}' ; done
 ```
-Do the same for the other cluster replaced `dev` in `hub-spoke-dev`
 The output have a section `awsAuthConfig` with the `clusterName` and the `roleARN` that has write access to the spoke cluster
 ```json
 {
@@ -117,15 +109,14 @@ The output have a section `awsAuthConfig` with the `clusterName` and the `roleAR
 ### Verify the Addons on Spoke Clusters
 Verify that the addons are ready:
 ```shell
-kubectl get deployment -n kube-system \
-  metrics-server
+for i in dev staging prod ; do echo $i && kubectl --context spoke-$i get deployment -n kube-system metrics-server ; done
 ```
 
 
 ### Monitor GitOps Progress for Workloads from Hub Cluster (run on Hub Cluster context)
 Watch until **all* the Workloads ArgoCD Applications are `Healthy`
 ```shell
-watch kubectl get -n argocd applications
+kubectl --context hub get -n argocd applications -w
 ```
 Wait until the ArgoCD Applications `HEALTH STATUS` is `Healthy`. Crl+C to exit the `watch` command
 
@@ -133,13 +124,13 @@ Wait until the ArgoCD Applications `HEALTH STATUS` is `Healthy`. Crl+C to exit t
 ### Verify the Application
 Verify that the application configuration is present and the pod is running:
 ```shell
-kubectl get all -n workload
+for i in dev staging prod ; do echo $i && kubectl --context spoke-$i get all -n workload ; done
 ```
 
 ### Container Metrics
 Check the application's CPU and memory metrics:
 ```shell
-kubectl top pods -n workload
+for i in dev staging prod ; do echo $i && kubectl --context spoke-$i top pods -n workload ; done
 ```
 
 ## Destroy the Spoke EKS Clusters
@@ -156,4 +147,17 @@ Destroy Hub Clusters
 ```shell
 cd ../hub
 ./destroy.sh
+```
+
+## Appendix
+
+## Fork GitOps Repositories
+To modify the `values.yaml` file or the helm chart version for addons, you'll need to fork tthe repository [aws-samples/eks-blueprints-add-ons](https://github.com/aws-samples/eks-blueprints-add-ons).
+
+After forking, update the following environment variables to point to your forks, replacing the default values.
+```shell
+export TF_VAR_gitops_addons_org=https://github.com/aws-samples
+export TF_VAR_gitops_addons_repo=eks-blueprints-add-ons
+export TF_VAR_gitops_addons_revision=main
+
 ```
