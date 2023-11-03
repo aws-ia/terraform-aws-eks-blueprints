@@ -29,24 +29,47 @@ cd hub
 Initialize Terraform and deploy the EKS cluster:
 ```shell
 terraform init
+terraform apply -target="module.vpc" -auto-approve
+terraform apply -target="module.eks" -auto-approve
 terraform apply -auto-approve
 ```
 To retrieve `kubectl` config, execute the terraform output command:
 ```shell
 terraform output -raw configure_kubectl
 ```
+The expected output will have two lines you run in your terminal
+```text
+export KUBECONFIG="/tmp/getting-started-gitops"
+aws eks --region us-west-2 update-kubeconfig --name getting-started-gitops
+```
+>The first line sets the `KUBECONFIG` environment variable to a temporary file
+that includes the cluster name. The second line uses the `aws` CLI to populate
+that temporary file with the `kubectl` configuration. This approach offers the
+advantage of not altering your existing `kubectl` context, allowing you to work
+in other terminal windows without interference.
 
 ### Monitor GitOps Progress for Addons
-Wait until **all** the ArgoCD applications' `HEALTH STATUS` is `Healthy`. Use Crl+C to exit the `watch` command
+Wait until all the ArgoCD applications' `HEALTH STATUS` is `Healthy`.
+Use `Ctrl+C` or `Cmd+C` to exit the `watch` command. ArgoCD Applications
+can take a couple of minutes in order to achieve the Healthy status.
 ```shell
 kubectl get applications -n argocd -w
 ```
 
-## Access ArgoCD on Hub Cluster
-Access ArgoCD's UI, run the command from the output:
+## (Optional) Access ArgoCD
+Access to the ArgoCD's UI is completely optional, if you want to do it,
+run the commands shown in the Terraform output as the example below:
 ```shell
 terraform output -raw access_argocd
 ```
+The expected output should contain the `kubectl` config followed by `kubectl` command to retrieve
+the URL, username, password to login into ArgoCD UI or CLI.
+```text
+echo "ArgoCD Username: admin"
+echo "ArgoCD Password: $(kubectl get secrets argocd-initial-admin-secret -n argocd --template="{{index .data.password | base64decode}}")"
+echo "ArgoCD URL: https://$(kubectl get svc -n argocd argo-cd-argocd-server -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
+```
+
 
 ## Verify that ArgoCD Service Accouts has the annotation for IRSA
 ```shell
@@ -55,7 +78,7 @@ kubectl get sa -n argocd argocd-server  -o json | jq '.metadata.annotations."eks
 ```
 The output should match the `arn` for the IAM Role that will assume the IAM Role in spoke/remote clusters
 ```text
-"arn:aws:iam::0123456789:role/hub-spoke-control-plane-argocd-hub"
+"arn:aws:iam::0123456789:role/argocd-hub-0123abc.."
 ```
 
 ## Deploy the Spoke EKS Cluster

@@ -38,7 +38,7 @@ terraform apply -target="module.vpc" -auto-approve
 terraform apply -target="module.eks" -auto-approve
 terraform apply -auto-approve
 ```
-Retrieve `kubectl` config, then execute the output command:
+To retrieve `kubectl` config, execute the terraform output command:
 ```shell
 terraform output -raw configure_kubectl
 ```
@@ -110,7 +110,7 @@ Wait until all the ArgoCD applications' `HEALTH STATUS` is `Healthy`.
 Use `Ctrl+C` or `Cmd+C` to exit the `watch` command. ArgoCD Applications
 can take a couple of minutes in order to achieve the Healthy status.
 ```shell
-watch kubectl get applications -n argocd
+kubectl get applications -n argocd -w
 ```
 The expected output should look like the following:
 ```text
