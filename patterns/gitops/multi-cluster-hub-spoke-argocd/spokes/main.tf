@@ -49,7 +49,7 @@ provider "kubernetes" {
 
 
 locals {
-  name        = "hub-spoke-${terraform.workspace}"
+  name        = "spoke-${terraform.workspace}"
   environment = terraform.workspace
   region      = var.region
 

@@ -109,7 +109,7 @@ The output have a section `awsAuthConfig` with the `clusterName` and the `roleAR
 ### Verify the Addons on Spoke Clusters
 Verify that the addons are ready:
 ```shell
-for i in dev staging prod ; do echo $i && kubectl --context spoke-$i get deployment -n kube-system metrics-server ; done
+for i in dev staging prod ; do echo $i && kubectl --context $i get deployment -n kube-system metrics-server ; done
 ```
 
 
@@ -124,13 +124,13 @@ Wait until the ArgoCD Applications `HEALTH STATUS` is `Healthy`. Crl+C to exit t
 ### Verify the Application
 Verify that the application configuration is present and the pod is running:
 ```shell
-for i in dev staging prod ; do echo $i && kubectl --context spoke-$i get all -n workload ; done
+for i in dev staging prod ; do echo $i && kubectl --context $i get all -n workload ; done
 ```
 
 ### Container Metrics
 Check the application's CPU and memory metrics:
 ```shell
-for i in dev staging prod ; do echo $i && kubectl --context spoke-$i top pods -n workload ; done
+for i in dev staging prod ; do echo $i && kubectl --context $i top pods -n workload ; done
 ```
 
 ## Destroy the Spoke EKS Clusters

@@ -31,7 +31,7 @@ provider "kubernetes" {
 }
 
 locals {
-  name        = "hub-spoke-${local.environment}"
+  name        = "hub-${local.environment}"
   environment = "control-plane"
   region      = var.region
 
