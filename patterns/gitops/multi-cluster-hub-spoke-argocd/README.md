@@ -39,7 +39,7 @@ terraform output -raw configure_kubectl
 ```
 The expected output will have two lines you run in your terminal
 ```text
-export KUBECONFIG="/tmp/getting-started-gitops"
+export KUBECONFIG="/tmp/hub-spoke"
 aws eks --region us-west-2 update-kubeconfig --name getting-started-gitops --alias hub
 ```
 >The first line sets the `KUBECONFIG` environment variable to a temporary file
@@ -54,6 +54,14 @@ Use `Ctrl+C` or `Cmd+C` to exit the `watch` command. ArgoCD Applications
 can take a couple of minutes in order to achieve the Healthy status.
 ```shell
 kubectl --context hub get applications -n argocd -w
+```
+The expected output should look like the following:
+```text
+NAME                                            SYNC STATUS   HEALTH STATUS
+addon-in-cluster-argo-cd                        Synced        Healthy
+addon-in-cluster-aws-load-balancer-controller   Synced        Healthy
+addon-in-cluster-metrics-server                 Synced        Healthy
+cluster-addons                                  Synced        Healthy
 ```
 
 ## (Optional) Access ArgoCD
@@ -78,7 +86,8 @@ kubectl --context hub get sa -n argocd argocd-server  -o json | jq '.metadata.an
 ```
 The output should match the `arn` for the IAM Role that will assume the IAM Role in spoke/remote clusters
 ```text
-"arn:aws:iam::0123456789:role/argocd-hub-0123abc.."
+arn:aws:iam::0123456789:role/argocd-hub-0123abc..
+arn:aws:iam::0123456789:role/argocd-hub-0123abc..
 ```
 
 ## Deploy the Spoke EKS Cluster
@@ -91,24 +100,20 @@ cd ../spokes
 ```
 Each environment uses a Terraform workspace
 
-To access Terraform output run the following commands for the particular environment
+To retrieve `kubectl` config, execute the terraform output command:
 ```shell
 terraform workspace select dev
-terraform output
+terraform output -raw configure_kubectl
 ```
 ```shell
 terraform workspace select staging
-terraform output
+terraform output -raw configure_kubectl
 ```
 ```shell
 terraform workspace select prod
-terraform output
-```
-
-Retrieve `kubectl` config, then execute the output command:
-```shell
 terraform output -raw configure_kubectl
 ```
+
 
 ### Verify ArgoCD Cluster Secret for Spokes have the correct IAM Role to be assume by Hub Cluster
 ```shell
@@ -132,7 +137,7 @@ The output have a section `awsAuthConfig` with the `clusterName` and the `roleAR
 ### Verify the Addons on Spoke Clusters
 Verify that the addons are ready:
 ```shell
-for i in dev staging prod ; do echo $i && kubectl --context $i get deployment -n kube-system metrics-server ; done
+for i in dev staging prod ; do echo $i && kubectl --context $i get deployment -n kube-system ; done
 ```
 
 
