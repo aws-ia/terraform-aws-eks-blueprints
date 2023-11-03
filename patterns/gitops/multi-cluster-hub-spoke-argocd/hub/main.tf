@@ -151,27 +151,24 @@ module "gitops_bridge_bootstrap" {
 # ArgoCD EKS Access
 ################################################################################
 module "argocd_irsa" {
-  source = "aws-ia/eks-blueprints-addon/aws"
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.20"
 
-  create_release             = false
-  create_role                = true
-  role_name_use_prefix       = false
-  role_name                  = "${module.eks.cluster_name}-argocd-hub"
+  role_name_prefix           = "argocd-hub-"
   assume_role_condition_test = "StringLike"
-  create_policy              = false
-  role_policies = {
+  role_policy_arns = {
     ArgoCD_EKS_Policy = aws_iam_policy.irsa_policy.arn
   }
   oidc_providers = {
-    this = {
-      provider_arn    = module.eks.oidc_provider_arn
-      namespace       = local.argocd_namespace
-      service_account = "argocd-*"
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["${local.argocd_namespace}:argocd-*"]
     }
   }
-  tags = local.tags
 
+  tags = local.tags
 }
+
 
 resource "aws_iam_policy" "irsa_policy" {
   name        = "${module.eks.cluster_name}-argocd-irsa"
