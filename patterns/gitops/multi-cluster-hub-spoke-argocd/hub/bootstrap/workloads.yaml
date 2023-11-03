@@ -1,0 +1,34 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: workloads
+  namespace: argocd
+spec:
+  syncPolicy:
+    preserveResourcesOnDeletion: false
+  generators:
+    - clusters:
+        selector:
+          matchExpressions:
+            - key: akuity.io/argo-cd-cluster-name
+              operator: NotIn
+              values: [in-cluster]
+            - key: environment
+              operator: NotIn
+              values: [control-plane]
+  template:
+    metadata:
+      name: 'workload-{{metadata.labels.environment}}'
+    spec:
+      project: default
+      source:
+        repoURL: '{{metadata.annotations.workload_repo_url}}'
+        path: '{{metadata.annotations.workload_repo_basepath}}{{metadata.annotations.workload_repo_path}}'
+        targetRevision: '{{metadata.annotations.workload_repo_revision}}'
+      destination:
+        namespace: 'workload'
+        name: '{{name}}'
+      syncPolicy:
+        automated: {}
+        syncOptions:
+          - CreateNamespace=true

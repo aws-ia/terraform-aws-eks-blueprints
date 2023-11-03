@@ -2,7 +2,7 @@
 
 This tutorial guides you through deploying an Amazon EKS cluster with addons configured via ArgoCD, employing the [GitOps Bridge Pattern](https://github.com/gitops-bridge-dev).
 
-<img src="static/gitops-bridge.drawio.png" width=100%>
+<img src="https://raw.githubusercontent.com/aws-ia/terraform-aws-eks-blueprints/main/patterns/gitops/getting-started-argocd/static/gitops-bridge.drawio.png" width=100%>
 
 
 The [GitOps Bridge Pattern](https://github.com/gitops-bridge-dev) enables Kubernetes administrators to utilize Infrastructure as Code (IaC) and GitOps tools for deploying Kubernetes Addons and Workloads. Addons often depend on Cloud resources that are external to the cluster. The configuration metadata for these external resources is required by the Addons' Helm charts. While IaC is used to create these cloud resources, it is not used to install the Helm charts. Instead, the IaC tool stores this metadata either within GitOps resources in the cluster or in a Git repository. The GitOps tool then extracts these metadata values and passes them to the Helm chart during the Addon installation process. This mechanism forms the bridge between IaC and GitOps, hence the term "GitOps Bridge."
@@ -38,7 +38,7 @@ terraform apply -target="module.vpc" -auto-approve
 terraform apply -target="module.eks" -auto-approve
 terraform apply -auto-approve
 ```
-Retrieve `kubectl` config, then execute the output command:
+To retrieve `kubectl` config, execute the terraform output command:
 ```shell
 terraform output -raw configure_kubectl
 ```
@@ -110,7 +110,7 @@ Wait until all the ArgoCD applications' `HEALTH STATUS` is `Healthy`.
 Use `Ctrl+C` or `Cmd+C` to exit the `watch` command. ArgoCD Applications
 can take a couple of minutes in order to achieve the Healthy status.
 ```shell
-watch kubectl get applications -n argocd
+kubectl get applications -n argocd -w
 ```
 The expected output should look like the following:
 ```text
