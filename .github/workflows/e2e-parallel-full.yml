@@ -62,7 +62,7 @@ jobs:
         include:
           - example_path: patterns/agones-game-controller
           - example_path: patterns/fargate-serverless
-          - example_path: patterns/argocd
+          - example_path: patterns/gitops/getting-started-argocd
           - example_path: patterns/ipv6-eks-cluster
           - example_path: patterns/karpenter
           - example_path: patterns/multi-tenancy-with-teams
@@ -99,7 +99,7 @@ jobs:
           echo "iamlive_pid=$IAMLIVE_PID" >> $GITHUB_ENV
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.0.0
 
@@ -115,6 +115,7 @@ jobs:
           terraform apply -target=module.eks_blueprints -no-color -input=false -auto-approve
           terraform apply -target=module.eks -no-color -input=false -auto-approve
           terraform apply -target=module.eks_blueprints_kubernetes_addons -no-color -input=false -auto-approve
+          terraform apply -target=module.eks_blueprints_addons -no-color -input=false -auto-approve
           terraform apply -no-color -input=false -auto-approve
 
       - name: Terraform Destroy
@@ -125,9 +126,10 @@ jobs:
           export AWS_CSM_ENABLED=true
           export AWS_CSM_PORT=31000
           export AWS_CSM_HOST=127.0.0.1
-          terraform destroy -target=module.eks_blueprints_kubernetes_addons  -no-color -input=false -auto-approve
-          terraform destroy -target=module.eks_blueprints  -no-color -input=false -auto-approve
-          terraform destroy -target=module.eks  -no-color -input=false -auto-approve
+          terraform destroy -target=module.eks_blueprints_kubernetes_addons -no-color -input=false -auto-approve
+          terraform destroy -target=module.eks_blueprints_addons -no-color -input=false -auto-approve
+          terraform destroy -target=module.eks_blueprints -no-color -input=false -auto-approve
+          terraform destroy -target=module.eks -no-color -input=false -auto-approve
           terraform destroy -no-color -input=false -auto-approve
 
       - name: Fail if TF apply failed
