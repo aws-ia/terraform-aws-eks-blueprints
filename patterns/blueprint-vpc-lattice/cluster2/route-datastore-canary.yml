@@ -1,0 +1,37 @@
+---
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: HTTPRoute
+metadata:
+  name: datastore
+  namespace: apps
+spec:
+  hostnames:
+    - datastore.sarathy.io
+  parentRefs:
+    - name: eks-lattice-network
+      sectionName: http
+  rules:
+    - backendRefs:
+        - name: datastore-v1-svc
+          kind: Service
+          port: 3000
+          namespace: apps
+      matches:
+        - path:
+            type: PathPrefix
+            value: /popular
+    - backendRefs:
+        - name: datastore-v1-svc
+          kind: Service
+          port: 3000
+          namespace: apps
+          weight: 50
+        - name: datastore-v2-svc
+          kind: Service
+          port: 3000
+          namespace: apps
+          weight: 50
+      matches:
+        - path:
+            type: PathPrefix
+            value: /summary

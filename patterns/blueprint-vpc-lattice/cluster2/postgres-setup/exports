@@ -1,0 +1,7 @@
+export DBHOST=
+export DBROLE=
+export DBPASSWORD=
+export DBPORT=5432
+export DBMASTERUSER=postgres
+export DBNAME=amazon
+export DBSCHEMA=analytics
