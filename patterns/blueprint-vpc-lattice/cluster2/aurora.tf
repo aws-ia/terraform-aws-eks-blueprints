@@ -10,6 +10,8 @@ module "rds-aurora" {
   private_subnet_ids_p = module.vpc.private_subnets
   private_subnet_ids_s = null
   region               = local.region
+  engine = "aurora-postgresql"
+  engine_version_pg = "13.6"
   sec_region           = "us-west-2"
 }
 

@@ -2,6 +2,11 @@ provider "aws" {
   region = local.region
 }
 
+provider "aws" {
+  region = "us-east-1"
+  alias  = "virginia"
+}
+
 provider "kubernetes" {
   host                   = module.eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
@@ -29,7 +34,9 @@ provider "helm" {
 }
 
 data "aws_availability_zones" "available" {}
-data "aws_ecrpublic_authorization_token" "token" {}
+data "aws_ecrpublic_authorization_token" "token" {
+  provider = aws.virginia
+}
 data "aws_caller_identity" "identity" {}
 data "aws_region" "current" {}
 

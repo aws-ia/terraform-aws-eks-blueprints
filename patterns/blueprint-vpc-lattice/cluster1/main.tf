@@ -191,27 +191,3 @@ resource "aws_security_group_rule" "vpc_lattice_ipv6_ingress" {
   protocol          = "-1"
   prefix_list_ids   = [data.aws_ec2_managed_prefix_list.ipv6.id]
 }
-
-
----
-apiVersion: gateway.networking.k8s.io/v1beta1
-kind: GatewayClass
-metadata:
-name: amazon-vpc-lattice
-spec:
-controllerName: application-networking.k8s.aws/gateway-api-controller
-
----
-apiVersion: gateway.networking.k8s.io/v1beta1
-kind: Gateway
-metadata:
-name: eks-lattice-network
-spec:
-gatewayClassName: amazon-vpc-lattice
-listeners:
-- name: http
-protocol: HTTP
-port: 80
-allowedRoutes:
-namespaces:
-from: All

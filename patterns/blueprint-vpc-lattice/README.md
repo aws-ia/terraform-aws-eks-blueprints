@@ -12,8 +12,7 @@ The solution architecture used to demonstrate cross-cluster connectivity with VP
 1. Two VPCs are setup in the same AWS Region, both using the same RFC 1918 address range 192.168.48.0/20
 2. An EKS cluster is provisioned in each of the VPC. 
 3. An HTTP web service is deployed to the EKS cluster in Cluster1-vpc , exposing a set of REST API endpoints. Another REST API service is deployed to the EKS cluster in Cluster2-vpc and it communicates with an Aurora PostgreSQL database in the same VPC.
-AWS Gateway API controller is used in both clusters to manage the Kubernetes Gateway API resources such as Gateway and HTTPRoute. These custom resources orchestrate AWS VPC Lattice resources such as Service Network, Service, and Target Groups that enable communication between the Kubernetes services deployed to the clusters. Please refer to this post for a detailed discussion on how the AWS Gateway API controller extends custom resources defined by Gateway API, allowing you to create VPC Lattice resources using Kubernetes APIs.
-
+AWS Gateway API controller is used in both clusters to manage the Kubernetes Gateway API resources such as Gateway and HTTPRoute. These custom resources orchestrate AWS VPC Lattice resources such as Service Network, Service, and Target Groups that enable communication between the Kubernetes services deployed to the clusters.
 
 ![img.png](img/img.png)
 
