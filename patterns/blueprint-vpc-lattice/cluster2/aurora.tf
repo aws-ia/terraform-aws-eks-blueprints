@@ -6,7 +6,7 @@ module "rds-aurora" {
   # insert the 5 required variables here
 
   password             = random_password.password.result
-  username = "admin"
+  username = "admins"
   private_subnet_ids_p = module.vpc.private_subnets
   private_subnet_ids_s = null
   region               = local.region

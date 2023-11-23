@@ -1,5 +1,5 @@
 ##!/bin/bash
-DBHOST="$(terraform output -raw postgres_host)"
+DBHOST="$(terraform output -json postgres_host | jq -r '.[0]')"
 DBUSER="$(terraform output -raw postgres_username)"
 DBPASSWORD="$(terraform output -raw postgres_password)"
 DBPORT="$(terraform output -raw postgres_port)"
@@ -12,15 +12,12 @@ AWS_DEFAULT_REGION=$(aws configure get region)
 AWS_ACCOUNT_NUMBER=$(aws sts get-caller-identity --query "Account" --output text)
 
 
+aws eks update-kubeconfig --name $CLUSTER_2 --region $AWS_DEFAULT_REGION
 export CTX_CLUSTER_2=arn:aws:eks:$AWS_DEFAULT_REGION:${AWS_ACCOUNT_NUMBER}:cluster/$CLUSTER_2
 
 
-kubectl apply --context="${CTX_CLUSTER_1}" -f ./$CLUSTER_1/gateway-lattice.yml
-kubectl apply --context="${CTX_CLUSTER_2}" -f ./$CLUSTER_2/gateway-lattice.yml
 
-
-
-
+# setting up the cluster cluster secrets
 kubectl create --context="${CTX_CLUSTER_2}" ns apps
 kubectl create --context="${CTX_CLUSTER_2}" secret generic postgres-credentials \
 --from-literal=POSTGRES_HOST="${DBHOST}" \
