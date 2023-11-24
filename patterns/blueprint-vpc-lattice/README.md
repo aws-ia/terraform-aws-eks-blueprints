@@ -3,9 +3,7 @@
 This pattern demonstrates where a service in one EKS cluster communicates with a service in another cluster and VPC, using VPC Lattice. Besides it also shows how service discovery works, with support for using custom domain names for services. It also demonstrates how VPC Lattice enables services in EKS clusters with overlapping CIDRs to communicate with each other without the need for any networking constructs like private NAT Gateways and Transit Gateways.
 
 - [Documentation](https://aws.amazon.com/vpc/lattice/)
-- [Launch Blog](https://aws.amazon.com/blogs/containers/amazon-vpc-cni-now-supports-kubernetes-network-policies/)
-
-## Scenario
+- [Launch Blog](https://aws.amazon.com/blogs/containers/application-networking-with-amazon-vpc-lattice-and-amazon-eks/)
 
 The solution architecture used to demonstrate cross-cluster connectivity with VPC Lattice is shown in the following diagram. The following are the relevant aspects of this architecture.
 
@@ -46,16 +44,11 @@ Deploy the datastore service to the EKS cluster in cluster2. This service fronts
 
 ```shell
 # Apply Kubernetes set of manifests to both clusters that defines the GatewayClass and Gateway resources. The Gateway API controller then creates a Lattice service network with the same name, eks-lattice-network, as that of the Gateway resource if one doesn’t exist and attaches the VPCs to the service network.
-export CLUSTER_2=cluster2
-export AWS_DEFAULT_REGION=$(aws configure get region)
-export AWS_ACCOUNT_NUMBER=$(aws sts get-caller-identity --query "Account" --output text)
+aws eks update-kubeconfig --name  <cluster2-name>
 
-export CTX_CLUSTER_2=arn:aws:eks:$AWS_DEFAULT_REGION:${AWS_ACCOUNT_NUMBER}:cluster/$CLUSTER_2
-
-
-kubectl apply --context="${CTX_CLUSTER_2}" -f ./$CLUSTER_2/gateway-lattice.yml          # GatewayClass and Gateway
-kubectl apply --context="${CTX_CLUSTER_2}" -f ./$CLUSTER_2/route-datastore-canary.yml   # HTTPRoute and ClusterIP Services
-kubectl apply --context="${CTX_CLUSTER_2}" -f ./$CLUSTER_2/datastore.yml                # Deployment
+kubectl apply -f ./cluster2/gateway-lattice.yml          # GatewayClass and Gateway
+kubectl apply -f ./cluster2/route-datastore-canary.yml   # HTTPRoute and ClusterIP Services
+kubectl apply -f ./cluster2/datastore.yml                # Deployment
 ```
 
 5. Deploy the gateway lattice and the frontend service on cluster1
@@ -63,17 +56,10 @@ kubectl apply --context="${CTX_CLUSTER_2}" -f ./$CLUSTER_2/datastore.yml        
 The frontend service is configured to communicate with the datastore service in cluster1 using its custom domain name. 
 
 ```shell
-export CLUSTER_1=cluster1
-export AWS_DEFAULT_REGION=$(aws configure get region)
-export AWS_ACCOUNT_NUMBER=$(aws sts get-caller-identity --query "Account" --output text)
+aws eks update-kubeconfig --name  <cluster1-name>
 
-aws eks update-kubeconfig --name $CLUSTER_1 --region $AWS_DEFAULT_REGION
-
-export CTX_CLUSTER_1=arn:aws:eks:$AWS_DEFAULT_REGION:${AWS_ACCOUNT_NUMBER}:cluster/$CLUSTER_1
-
-
-kubectl apply --context="${CTX_CLUSTER_1}" -f ./$CLUSTER_1/gateway-lattice.yml   # GatewayClass and Gateway
-kubectl apply --context="${CTX_CLUSTER_1}" -f ./$CLUSTER_1/frontend.yml  # Frontend service
+kubectl apply  -f ./cluster1/gateway-lattice.yml   # GatewayClass and Gateway
+kubectl apply  -f ./cluster1/frontend.yml  # Frontend service
 ```
 
 ## Testing if cluster1 service could talk to cluster2 service via VPC lattice 
@@ -81,11 +67,11 @@ kubectl apply --context="${CTX_CLUSTER_1}" -f ./$CLUSTER_1/frontend.yml  # Front
 Shell commands below uses kubectl port-forward to forward outgoing traffic from a local port to the server port 3000 on one of the pods of the frontend service, which allows us to test this use case end-to-end without needing any load balancer.
 
 ```shell
-POD=$(kubectl -context="${CTX_CLUSTER_1}" get pod -n apps -l app=frontend -o jsonpath="{.items[0].metadata.name}")
-kubectl -context="${CTX_CLUSTER_1}" -n apps port-forward ${POD} 80:3000 # Port Forwarding
+POD=$(kubectl get pod -n apps -l app=frontend -o jsonpath="{.items[0].metadata.name}")
+kubectl -n apps port-forward ${POD} 80:3000 # Port Forwarding
 
-curl -X GET http://localhost/popular/category|jq
-curl -X GET http://localhost/summary|jq # you could retry the summary to see if you get a different results from different versions
+curl -X GET http://localhost/popular/category
+curl -X GET http://localhost/summary # you could retry the summary to see if you get a different results from different versions
 
 ```
 

@@ -31,7 +31,6 @@ provider "helm" {
 data "aws_availability_zones" "available" {}
 data "aws_ecrpublic_authorization_token" "token" {}
 data "aws_caller_identity" "identity" {}
-data "aws_region" "current" {}
 
 locals {
   name   = basename(path.cwd)
@@ -143,18 +142,6 @@ module "addons" {
     {
       name = "clusterName"
       value = module.eks.cluster_name
-    },
-    {
-      name = "awsAccountId"
-      value = local.region
-    },
-    {
-      name = "awsAccountId"
-      value = data.aws_caller_identity.identity.account_id
-    },
-    {
-      name = "awsRegion"
-      value = local.region
     }
     ]
 
@@ -163,11 +150,7 @@ module "addons" {
 }
 
 data "aws_ec2_managed_prefix_list" "ipv4" {
-  name = "com.amazonaws.${data.aws_region.current.name}.vpc-lattice"
-}
-
-data "aws_ec2_managed_prefix_list" "ipv6" {
-  name = "com.amazonaws.${data.aws_region.current.name}.ipv6.vpc-lattice"
+  name = "com.amazonaws.${local.region}.vpc-lattice"
 }
 
 
@@ -180,14 +163,4 @@ resource "aws_security_group_rule" "vpc_lattice_ipv4_ingress" {
   to_port           = 0
   protocol          = "-1"
   prefix_list_ids   = [data.aws_ec2_managed_prefix_list.ipv4.id]
-}
-
-resource "aws_security_group_rule" "vpc_lattice_ipv6_ingress" {
-  description       = "VPC lattice ivp6 ingress"
-  type              = "ingress"
-  security_group_id = module.eks.cluster_security_group_id
-  from_port         = 0
-  to_port           = 0
-  protocol          = "-1"
-  prefix_list_ids   = [data.aws_ec2_managed_prefix_list.ipv6.id]
 }
