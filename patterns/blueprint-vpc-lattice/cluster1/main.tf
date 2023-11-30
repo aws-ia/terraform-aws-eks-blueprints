@@ -2,6 +2,11 @@ provider "aws" {
   region = local.region
 }
 
+provider "aws" {
+  region = "us-east-1"
+  alias  = "virginia"
+}
+
 provider "kubernetes" {
   host                   = module.eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
@@ -29,12 +34,14 @@ provider "helm" {
 }
 
 data "aws_availability_zones" "available" {}
-data "aws_ecrpublic_authorization_token" "token" {}
+data "aws_ecrpublic_authorization_token" "token" {
+   provider = aws.virginia
+}
 data "aws_caller_identity" "identity" {}
 
 locals {
   name   = basename(path.cwd)
-  region = "us-west-2"
+  region = "us-east-1"
 
   vpc_cidr = "192.168.48.0/20"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
@@ -109,7 +116,6 @@ module "vpc" {
 module "addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
   version = "~> 1.0"
-
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
   cluster_version   = module.eks.cluster_version
