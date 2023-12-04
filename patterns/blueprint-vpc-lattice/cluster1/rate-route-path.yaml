@@ -1,0 +1,25 @@
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: HTTPRoute
+metadata:
+  name: rates
+spec:
+  parentRefs:
+  - name: my-hotel
+    sectionName: http
+  rules:
+  - backendRefs:
+    - name: parking
+      kind: Service
+      port: 80
+    matches:
+    - path:
+        type: PathPrefix
+        value: /parking
+  - backendRefs:
+    - name: review
+      kind: Service
+      port: 80
+    matches:
+    - path:
+        type: PathPrefix
+        value: /review

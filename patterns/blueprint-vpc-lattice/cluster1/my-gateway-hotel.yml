@@ -10,7 +10,7 @@ spec:
 apiVersion: gateway.networking.k8s.io/v1beta1
 kind: Gateway
 metadata:
-  name: eks-lattice-network
+  name: my-hotel
 spec:
   gatewayClassName: amazon-vpc-lattice
   listeners:

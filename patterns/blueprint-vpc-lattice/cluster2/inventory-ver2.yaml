@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inventory-ver2
+  labels:
+    app: inventory-ver2
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: inventory-ver2
+  template:
+    metadata:
+      labels:
+        app: inventory-ver2
+    spec:
+      containers:
+      - name: inventory-ver2
+        image: public.ecr.aws/x2j8p8w7/http-server:latest
+        env:
+        - name: PodName
+          value: "Inventory-ver2 handler pod"
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: inventory-ver2
+spec:
+  selector:
+    app: inventory-ver2
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8090

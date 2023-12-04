@@ -37,11 +37,10 @@ data "aws_availability_zones" "available" {}
 data "aws_ecrpublic_authorization_token" "token" {
   provider = aws.virginia
 }
-data "aws_caller_identity" "identity" {}
 
 locals {
   name   = basename(path.cwd)
-  region = "us-west-2"
+  region = var.region
 
   vpc_cidr = "192.168.48.0/20"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
@@ -115,7 +114,7 @@ module "vpc" {
 
 module "addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "~> 1.0"
+  version = "~> 1.12.0"
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
@@ -139,6 +138,10 @@ module "addons" {
   }
   enable_aws_gateway_api_controller = true
   aws_gateway_api_controller = {
+
+    chart_version = "v1.0.1"
+    repository  = "oci://public.ecr.aws/aws-application-networking-k8s"
+
     repository_username = data.aws_ecrpublic_authorization_token.token.user_name
     repository_password = data.aws_ecrpublic_authorization_token.token.password
     # awsRegion, clusterVpcId, clusterName, awsAccountId are required for case where IMDS is NOT AVAILABLE, e.g Fargate, self-managed clusters with IMDS access blocked
@@ -149,6 +152,10 @@ module "addons" {
       {
         name = "clusterName"
         value = module.eks.cluster_name
+      },
+      {
+        name = "defaultServiceNetwork"
+        value = "my-hotel"
       }
     ]
 

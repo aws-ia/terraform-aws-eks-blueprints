@@ -1,0 +1,6 @@
+apiVersion: application-networking.k8s.aws/v1alpha1
+kind: ServiceExport
+metadata:
+  name: inventory-ver2
+  annotations:
+    application-networking.k8s.aws/federation: "amazon-vpc-lattice"

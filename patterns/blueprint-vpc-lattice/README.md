@@ -1,79 +1,182 @@
 # Application Networking with Amazon VPC Lattice and Amazon EKS
 
-This pattern demonstrates where a service in one EKS cluster communicates with a service in another cluster and VPC, using VPC Lattice. Besides it also shows how service discovery works, with support for using custom domain names for services. It also demonstrates how VPC Lattice enables services in EKS clusters with overlapping CIDRs to communicate with each other without the need for any networking constructs like private NAT Gateways and Transit Gateways.
+This pattern showcases inter-cluster communication within an EKS cluster and across clusters and VPCs using VPC Lattice. It illustrates service discovery and highlights how VPC Lattice facilitates communication between services in EKS clusters with overlapping CIDRs, eliminating the need for networking constructs like private NAT Gateways and Transit Gateways.
 
 - [Documentation](https://aws.amazon.com/vpc/lattice/)
-- [Launch Blog](https://aws.amazon.com/blogs/containers/application-networking-with-amazon-vpc-lattice-and-amazon-eks/)
+- [Launch Blog](https://aws.amazon.com/blogs/containers/introducing-aws-gateway-api-controller-for-amazon-vpc-lattice-an-implementation-of-kubernetes-gateway-api/)
 
-The solution architecture used to demonstrate cross-cluster connectivity with VPC Lattice is shown in the following diagram. The following are the relevant aspects of this architecture.
+The solution architecture used to demonstrate single/cross-cluster connectivity with VPC Lattice is shown in the following diagram. The following are the relevant aspects of this architecture.
 
 1. Two VPCs are setup in the same AWS Region, both using the same RFC 1918 address range 192.168.48.0/20
-2. An EKS cluster is provisioned in each of the VPC. 
-3. An HTTP web service is deployed to the EKS cluster in Cluster1-vpc , exposing a set of REST API endpoints. Another REST API service is deployed to the EKS cluster in Cluster2-vpc and it communicates with an Aurora PostgreSQL database in the same VPC.
-AWS Gateway API controller is used in both clusters to manage the Kubernetes Gateway API resources such as Gateway and HTTPRoute. These custom resources orchestrate AWS VPC Lattice resources such as Service Network, Service, and Target Groups that enable communication between the Kubernetes services deployed to the clusters.
+2. An EKS cluster is provisioned in each of the VPCs. 
+3. The first part of this section provides an example of setting up of service-to-service communications on a single cluster. The second section extends that example by creating another inventory service on a second cluster on a different VPC, and spreading traffic to that service across the two clusters and VPCs
 
-![img.png](img/img.png)
+![img.png](img/img_1.png)
 
-## Deploy
+## Setup service-to-service communications
 
 See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#prerequisites) for the prerequisites and steps to deploy this pattern.
 
-1. set up the first cluster with its own VPC and the second with an aurora postgres DB 
+1. set up the first cluster with its own VPC
 
 ```shell
    # setting up the cluster1
    cd cluster1
    terraform init
    terraform apply
-   
+```
+2. Create Kubernetes Gateway `my-hotel`
+```shell
+aws eks update-kubeconfig --name  <cluster1-name>
+kubectl apply -f my-hotel-gateway.yaml        # GatewayClass and Gateway
+```
+Verify that `my-hotel` Gateway is created with `PROGRAMMED` status equals to `True`:
+
+```shell
+kubectl get gateway
+
+NAME       CLASS                ADDRESS   PROGRAMMED   AGE
+my-hotel   amazon-vpc-lattice               True      7d12h
+```
+3. Create the Kubernetes `HTTPRoute` rates that can has path matches routing to the `parking` service and `review` service (this could take about a few minutes)
+
+```shell
+kubectl apply -f parking.yaml
+kubectl apply -f review.yaml
+kubectl apply -f rate-route-path.yaml
+```
+4. Create another Kubernetes `HTTPRoute` inventory (this could take about a few minutes):
+
+```shell
+kubectl apply -f inventory-ver1.yaml
+kubectl apply -f inventory-route.yaml
+```
+Find out HTTPRoute's DNS name from HTTPRoute status:
+
+```shell
+kubectl get httproute
+
+NAME        HOSTNAMES   AGE
+inventory               51s
+rates                   6m11s
+```
+
+Check VPC Lattice generated DNS address for HTTPRoute `inventory` and `rates`:
+
+```shell
+kubectl get httproute inventory -o yaml
+
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: HTTPRoute
+metadata:
+  annotations:
+    application-networking.k8s.aws/lattice-assigned-domain-name: inventory-default-02fb06f1acdeb5b55.7d67968.vpc-lattice-svcs.us-west-2.on.aws
+...
+```
+```shell
+kubectl get httproute rates -o yaml
+
+apiVersion: v1
+items:
+- apiVersion: gateway.networking.k8s.io/v1beta1
+  kind: HTTPRoute
+  metadata:
+    annotations:
+      application-networking.k8s.aws/lattice-assigned-domain-name: rates-default-0d38139624f20d213.7d67968.vpc-lattice-svcs.us-west-2.on.aws
+...
+```
+
+If the previous step returns the expected response, store VPC Lattice assigned DNS names to variables.
+
+```shell
+ratesFQDN=$(kubectl get httproute rates -o json | jq -r '.metadata.annotations."application-networking.k8s.aws/lattice-assigned-domain-name"')
+inventoryFQDN=$(kubectl get httproute inventory -o json | jq -r '.metadata.annotations."application-networking.k8s.aws/lattice-assigned-domain-name"')
+```
+
+Confirm that the URLs are stored correctly:
+
+```shell
+echo $ratesFQDN $inventoryFQDN
+rates-default-034e0056410499722.7d67968.vpc-lattice-svcs.us-west-2.on.aws inventory-default-0c54a5e5a426f92c2.7d67968.vpc-lattice-svcs.us-west-2.on.aws
+
+```
+
+### Verify service-to-service communications
+
+1. Check connectivity from the `inventory-ver1` service to `parking` and `review` services:
+
+```shell
+kubectl exec deploy/inventory-ver1 -- curl $ratesFQDN/parking $ratesFQDN/review
+
+Requsting to Pod(parking-8548d7f98d-57whb): parking handler pod
+Requsting to Pod(review-6df847686d-dhzwc): review handler pod
+```
+2. Check connectivity from the `parking` service to the `inventory-ver1` service:
+```shell
+kubectl exec deploy/parking -- curl $inventoryFQDN
+Requsting to Pod(inventory-ver1-99d48958c-whr2q): Inventory-ver1 handler pod
+```
+
+Now you could confirm the service-to-service communications within one cluster is working as expected.
+
+## Set up multi-cluster/multi-VPC service-to-service communications
+
+![img.png](img/img_2.png)
+
+1. set up the first cluster with its own VPC
+
+```shell
+   # setting up the cluster1
    cd ../cluster2
    terraform init
    terraform apply
 ```
 
-2. Initialize the aurora postgres database for cluster2 vpc refer [here](./cluster2/postgres-setup/README.md)
-3. Initialize Kubernetes secrets for cluster2
+2. Create a Kubernetes inventory-ver2 service in the second cluster:
 
 ```shell
-# assuming you are already in the /cluster2 folder
-chmod +x secrets.sh && ./secrets.sh
-```
-4. Deploy the kubernetes artefacts for cluster2 
-
-Deploy the datastore service to the EKS cluster in cluster2. This service fronts an Aurora PostgreSQL database and exposes REST API endpoints with path-prefixes /popular and /summary. To demonstrate canary shifting of traffic, deploy two versions of the datastore service to the cluster as shown below.
-
-```shell
-# Apply Kubernetes set of manifests to both clusters that defines the GatewayClass and Gateway resources. The Gateway API controller then creates a Lattice service network with the same name, eks-lattice-network, as that of the Gateway resource if one doesn’t exist and attaches the VPCs to the service network.
 aws eks update-kubeconfig --name  <cluster2-name>
-
-kubectl apply -f ./cluster2/gateway-lattice.yml          # GatewayClass and Gateway
-kubectl apply -f ./cluster2/route-datastore-canary.yml   # HTTPRoute and ClusterIP Services
-kubectl apply -f ./cluster2/datastore.yml                # Deployment
+kubectl apply -f inventory-ver2.yaml
 ```
-
-5. Deploy the gateway lattice and the frontend service on cluster1
-
-The frontend service is configured to communicate with the datastore service in cluster1 using its custom domain name. 
+3. Export this Kubernetes inventory-ver2 from the second cluster, so that it can be referenced by HTTPRoute in the first cluster:
 
 ```shell
-aws eks update-kubeconfig --name  <cluster1-name>
-
-kubectl apply  -f ./cluster1/gateway-lattice.yml   # GatewayClass and Gateway
-kubectl apply  -f ./cluster1/frontend.yml  # Frontend service
+kubectl apply -f inventory-ver2-export.yaml
 ```
 
-## Testing if cluster1 service could talk to cluster2 service via VPC lattice 
+## Switch back to the first cluster
 
-Shell commands below uses kubectl port-forward to forward outgoing traffic from a local port to the server port 3000 on one of the pods of the frontend service, which allows us to test this use case end-to-end without needing any load balancer.
+1. Switch context back to the first cluster
+```shell
+cd ../cluster1/
+kubectl config use-context <cluster1-context>
+```
+
+2. Create Kubernetes ServiceImport `inventory-ver2` in the first cluster:
 
 ```shell
-POD=$(kubectl get pod -n apps -l app=frontend -o jsonpath="{.items[0].metadata.name}")
-kubectl -n apps port-forward ${POD} 80:3000 # Port Forwarding
+kubectl apply -f inventory-ver2-import.yaml
+```
+3. Update the HTTPRoute inventory rules to route 10% traffic to the first cluster and 90% traffic to the second cluster:
+```shell
+kubectl apply -f inventory-route-bluegreen.yaml
+```
+4. Check the service-to-service connectivity from `parking`(in cluster1) to `inventory-ver1`(in cluster1) and `inventory-ver2`(in cluster2):
+```shell
+kubectl exec deploy/parking -- sh -c 'for ((i=1; i<=30; i++)); do curl "$0"; done' "$inventoryFQDN"
 
-curl -X GET http://localhost/popular/category
-curl -X GET http://localhost/summary # you could retry the summary to see if you get a different results from different versions
+Requsting to Pod(inventory-ver2-6dc74b45d8-rlnlt): Inventory-ver2 handler pod <----> in 2nd cluster
+Requsting to Pod(inventory-ver2-6dc74b45d8-rlnlt): Inventory-ver2 handler pod
+Requsting to Pod(inventory-ver2-6dc74b45d8-rlnlt): Inventory-ver2 handler pod
+Requsting to Pod(inventory-ver2-6dc74b45d8-rlnlt): Inventory-ver2 handler pod
+Requsting to Pod(inventory-ver2-6dc74b45d8-95rsr): Inventory-ver1 handler pod <----> in 1st cluster
+Requsting to Pod(inventory-ver2-6dc74b45d8-rlnlt): Inventory-ver2 handler pod
+Requsting to Pod(inventory-ver2-6dc74b45d8-95rsr): Inventory-ver2 handler pod
+Requsting to Pod(inventory-ver2-6dc74b45d8-95rsr): Inventory-ver2 handler pod
+Requsting to Pod(inventory-ver1-74fc59977-wg8br): Inventory-ver1 handler pod....
 
 ```
+You can see that the traffic is distributed between inventory-ver1 and inventory-ver2 as expected.
 
 ## Destroy
 
@@ -85,3 +188,6 @@ terraform apply -destroy -autoapprove
 cd ../cluster2
 terraform apply -destroy -autoapprove
 ```
+
+
+

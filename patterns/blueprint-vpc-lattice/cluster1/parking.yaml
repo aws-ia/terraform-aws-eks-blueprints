@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: parking
+  labels:
+    app: parking
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: parking
+  template:
+    metadata:
+      labels:
+        app: parking
+    spec:
+      containers:
+      - name: parking
+        image: public.ecr.aws/x2j8p8w7/http-server:latest
+        env:
+        - name: PodName
+          value: "parking handler pod"
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: parking
+spec:
+  selector:
+    app: parking
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8090

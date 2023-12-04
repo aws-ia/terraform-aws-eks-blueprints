@@ -1,0 +1,12 @@
+apiVersion: application-networking.k8s.aws/v1alpha1
+kind: ServiceImport
+metadata:
+  name: inventory-ver2
+  annotations:
+    application-networking.k8s.aws/aws-vpc: "your-vpc-id"
+    application-networking.k8s.aws/aws-eks-cluster-name: "lattice-eks-test-2"
+spec:
+  type: ClusterSetIP
+  ports:
+  - port: 80
+    protocol: TCP

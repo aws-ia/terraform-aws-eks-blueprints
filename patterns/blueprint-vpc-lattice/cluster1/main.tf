@@ -35,13 +35,13 @@ provider "helm" {
 
 data "aws_availability_zones" "available" {}
 data "aws_ecrpublic_authorization_token" "token" {
-   provider = aws.virginia
+  provider = aws.virginia
 }
 data "aws_caller_identity" "identity" {}
 
 locals {
   name   = basename(path.cwd)
-  region = "us-east-1"
+  region = var.region
 
   vpc_cidr = "192.168.48.0/20"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
@@ -70,7 +70,6 @@ module "eks" {
   eks_managed_node_groups = {
     initial = {
       instance_types = ["m5.large"]
-
       min_size     = 1
       max_size     = 2
       desired_size = 1
@@ -115,7 +114,9 @@ module "vpc" {
 
 module "addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "~> 1.0"
+  version = "~> 1.12.0"
+
+
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
   cluster_version   = module.eks.cluster_version
@@ -140,6 +141,7 @@ module "addons" {
   aws_gateway_api_controller = {
     repository_username = data.aws_ecrpublic_authorization_token.token.user_name
     repository_password = data.aws_ecrpublic_authorization_token.token.password
+    chart_version = "v1.0.1"
     # awsRegion, clusterVpcId, clusterName, awsAccountId are required for case where IMDS is NOT AVAILABLE, e.g Fargate, self-managed clusters with IMDS access blocked
     set = [{
       name  = "clusterVpcId"
@@ -148,6 +150,10 @@ module "addons" {
     {
       name = "clusterName"
       value = module.eks.cluster_name
+    },
+    {
+      name = "defaultServiceNetwork"
+      value = "my-hotel"
     }
     ]
 
