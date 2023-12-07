@@ -123,7 +123,7 @@ Now you could confirm the service-to-service communications within one cluster i
 
 ![img.png](img/img_2.png)
 
-1. set up the first cluster with its own VPC
+1. set up the second cluster with its own VPC
 
 ```shell
    # setting up the cluster1
@@ -179,6 +179,31 @@ Requsting to Pod(inventory-ver1-74fc59977-wg8br): Inventory-ver1 handler pod....
 You can see that the traffic is distributed between inventory-ver1 and inventory-ver2 as expected.
 
 ## Destroy
+Before tearing down resources via terraform make sure to delete the custom resources created for the deployments this will tear down all the aws VPC lattice resources such as services , target groups so on . 
+
+```shell
+aws eks update-kubeconfig --name  <cluster2-name>
+kubectl delete -f inventory-ver2.yaml
+kubectl delete -f inventory-ver2-export.yaml
+
+aws eks update-kubeconfig --name  <cluster1-name>
+kubectl delete -f inventory-route-bluegreen.yaml
+kubectl delete -f inventory-ver2-import.yaml
+kubectl delete -f inventory-ver1.yaml
+kubectl delete -f inventory-route.yaml
+kubectl delete -f parking.yaml
+kubectl delete -f review.yaml
+kubectl delete -f rate-route-path.yam
+```
+further you would have to disassociate the VPCs from the service network since destroying terraform managed helm chart addon would not do it for you . 
+
+```shell
+aws vpc-lattice delete-service-network-vpc-association --service-network-vpc-association-identifier <cluster1-vpc-sna-id>
+aws vpc-lattice delete-service-network-vpc-association --service-network-vpc-association-identifier <cluster2-vpc-sna-id>
+
+# delete the helm chart created service network
+aws vpc-lattice delete-service-network --service-network-identifier <service-network-id>
+```
 
 To teardown and remove the resources created in this example:
 
