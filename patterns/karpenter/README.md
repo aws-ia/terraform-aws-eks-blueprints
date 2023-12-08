@@ -26,7 +26,7 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
     kubectl apply -f karpenter.yaml
     ```
 
-3. With the Karpenter resources are in place, when pods are pending in the scheduler's queue, Karpenter will provision the necessary EC2 resources to satisfy those requests. You can demonstrate this with the example deployment provided. First deploy the example deployment which has the initial number replicas set to 0:
+3. Once the Karpenter resources are in place, Karpenter will provision the necessary EC2 resources to satisfy any pending pods in the scheduler's queue. You can demonstrate this with the example deployment provided. First deploy the example deployment which has the initial number replicas set to 0:
 
     ```sh
     kubectl apply -f example.yaml
