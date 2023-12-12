@@ -295,18 +295,21 @@ kubectl port-forward svc/jaeger 16686:16686 -n istio-system
 
 ## Destroy
 
-The Security Groups created for the ingress gateway load balancer
-are not cleaned up after running `terraform destroy -target="module.eks_blueprints_addons" -auto-approve`.
-This causes the final `terraform destroy` to fail with dependency errors:
+The AWS Load Balancer Controller add-on asynchronously reconciles resource deletions.
+During stack destruction, the istio ingress resource and the load balancer controller
+add-on are deleted in quick succession, preventing the removal of some of the AWS
+resources associated with the ingress gateway load balancer like, the frontend and the
+backend security groups.
+This causes the final `terraform destroy -auto-approve` command to timeout and fail with VPC dependency errors like below:
 
 ```text
-│ Error: deleting EC2 VPC (vpc-03132bca40644d33d): operation error EC2: DeleteVpc, https response error StatusCode: 400, RequestID: 82d7e10d-9651-44cf-9a12-5c719f078726, api error DependencyViolation: The vpc 'vpc-03132bca40644d33d' has dependencies and cannot be deleted.
+│ Error: deleting EC2 VPC (vpc-XXXX): operation error EC2: DeleteVpc, https response error StatusCode: 400, RequestID: XXXXX-XXXX-XXXX-XXXX-XXXXXX, api error DependencyViolation: The vpc 'vpc-XXXX' has dependencies and cannot be deleted.
 ```
 
-To ensure a proper clean up manually uninstall the `istio-ingress` helm chart.
+A possible workaround is to manually uninstall the `istio-ingress` helm chart.
 
 ```sh
-helm uninstall istio-ingress -n istio-ingress
+terraform destroy -target='module.eks_blueprints_addons.helm_release.this["istio-ingress"]' -auto-approve
 ```
 
 Once the chart is uninstalled move on to destroy the stack.
