@@ -34,20 +34,6 @@ provider "helm" {
   }
 }
 
-provider "kubectl" {
-  apply_retry_count      = 5
-  host                   = module.eks.cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-  load_config_file       = false
-
-  exec {
-    api_version = "client.authentication.k8s.io/v1beta1"
-    command     = "aws"
-    # This requires the awscli to be installed locally where Terraform is executed
-    args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
-  }
-}
-
 data "aws_ecrpublic_authorization_token" "token" {
   provider = aws.virginia
 }
@@ -55,7 +41,7 @@ data "aws_ecrpublic_authorization_token" "token" {
 data "aws_availability_zones" "available" {}
 
 locals {
-  name   = basename(path.cwd)
+  name   = "ex-${basename(path.cwd)}"
   region = "us-west-2"
 
   vpc_cidr = "10.0.0.0/16"
@@ -73,10 +59,10 @@ locals {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.16"
+  version = "~> 19.18"
 
   cluster_name                   = local.name
-  cluster_version                = "1.27"
+  cluster_version                = "1.28"
   cluster_endpoint_public_access = true
 
   vpc_id     = module.vpc.vpc_id
@@ -127,7 +113,7 @@ module "eks" {
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "~> 1.0"
+  version = "~> 1.11"
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
@@ -172,105 +158,12 @@ module "eks_blueprints_addons" {
     repository_username = data.aws_ecrpublic_authorization_token.token.user_name
     repository_password = data.aws_ecrpublic_authorization_token.token.password
   }
+  karpenter_node = {
+    # Use static name so that it matches what is defined in `karpenter.yaml` example manifest
+    iam_role_use_name_prefix = false
+  }
 
   tags = local.tags
-}
-
-################################################################################
-# Karpenter
-################################################################################
-
-resource "kubectl_manifest" "karpenter_provisioner" {
-  yaml_body = <<-YAML
-    apiVersion: karpenter.sh/v1alpha5
-    kind: Provisioner
-    metadata:
-      name: default
-    spec:
-      requirements:
-        - key: "karpenter.k8s.aws/instance-category"
-          operator: In
-          values: ["c", "m"]
-        - key: "karpenter.k8s.aws/instance-cpu"
-          operator: In
-          values: ["8", "16", "32"]
-        - key: "karpenter.k8s.aws/instance-hypervisor"
-          operator: In
-          values: ["nitro"]
-        - key: "topology.kubernetes.io/zone"
-          operator: In
-          values: ${jsonencode(local.azs)}
-        - key: "kubernetes.io/arch"
-          operator: In
-          values: ["arm64", "amd64"]
-        - key: "karpenter.sh/capacity-type" # If not included, the webhook for the AWS cloud provider will default to on-demand
-          operator: In
-          values: ["spot", "on-demand"]
-      kubeletConfiguration:
-        containerRuntime: containerd
-        maxPods: 110
-      limits:
-        resources:
-          cpu: 1000
-      consolidation:
-        enabled: true
-      providerRef:
-        name: default
-      ttlSecondsUntilExpired: 604800 # 7 Days = 7 * 24 * 60 * 60 Seconds
-  YAML
-
-  depends_on = [
-    module.eks_blueprints_addons
-  ]
-}
-
-resource "kubectl_manifest" "karpenter_node_template" {
-  yaml_body = <<-YAML
-    apiVersion: karpenter.k8s.aws/v1alpha1
-    kind: AWSNodeTemplate
-    metadata:
-      name: default
-    spec:
-      subnetSelector:
-        karpenter.sh/discovery: ${module.eks.cluster_name}
-      securityGroupSelector:
-        karpenter.sh/discovery: ${module.eks.cluster_name}
-      instanceProfile: ${module.eks_blueprints_addons.karpenter.node_instance_profile_name}
-      tags:
-        karpenter.sh/discovery: ${module.eks.cluster_name}
-  YAML
-}
-
-# Example deployment using the [pause image](https://www.ianlewis.org/en/almighty-pause-container)
-# and starts with zero replicas
-resource "kubectl_manifest" "karpenter_example_deployment" {
-  yaml_body = <<-YAML
-    apiVersion: apps/v1
-    kind: Deployment
-    metadata:
-      name: inflate
-    spec:
-      replicas: 0
-      selector:
-        matchLabels:
-          app: inflate
-      template:
-        metadata:
-          labels:
-            app: inflate
-        spec:
-          terminationGracePeriodSeconds: 0
-          containers:
-            - name: inflate
-              image: public.ecr.aws/eks-distro/kubernetes/pause:3.7
-              resources:
-                requests:
-                  cpu: 1
-  YAML
-
-  depends_on = [
-    kubectl_manifest.karpenter_node_template
-  ]
 }
 
 ################################################################################

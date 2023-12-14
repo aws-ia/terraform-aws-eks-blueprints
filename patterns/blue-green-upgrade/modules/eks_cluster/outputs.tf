@@ -49,10 +49,3 @@ output "gitops_metadata" {
   value       = local.addons_metadata
   sensitive   = true
 }
-
-# output "debug" {
-#   description = "debug output"
-#   #value = data.template_file.addons_template.rendered
-#   value = data.template_file.workloads_template.rendered
-#   #value = file("${path.module}/../../bootstrap/addons.yaml")
-# }
