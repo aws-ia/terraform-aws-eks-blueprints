@@ -101,7 +101,7 @@ module "vpc" {
 }
 
 ################################################################################
-# EKS Addons (demo application)
+# EKS Addons (demo application + lattice resources)
 ################################################################################
 
 module "addons" {
