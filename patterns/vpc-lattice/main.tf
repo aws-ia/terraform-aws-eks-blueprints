@@ -169,7 +169,7 @@ data "aws_iam_policy_document" "gateway_api_controller" {
   statement {
     sid       = ""
     effect    = "Allow"
-    resources = ["*"] # For testing purposes only - highly recommended limit access to specific resources for production usage
+    resources = ["*"] # For testing purposes only (highly recommended limit access to specific resources for production usage)
 
     actions = [
       "vpc-lattice:*",
