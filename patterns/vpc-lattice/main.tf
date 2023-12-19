@@ -159,26 +159,17 @@ module "addons" {
   tags = local.tags
 }
 
-resource "null_resource" "wait_for_crd_registration" {
-  triggers = {
-    build_number = "$(timestamp())"
-  }
-
-  provisioner "local-exec" {
-    command = <<EOF
-      echo "Waiting for crd registration of aws api gateway controller..."
-      sleep 30
-    EOF
-  }
-
+resource "time_sleep" "wait_for_crd_registration" {
   depends_on = [module.addons]
+
+  create_duration = "30s"
 }
 
 data "aws_iam_policy_document" "gateway_api_controller" {
   statement {
     sid       = ""
     effect    = "Allow"
-    resources = ["*"]
+    resources = ["*"] # For testing purposes only - highly recommended limit access to specific resources for production usage
 
     actions = [
       "vpc-lattice:*",
@@ -207,7 +198,7 @@ resource "helm_release" "demo_application" {
   create_namespace = true
   namespace        = "apps"
 
-  depends_on = [null_resource.wait_for_crd_registration]
+  depends_on = [time_sleep.wait_for_crd_registration]
 }
 
 ################################################################################
@@ -246,18 +237,10 @@ resource "aws_vpclattice_service_network_vpc_association" "client_vpc" {
   service_network_identifier = aws_vpclattice_service_network.this.id
 }
 
-resource "null_resource" "wait_for_lattice_resources" {
-  triggers = {
-    build_number = "$(timestamp())"
-  }
-  provisioner "local-exec" {
-    command = <<EOF
-      echo "Waiting for vpc lattice resources..."
-      sleep 120
-    EOF
-  }
-
+resource "time_sleep" "wait_for_lattice_resources" {
   depends_on = [helm_release.demo_application]
+
+  create_duration = "120s"
 }
 
 data "aws_vpclattice_service" "server" {
@@ -265,7 +248,7 @@ data "aws_vpclattice_service" "server" {
 
   tags = local.tags
 
-  depends_on = [null_resource.wait_for_lattice_resources]
+  depends_on = [time_sleep.wait_for_lattice_resources]
 }
 
 ################################################################################
