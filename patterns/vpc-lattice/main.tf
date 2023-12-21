@@ -151,16 +151,11 @@ module "addons" {
         name  = "clusterVpcId"
         value = module.cluster_vpc.vpc_id
     }, ]
-
+    wait = true
   }
 
+
   tags = local.tags
-}
-
-resource "time_sleep" "wait_for_crd_registration" {
-  depends_on = [module.addons]
-
-  create_duration = "30s"
 }
 
 data "aws_iam_policy_document" "gateway_api_controller" {
@@ -195,8 +190,6 @@ resource "helm_release" "demo_application" {
   chart            = "./charts/demo-application"
   create_namespace = true
   namespace        = "apps"
-
-  depends_on = [time_sleep.wait_for_crd_registration]
 }
 
 ################################################################################
