@@ -25,7 +25,14 @@ In order to test the connectivty between the client and server, please follow th
 3. Within the console test the connecvity to the server application by entering the following command:
 
     ```sh
-    curl -I http://server.example.com
+    $ curl -I http://server.example.com
+    HTTP/1.1 200 OK
+    date: Thu, 14 Dec 2023 08:29:39 GMT
+    content-length: 54
+    content-type: text/plain; charset=utf-8
+
+    Requesting to Pod(server-6f487b9bcd-5qm4v): server pod
+
     ```
 
     If everythign works as expected yous should receive the following response:
