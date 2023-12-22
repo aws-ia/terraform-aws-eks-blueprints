@@ -190,6 +190,8 @@ resource "helm_release" "demo_application" {
   chart            = "./charts/demo-application"
   create_namespace = true
   namespace        = "apps"
+
+  depends_on = [module.addons]
 }
 
 ################################################################################
