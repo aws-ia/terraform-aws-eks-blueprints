@@ -127,19 +127,19 @@ module "eks_blueprints_addons" {
 
   helm_releases = {
     istio-base = {
-      chart      = "base"
-      version    = local.istio_chart_version
-      repository = local.istio_chart_url
-      name       = "istio-base"
-      namespace  = kubernetes_namespace_v1.istio_system.metadata[0].name
+      chart         = "base"
+      chart_version = local.istio_chart_version
+      repository    = local.istio_chart_url
+      name          = "istio-base"
+      namespace     = kubernetes_namespace_v1.istio_system.metadata[0].name
     }
 
     istiod = {
-      chart      = "istiod"
-      version    = local.istio_chart_version
-      repository = local.istio_chart_url
-      name       = "istiod"
-      namespace  = kubernetes_namespace_v1.istio_system.metadata[0].name
+      chart         = "istiod"
+      chart_version = local.istio_chart_version
+      repository    = local.istio_chart_url
+      name          = "istiod"
+      namespace     = kubernetes_namespace_v1.istio_system.metadata[0].name
 
       set = [
         {
@@ -151,7 +151,7 @@ module "eks_blueprints_addons" {
 
     istio-ingress = {
       chart            = "gateway"
-      version          = local.istio_chart_version
+      chart_version    = local.istio_chart_version
       repository       = local.istio_chart_url
       name             = "istio-ingress"
       namespace        = "istio-ingress" # per https://github.com/istio/istio/blob/master/manifests/charts/gateways/istio-ingress/values.yaml#L2
@@ -165,9 +165,10 @@ module "eks_blueprints_addons" {
             }
             service = {
               annotations = {
-                "service.beta.kubernetes.io/aws-load-balancer-type"       = "nlb"
-                "service.beta.kubernetes.io/aws-load-balancer-scheme"     = "internet-facing"
-                "service.beta.kubernetes.io/aws-load-balancer-attributes" = "load_balancing.cross_zone.enabled=true"
+                "service.beta.kubernetes.io/aws-load-balancer-type"            = "external"
+                "service.beta.kubernetes.io/aws-load-balancer-nlb-target-type" = "ip"
+                "service.beta.kubernetes.io/aws-load-balancer-scheme"          = "internet-facing"
+                "service.beta.kubernetes.io/aws-load-balancer-attributes"      = "load_balancing.cross_zone.enabled=true"
               }
             }
           }
