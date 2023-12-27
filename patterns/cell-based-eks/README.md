@@ -1,92 +1,95 @@
 # Cell-Based Architecture for Amazon EKS
 
-This pattern demonstrates how to configure a cell-based architecture for Amazon Elastic Kubernetes Service (Amazon EKS). It moves away from typical multiple Availability Zone (AZ) clusters to a single Availability Zone cluster. These single AZ clusters are called cells, and the aggregation of these cells in each Region is called a supercell. These cells help to ensure that a failure in one cell doesn't affect the cells in another, reducing data transfer costs and improving both the availability and resiliency against AZ wide failures for Amazon EKS workloads.
+This pattern demonstrates how to configure a cell-based architecture for Amazon Elastic Kubernetes Service (Amazon EKS) workloads. It moves away from typical multiple Availability Zone (AZ) clusters to a single Availability Zone cluster. These single AZ clusters are called cells, and the aggregation of these cells in each Region is called a supercell. These cells help to ensure that a failure in one cell doesn't affect the cells in another, reducing data transfer costs and improving both the availability and resiliency against AZ wide failures for Amazon EKS workloads.
 
 Refer to the [AWS Solution Guidance](https://aws.amazon.com/solutions/guidance/cell-based-architecture-for-amazon-eks/) for more details.
 
-## Notable configuration
-
-* This sample rely on reading data from Terraform Remote State in the different folders. In a production setup, Terraform Remote State is stored in a persistent backend such as Terraform Cloud or S3. For more information, please refer to the Terraform [Backends](https://developer.hashicorp.com/terraform/language/settings/backends/configuration) documentation
-
-## Folder structure
-
-### [`0.vpc`](0.vpc/)
-
-This folder creates the VPC for all clusters. In this demonstration we are creating 2 cells sharing the same VPC. So, the VPC creation is not part of the cluster provisionig and therefore lives in a seperate folder. You could also explore a VPC per cluster depending on your needs.
-
-### [`1.cell1`](1.cell1/)
-
-This folder creates an Amazon EKS Cluster, named by default `cell-1` (see [`variables.tf`](1.cell1/variables.tf)), with AWS Load Balancer Controller, and Karpenter installation.
-Configurations in this folder to be aware of:
-
-* The cluster is configured to use the subnet-1 (AZ-1) created in the `0.vpc` folder.
-* Karpenter `Provisioner` and `AWSNodeTemplate` resources are pointing to AZ-1 subnet.
-* Essential operational addons like `coredns`, `aws-load-balancer-controller`, and `karpenter` are deployed to Fargate configured with AZ-1 subnet.
-
-### [`2.cell2`](2.cell2/)
-
-Same configuration as in `1.cell1` except the name of the cluster is `cell-2` and deployed in `az-2`
-
-### [`3.test-setup`](3.test-setup/)
-
-This folder test the installation setup. It does by scaling the sample `inflate` application replicas and watch for Karpenter to launch EKS worker nodes in respective AZs.
-
-## Prerequisites
-
-Ensure that you have the following tools installed locally:
-
-1. [aws cli](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
-2. [kubectl](https://Kubernetes.io/docs/tasks/tools/)
-3. [terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
-
 ## Deploy
 
-### Step 0 - Create the VPC
+See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#prerequisites) for the prerequisites. This pattern consists 1 VPC and 3 public & private subnets across 3 AZs. Also 3 Amazon EKS clusters are deployed, each in single AZ.
 
-```shell
-cd 0.vpc
+```bash
 terraform init
+terraform apply -target="module.vpc" -auto-approve
+terraform apply -target="module.eks_az1" -auto-approve
+terraform apply -target="module.eks_az2" -auto-approve
+terraform apply -target="module.eks_az3" -auto-approve
 terraform apply -auto-approve
-cd..
 ```
 
-### Step 1 - Deploy cell-1
+## Validate
 
-```shell
-cd 1.cell1
-terraform init
-terraform apply -auto-approve
-cd..
+1. Export the necessary environment variables and update the local kubeconfig file.
+
+```bash
+export CELL_1=cell-based-eks-az1
+export CELL_2=cell-based-eks-az2
+export CELL_3=cell-based-eks-az3
+export AWS_REGION=$(aws configure get region) #AWS region of the EKS clusters
+export AWS_ACCOUNT_NUMBER=$(aws sts get-caller-identity --query "Account" --output text)
+export SUBNET_ID_CELL1=$(terraform output -raw subnet_id_az1)
+export SUBNET_ID_CELL2=$(terraform output -raw subnet_id_az2)
+export SUBNET_ID_CELL3=$(terraform output -raw subnet_id_az3)
+alias kgn="kubectl get node -o custom-columns='NODE_NAME:.metadata.name,READY:.status.conditions[?(@.type==\"Ready\")].status,INSTANCE-TYPE:.metadata.labels.node\.kubernetes\.io/instance-type,AZ:.metadata.labels.topology\.kubernetes\.io/zone,CAPACITY-TYPE:.metadata.labels.karpenter\.sh/capacity-type,VERSION:.status.nodeInfo.kubeletVersion,OS-IMAGE:.status.nodeInfo.osImage,INTERNAL-IP:.metadata.annotations.alpha\.kubernetes\.io/provided-node-ip'"
 ```
 
-### Step 2 - Deploy cell-2
-
-```shell
-cd 2.cell2
-terraform init
-terraform apply -auto-approve
-cd..
+```bash
+aws eks update-kubeconfig --name $CELL_1 --region $AWS_REGION --alias $CELL_1
+aws eks update-kubeconfig --name $CELL_2 --region $AWS_REGION --alias $CELL_2
+aws eks update-kubeconfig --name $CELL_3 --region $AWS_REGION --alias $CELL_3
 ```
 
-### Step 3 - test installation
+2. Lets start our validation using Cell 1 which is running in AZ1. Verify the existing nodes are deployed to AZ1 (us-west-2a)
 
-```shell
-cd 3.test-setup
-./test_setup.sh
-cd..
+```bash
+kgn --context ${CELL_1}
+```
+```output
+NODE_NAME                                  READY   INSTANCE-TYPE   AZ           CAPACITY-TYPE   VERSION               OS-IMAGE         INTERNAL-IP
+ip-10-0-12-83.us-west-2.compute.internal   True    m5.large        us-west-2a   <none>          v1.28.3-eks-e71965b   Amazon Linux 2   10.0.12.83
+ip-10-0-7-191.us-west-2.compute.internal   True    m5.large        us-west-2a   <none>          v1.28.3-eks-e71965b   Amazon Linux 2   10.0.7.191
 ```
 
-This script scale the sample application `inflate` to 20 replicas in both cells. As replica pods go into pending state due to insufficient compute capacity, Karpenter will kick-in and bring up the EC2 worker nodes in respective AZs.
+3. Deploy the necessary Karpenter resources like `EC2NodeClass`, `NodePool` and configure them to use AZ1 to launch any EC2 resources
+
+```bash
+sed -i'.bak' -e 's/SUBNET_ID_CELL1/'"${SUBNET_ID_CELL1}"'/g' az1.yaml
+
+kubectl apply -f az1.yaml --context ${CELL_1}
+```
+
+4. Deploy a sample application `inflate` with 20 replicas and watch for Karpenter to launch the EC2 worker nodes in AZ1
+
+```bash
+kubectl apply -f inflate.yaml --context ${CELL_1}
+
+kubectl wait --for=condition=ready pods --all --timeout 2m --context ${CELL_1}
+```
+
+5. List the EKS worker nodes to verify all of them are deployed to AZ1
+
+```bash
+kgn --context ${CELL_1}
+```
+```output
+NODE_NAME                                   READY   INSTANCE-TYPE   AZ           CAPACITY-TYPE   VERSION               OS-IMAGE         INTERNAL-IP
+ip-10-0-11-154.us-west-2.compute.internal   True    c7g.8xlarge     us-west-2a   spot            v1.28.3-eks-e71965b   Amazon Linux 2   10.0.11.154
+ip-10-0-12-83.us-west-2.compute.internal    True    m5.large        us-west-2a   <none>          v1.28.3-eks-e71965b   Amazon Linux 2   10.0.12.83
+ip-10-0-7-191.us-west-2.compute.internal    True    m5.large        us-west-2a   <none>          v1.28.3-eks-e71965b   Amazon Linux 2   10.0.7.191
+```
+
+6. Repeat the steps from 2 to 5 for Cell 2 and Cell 3 using --context $CELL_2, $CELL_3 respectively.
 
 ## Destroy
 
-To teardown and remove the resources created in this example:
+To teardown and remove the resources created in the pattern, the typical steps of execution are as follows:
 
-```shell
-cd 2.cell2
-terraform apply -destroy -auto-approve
-cd ../1.cell1
-terraform apply -destroy -auto-approve
-cd ../0.vpc
-terraform apply -destroy -auto-approve
+```bash
+terraform destroy -target="module.eks_blueprints_addons_az1" -auto-approve
+terraform destroy -target="module.eks_blueprints_addons_az2" -auto-approve
+terraform destroy -target="module.eks_blueprints_addons_az3" -auto-approve
+terraform destroy -target="module.eks_az1" -auto-approve
+terraform destroy -target="module.eks_az2" -auto-approve
+terraform destroy -target="module.eks_az3" -auto-approve
+terraform destroy -auto-approve
 ```
