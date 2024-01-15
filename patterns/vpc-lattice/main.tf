@@ -2,7 +2,14 @@ provider "aws" {
   region = local.region
 }
 
-data "aws_availability_zones" "available" {}
+data "aws_availability_zones" "available" {
+  #Do not include local zones
+  filter {
+    name   = "opt-in-status"
+    values = ["opt-in-not-required"]
+  }
+}
+
 
 provider "kubernetes" {
   host                   = module.eks.cluster_endpoint
@@ -150,10 +157,60 @@ module "addons" {
       {
         name  = "clusterVpcId"
         value = module.cluster_vpc.vpc_id
-    }, ]
+      },
+      {
+        name = "defaultServiceNetwork"
+        value = ""
+      },
+      {
+        name = "latticeEndpoint"
+        value = "https://vpc-lattice.${local.region}.amazonaws.com"
+      }
+    ]
     wait = true
   }
-
+  enable_external_dns                 = true
+  external_dns_route53_zone_arns      = try([aws_route53_zone.primary.arn], [])
+  external_dns = {
+    set = [
+      {
+        name  = "domainFilters[0]"
+        value = "example.com"
+      },
+      {
+        name  = "policy"
+        value = "sync"
+      },
+      {
+        name  = "sources[0]"
+        value = "crd"
+      },
+      {
+        name  = "sources[1]"
+        value = "ingress"
+      },
+      {
+        name  = "txtPrefix"
+        value = module.eks.cluster_name
+      },
+      {
+        name  = "extraArgs[0]"
+        value = "--crd-source-apiversion=externaldns.k8s.io/v1alpha1"
+      },
+      {
+        name  = "extraArgs[1]"
+        value = "--crd-source-kind=DNSEndpoint"
+      },
+      {
+        name  = "crdSourceApiversion"
+        value = "externaldns.k8s.io/v1alpha1"
+      },
+      {
+        name  = "crdSourceKind"
+        value = "DNSEndpoint"
+      }
+    ]
+  }
 
   tags = local.tags
 }
@@ -246,6 +303,8 @@ data "aws_vpclattice_service" "server" {
 
 ################################################################################
 # Custom domain name for VPC lattice service
+# Records will be created by external-dns using DNSEndpoint objects which
+# are created by the VPC Lattice gateway api controller when creating HTTPRoutes
 ################################################################################
 
 resource "aws_route53_zone" "primary" {
@@ -256,14 +315,6 @@ resource "aws_route53_zone" "primary" {
   }
 
   tags = local.tags
-}
-
-resource "aws_route53_record" "record" {
-  zone_id = aws_route53_zone.primary.zone_id
-  name    = "server.example.com"
-  type    = "CNAME"
-  ttl     = 300
-  records = [lookup(data.aws_vpclattice_service.server.dns_entry[0], "domain_name", "")]
 }
 
 ################################################################################
