@@ -1498,7 +1498,7 @@
 <h2 id="project-structure">Project structure<a class="headerlink" href="#project-structure" title="Permanent link">&para;</a></h2>
 <p>See the Architecture of what we are building</p>
 <p align="center">
-  <img src="static/archi-blue-green.png"/>
+  <img src="https://raw.githubusercontent.com/aws-ia/terraform-aws-eks-blueprints/main/patterns/blue-green-upgrade/static/archi-blue-green.png"/>
 </p>
 
 <p>Our sample is composed of four main directory:</p>
@@ -1513,7 +1513,7 @@ In the GitOps workload repository, we have configured our applications deploymen
 <p>We have configured ExternalDNS add-ons in our two clusters to share the same Route53 Hosted Zone. The workloads in both clusters also share the same Route 53 DNS records, we rely on AWS Route53 weighted records to allow us to configure canary workload migration between our two EKS clusters.</p>
 <p>We are leveraging the <a href="https://github.com/gitops-bridge-dev/gitops-bridge-argocd-bootstrap-terraform">gitops-bridge-argocd-bootstrap</a> terraform module that allow us to dynamically provide metadatas from Terraform to ArgoCD deployed in the cluster. For doing this, the module will extract all metadatas from the <a href="https://github.com/aws-ia/terraform-aws-eks-blueprints-addons">terraform-aws-eks-blueprints-addons</a> module, configured to create all resources except installing the addon's Helm chart. The addon Installation will be delegate to ArgoCD Itself using the <a href="https://github.com/aws-samples/eks-blueprints-add-ons/tree/main/argocd/bootstrap/control-plane/addons">eks-blueprints-add-ons</a> git repository containing ArgoCD ApplicaitonSets for each supported Addons.</p>
 <p>The gitops-bridge will create a secret in the EKS cluster containing all metadatas that will be dynamically used by ArgoCD ApplicationSets at deployment time, so that we can adapt their configuration to our EKS cluster context.</p>
-<p><img src="static/gitops-bridge.excalidraw.png" width=100%></p>
+<p><img src="https://raw.githubusercontent.com/aws-ia/terraform-aws-eks-blueprints/main/patterns/blue-green-upgrade/static/gitops-bridge.excalidraw.png" width=100%></p>
 <p>Our objective here is to show you how Application teams and Platform teams can configure their infrastructure and workloads so that application teams are able to deploy autonomously their workloads to the EKS clusters thanks to ArgoCD, and platform team can keep the control of migrating production workloads from one cluster to another without having to synchronized operations with applications teams, or asking them to build a complicated CD pipeline.</p>
 <blockquote>
 <p>In this example we show how you can seamlessly migrate your stateless workloads between the 2 clusters for a blue/green or Canary migration, but you can also leverage the same architecture to have your workloads for example separated in different accounts or regions, for either High Availability or Lower latency Access from your customers.</p>
@@ -1528,7 +1528,7 @@ In the GitOps workload repository, we have configured our applications deploymen
 <li>Before moving to the next step, you will need to register a parent domain with AWS Route 53 (https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-register.html) in case you don’t have one created yet.</li>
 <li>Accessing GitOps git repositories with SSH access requiring an SSH key for authentication. In this example our workloads repositories are stored in GitHub, you can see in GitHub documentation on how to <a href="https://docs.github.com/en/authentication/connecting-to-github-with-ssh">connect with SSH</a>.</li>
 <li>Your GitHub private ssh key value is supposed to be stored in plain text in AWS Secret Manager in a secret named <code>github-blueprint-ssh-key</code>, but you can change it using the terraform variable <code>workload_repo_secret</code> in <a href="../../patterns/blue-green-upgrade/terraform.tfvars.example">terraform.tfvars.example</a>.</li>
-<li><img src="static/github-ssh-secret.png" width=50%></li>
+<li><img src="https://raw.githubusercontent.com/aws-ia/terraform-aws-eks-blueprints/main/patterns/blue-green-upgrade/static/github-ssh-secret.png" width=50%></li>
 </ul>
 <h2 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h2>
 <h3 id="configure-the-stacks">Configure the Stacks<a class="headerlink" href="#configure-the-stacks" title="Permanent link">&para;</a></h3>
@@ -1582,7 +1582,7 @@ In the GitOps workload repository, we have configured our applications deploymen
 <li><a href="https://github.com/aws-samples/eks-blueprints-workloads">Workloads repository</a></li>
 </ul>
 <p align="center">
-  <img src="static/eks-argo.png"/>
+  <img src="https://raw.githubusercontent.com/aws-ia/terraform-aws-eks-blueprints/main/patterns/blue-green-upgrade/static/eks-argo.png"/>
 </p>
 
 <p>We are going to look after one of the application deployed from the workload repository as example to demonstrate our migration automation: the <code>Burnham</code> workload in the team-burnham namespace.
@@ -1668,11 +1668,11 @@ We have set up a <a href="https://github.com/allamand/eks-example-go">simple go 
 <li>At first, 100% of burnham traffic is set to the <strong>eks-blue</strong> cluster, this is controlled from the <code>eks-blue/main.tf</code> &amp; <code>eks-green/main.tf</code> files with the parameter <code>route53_weight = "100"</code>. The same parameter is set to 0 in cluster eks-green.</li>
 </ol>
 <p align="center">
-  <img src="static/burnham-records.png"/>
+  <img src="https://raw.githubusercontent.com/aws-ia/terraform-aws-eks-blueprints/main/patterns/blue-green-upgrade/static/burnham-records.png"/>
 </p>
 <p>Which correspond to :</p>
 <p align="center">
-  <img src="static/archi-blue.png"/>
+  <img src="https://raw.githubusercontent.com/aws-ia/terraform-aws-eks-blueprints/main/patterns/blue-green-upgrade/static/archi-blue.png"/>
 </p>
 
 <p>All requests to our endpoint should response with <code>eks-blueprint-blue</code> we can test it with the following command:</p>
@@ -1686,11 +1686,11 @@ We have set up a <a href="https://github.com/allamand/eks-example-go">simple go 
 <li>Let's change traffic to 50% eks-blue and 50% eks-green by activating also value 100 in <strong>eks-green</strong> locals.tf (<code>route53_weight = "100"</code>) and let's <code>terraform apply</code> to let terraform update the configuration</li>
 </ol>
 <p align="center">
-  <img src="static/burnham-records2.png"/>
+  <img src="https://raw.githubusercontent.com/aws-ia/terraform-aws-eks-blueprints/main/patterns/blue-green-upgrade/static/burnham-records2.png"/>
 </p>
 <p>Which correspond to :</p>
 <p align="center">
-  <img src="static/archi-blue-green.png"/>
+  <img src="https://raw.githubusercontent.com/aws-ia/terraform-aws-eks-blueprints/main/patterns/blue-green-upgrade/static/archi-blue-green.png"/>
 </p>
 
 <p>All records have weight of 100, so we will have 50% requests on each clusters.</p>
@@ -1715,11 +1715,11 @@ We have set up a <a href="https://github.com/allamand/eks-example-go">simple go 
 <li>Now that we see that our green cluster is taking requests correctly, we can update the eks-blue cluster configuration to have the weight to 0 and apply again. after a few moment, your route53 records should look like the below screenshot, and all requests should now reach eks-green cluster.</li>
 </ol>
 <p align="center">
-  <img src="static/burnham-records3.png"/>
+  <img src="https://raw.githubusercontent.com/aws-ia/terraform-aws-eks-blueprints/main/patterns/blue-green-upgrade/static/burnham-records3.png"/>
 </p>
 <p>Which correspond to :</p>
 <p align="center">
-  <img src="static/archi-green.png"/>
+  <img src="https://raw.githubusercontent.com/aws-ia/terraform-aws-eks-blueprints/main/patterns/blue-green-upgrade/static/archi-green.png"/>
 </p>
 
 <p>At this step, once all DNS TTL will be up to date, all the traffic will be coming on the eks-green cluster. You can either, delete the eks-blue cluster, or decide to make upgrades on the blue cluster and send back traffic on eks-blue afterward, or simply keep it as a possibility for rollback if needed.</p>
