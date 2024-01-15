@@ -36,7 +36,7 @@ We are leveraging [the existing EKS Blueprints Workloads GitHub repository sampl
 See the Architecture of what we are building
 
 <p align="center">
-  <img src="static/archi-blue-green.png"/>
+  <img src="https://raw.githubusercontent.com/aws-ia/terraform-aws-eks-blueprints/main/patterns/blue-green-upgrade/static/archi-blue-green.png"/>
 </p>
 
 Our sample is composed of four main directory:
@@ -55,7 +55,7 @@ We are leveraging the [gitops-bridge-argocd-bootstrap](https://github.com/gitops
 
 The gitops-bridge will create a secret in the EKS cluster containing all metadatas that will be dynamically used by ArgoCD ApplicationSets at deployment time, so that we can adapt their configuration to our EKS cluster context.
 
-<img src="static/gitops-bridge.excalidraw.png" width=100%>
+<img src="https://raw.githubusercontent.com/aws-ia/terraform-aws-eks-blueprints/main/patterns/blue-green-upgrade/static/gitops-bridge.excalidraw.png" width=100%>
 
 Our objective here is to show you how Application teams and Platform teams can configure their infrastructure and workloads so that application teams are able to deploy autonomously their workloads to the EKS clusters thanks to ArgoCD, and platform team can keep the control of migrating production workloads from one cluster to another without having to synchronized operations with applications teams, or asking them to build a complicated CD pipeline.
 
@@ -71,7 +71,7 @@ Our objective here is to show you how Application teams and Platform teams can c
   - Before moving to the next step, you will need to register a parent domain with AWS Route 53 (https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/domain-register.html) in case you don’t have one created yet.
 - Accessing GitOps git repositories with SSH access requiring an SSH key for authentication. In this example our workloads repositories are stored in GitHub, you can see in GitHub documentation on how to [connect with SSH](https://docs.github.com/en/authentication/connecting-to-github-with-ssh).
   - Your GitHub private ssh key value is supposed to be stored in plain text in AWS Secret Manager in a secret named `github-blueprint-ssh-key`, but you can change it using the terraform variable `workload_repo_secret` in [terraform.tfvars.example](terraform.tfvars.example).
-  - <img src="static/github-ssh-secret.png" width=50%>
+  - <img src="https://raw.githubusercontent.com/aws-ia/terraform-aws-eks-blueprints/main/patterns/blue-green-upgrade/static/github-ssh-secret.png" width=50%>
 
 ## Quick Start
 
@@ -140,7 +140,7 @@ Our clusters are configured with existing ArgoCD Github repository that is synch
 - [Workloads repository](https://github.com/aws-samples/eks-blueprints-workloads)
 
 <p align="center">
-  <img src="static/eks-argo.png"/>
+  <img src="https://raw.githubusercontent.com/aws-ia/terraform-aws-eks-blueprints/main/patterns/blue-green-upgrade/static/eks-argo.png"/>
 </p>
 
 We are going to look after one of the application deployed from the workload repository as example to demonstrate our migration automation: the `Burnham` workload in the team-burnham namespace.
@@ -266,11 +266,11 @@ Now that we have setup our 2 clusters, deployed with ArgoCD and that the weighed
 1. At first, 100% of burnham traffic is set to the **eks-blue** cluster, this is controlled from the `eks-blue/main.tf` & `eks-green/main.tf` files with the parameter `route53_weight = "100"`. The same parameter is set to 0 in cluster eks-green.
 
 <p align="center">
-  <img src="static/burnham-records.png"/>
+  <img src="https://raw.githubusercontent.com/aws-ia/terraform-aws-eks-blueprints/main/patterns/blue-green-upgrade/static/burnham-records.png"/>
 </p>
   Which correspond to :
 <p align="center">
-  <img src="static/archi-blue.png"/>
+  <img src="https://raw.githubusercontent.com/aws-ia/terraform-aws-eks-blueprints/main/patterns/blue-green-upgrade/static/archi-blue.png"/>
 </p>
 
 All requests to our endpoint should response with `eks-blueprint-blue` we can test it with the following command:
@@ -289,11 +289,11 @@ eks-blueprint-blue
 2. Let's change traffic to 50% eks-blue and 50% eks-green by activating also value 100 in **eks-green** locals.tf (`route53_weight = "100"`) and let's `terraform apply` to let terraform update the configuration
 
 <p align="center">
-  <img src="static/burnham-records2.png"/>
+  <img src="https://raw.githubusercontent.com/aws-ia/terraform-aws-eks-blueprints/main/patterns/blue-green-upgrade/static/burnham-records2.png"/>
 </p>
   Which correspond to :
 <p align="center">
-  <img src="static/archi-blue-green.png"/>
+  <img src="https://raw.githubusercontent.com/aws-ia/terraform-aws-eks-blueprints/main/patterns/blue-green-upgrade/static/archi-blue-green.png"/>
 </p>
 
 All records have weight of 100, so we will have 50% requests on each clusters.
@@ -325,11 +325,11 @@ The default TTL is for 60 seconds, and you have 50% chance to have blue or green
 3. Now that we see that our green cluster is taking requests correctly, we can update the eks-blue cluster configuration to have the weight to 0 and apply again. after a few moment, your route53 records should look like the below screenshot, and all requests should now reach eks-green cluster.
 
 <p align="center">
-  <img src="static/burnham-records3.png"/>
+  <img src="https://raw.githubusercontent.com/aws-ia/terraform-aws-eks-blueprints/main/patterns/blue-green-upgrade/static/burnham-records3.png"/>
 </p>
   Which correspond to :
 <p align="center">
-  <img src="static/archi-green.png"/>
+  <img src="https://raw.githubusercontent.com/aws-ia/terraform-aws-eks-blueprints/main/patterns/blue-green-upgrade/static/archi-green.png"/>
 </p>
 
 At this step, once all DNS TTL will be up to date, all the traffic will be coming on the eks-green cluster. You can either, delete the eks-blue cluster, or decide to make upgrades on the blue cluster and send back traffic on eks-blue afterward, or simply keep it as a possibility for rollback if needed.
