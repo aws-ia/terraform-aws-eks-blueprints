@@ -159,18 +159,18 @@ module "addons" {
         value = module.cluster_vpc.vpc_id
       },
       {
-        name = "defaultServiceNetwork"
+        name  = "defaultServiceNetwork"
         value = ""
       },
       {
-        name = "latticeEndpoint"
+        name  = "latticeEndpoint"
         value = "https://vpc-lattice.${local.region}.amazonaws.com"
       }
     ]
     wait = true
   }
-  enable_external_dns                 = true
-  external_dns_route53_zone_arns      = try([aws_route53_zone.primary.arn], [])
+  enable_external_dns            = true
+  external_dns_route53_zone_arns = try([aws_route53_zone.primary.arn], [])
   external_dns = {
     set = [
       {
@@ -291,14 +291,6 @@ resource "time_sleep" "wait_for_lattice_resources" {
   depends_on = [helm_release.demo_application]
 
   create_duration = "120s"
-}
-
-data "aws_vpclattice_service" "server" {
-  name = "server-apps"
-
-  tags = local.tags
-
-  depends_on = [time_sleep.wait_for_lattice_resources]
 }
 
 ################################################################################
