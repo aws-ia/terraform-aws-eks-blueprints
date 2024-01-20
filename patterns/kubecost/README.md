@@ -31,5 +31,20 @@ and navigate to the output URL.
 
 Navigate to Settings -> Diagnostics -> View Full Diagnostics
 
+Expected result:
+![screenshot](static/screenshot.png)
+
 > [!NOTE]  
 > Spot Data Feed is included in Savings Plan, Reserved Instance, and Out-Of-Cluster.
+
+## Destroy
+First destroy the CloudFormation template:
+```
+cd run-me-in-24h/
+terraform destroy
+```
+
+```
+cd ..
+terraform destroy --var="kubecost_token=<your-kubecost-token>"
+```

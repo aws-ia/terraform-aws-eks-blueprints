@@ -13,11 +13,6 @@ output "s3_cur_report_prefix" {
   value = aws_cur_report_definition.cur.s3_prefix
 }
 
-output "name" {
-  description = "name"
-  value = module.eks.cluster_name
-}
-
 output "region" {
   description = "region"
   value = var.region

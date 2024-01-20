@@ -24,8 +24,8 @@ resource "null_resource" "download_file" {
 
   provisioner "local-exec" {
     command = <<EOT
-      if aws s3 ls s3://${data.terraform_remote_state.main.outputs.cur_bucket_id}/${data.terraform_remote_state.main.outputs.s3_cur_report_prefix}/${data.terraform_remote_state.main.outputs.name}/crawler-cfn.yml; then
-        aws s3 cp s3://${data.terraform_remote_state.main.outputs.cur_bucket_id}/${data.terraform_remote_state.main.outputs.s3_cur_report_prefix}/${data.terraform_remote_state.main.outputs.name}/crawler-cfn.yml crawler-cfn.yml
+      if aws s3 ls s3://${data.terraform_remote_state.main.outputs.cur_bucket_id}/${data.terraform_remote_state.main.outputs.s3_cur_report_prefix}/kubecost/crawler-cfn.yml; then
+        aws s3 cp s3://${data.terraform_remote_state.main.outputs.cur_bucket_id}/${data.terraform_remote_state.main.outputs.s3_cur_report_prefix}/kubecost/crawler-cfn.yml crawler-cfn.yml
       else
         echo "The crawler-cfn.yml does not exist yet. Come back and run terraform apply again in 24h."
       fi
@@ -42,7 +42,7 @@ resource "time_sleep" "wait_60_seconds" {
 resource "aws_cloudformation_stack" "athena_integration" {
   count = fileexists("${path.module}/crawler-cfn.yml") ? 1 : 0
 
-  name  = data.terraform_remote_state.main.outputs.name
+  name  = "kubecost"
   template_body = try(file("${path.module}/crawler-cfn.yml"), null)
   capabilities  = ["CAPABILITY_IAM"]
 
