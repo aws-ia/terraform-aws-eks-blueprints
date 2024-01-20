@@ -31,4 +31,5 @@ and navigate to the output URL.
 
 Navigate to Settings -> Diagnostics -> View Full Diagnostics
 
-Note: Spot Data Feed is included in Savings Plan, Reserved Instance, and Out-Of-Cluster.
+[!NOTE] 
+Spot Data Feed is included in Savings Plan, Reserved Instance, and Out-Of-Cluster.
