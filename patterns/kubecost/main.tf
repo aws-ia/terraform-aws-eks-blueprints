@@ -34,7 +34,7 @@ data "aws_caller_identity" "current" {}
 locals {
   name     = coalesce(var.name, basename(path.cwd))
   vpc_cidr = "10.0.0.0/16"
-  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
+  azs      = slice(data.aws_availability_zones.available.names, 0, 2)
 
   tags = {
     Blueprint  = local.name
@@ -125,7 +125,7 @@ module "eks_blueprints_addons" {
 ################################################################################
 
 resource "aws_s3_bucket" "cur" {
-  bucket_prefix = local.name
+  bucket_prefix = "kubecost-"
   force_destroy = true
 
   tags = local.tags
@@ -190,7 +190,7 @@ data "aws_iam_policy_document" "cur_bucket_policy" {
 }
 
 resource "aws_cur_report_definition" "cur" {
-  report_name                = local.name
+  report_name                = "kubecost"
   time_unit                  = "DAILY"
   format                     = "Parquet"
   compression                = "Parquet"
@@ -207,33 +207,6 @@ resource "aws_cur_report_definition" "cur" {
 # Athena
 ################################################################################
 
-resource "null_resource" "download_file" {
-  triggers = {
-    always_run = "${timestamp()}"
-  }
-
-  provisioner "local-exec" {
-    command = <<EOT
-      if aws s3 ls s3://${aws_s3_bucket.cur.id}/${aws_cur_report_definition.cur.s3_prefix}/${local.name}/crawler-cfn.yml; then
-        aws s3 cp s3://${aws_s3_bucket.cur.id}/${aws_cur_report_definition.cur.s3_prefix}/${local.name}/crawler-cfn.yml crawler-cfn.yml
-      else
-        echo "The crawler-cfn.yml does not exist yet. Come back and run terraform apply again in 24h."
-      fi
-    EOT
-  }
-}
-
-resource "aws_cloudformation_stack" "athena_integration" {
-  count = fileexists("${path.module}/crawler-cfn.yml") ? 1 : 0
-
-  name  = local.name
-  template_body = try(file("${path.module}/crawler-cfn.yml"), null)
-  capabilities  = ["CAPABILITY_IAM"]
-  tags  = local.tags
-
-  depends_on = [null_resource.download_file]
-}
-  
 resource "aws_s3_bucket" "athena_results" {
   bucket_prefix = "aws-athena-query-results-"
   force_destroy = true
@@ -268,36 +241,6 @@ resource "aws_s3_bucket_acl" "athena_results" {
 }
 
 ################################################################################
-# SPOT
-################################################################################
-resource "aws_s3_bucket" "spot" {
-  bucket_prefix = "spot-datafeed-"
-  force_destroy = true
-
-  tags = local.tags
-}
-
-resource "aws_s3_bucket_lifecycle_configuration" "spot" {
-  bucket = aws_s3_bucket.spot.id
-  rule {
-    id = "cost"
-    expiration {
-      days = 3
-    }
-    status = "Enabled"
-  }
-}
-
-resource "aws_s3_bucket_acl" "spot" {
-  bucket = aws_s3_bucket.spot.id
-  acl    = "private"
-}
-
-resource "aws_spot_datafeed_subscription" "spot" {
-  bucket = aws_s3_bucket.spot.id
-}
-
-################################################################################
 # Kubecost
 ################################################################################
 
@@ -315,7 +258,7 @@ module "kubecost_irsa" {
   oidc_providers = {
     main = {
       provider_arn               = module.eks.oidc_provider_arn
-      namespace_service_accounts = ["kubecost:${local.name}-*"]
+      namespace_service_accounts = ["kubecost:*"]
     }
   }
 
@@ -330,7 +273,6 @@ resource "aws_iam_policy" "kubecost" {
 data "aws_iam_policy_document" "combined" {
   source_policy_documents = [
     data.aws_iam_policy_document.kubecost.json,
-    data.aws_iam_policy_document.spot.json,
     data.aws_iam_policy_document.athena.json
   ]
 }
@@ -351,22 +293,6 @@ data "aws_iam_policy_document" "kubecost" {
       "s3:ListAllMyBuckets",
     ]
     resources = ["*"]
-  }
-}
-
-data "aws_iam_policy_document" "spot" {
-  statement {
-    sid       = "SpotDataFeed"
-    effect    = "Allow"
-    actions   = [
-      "s3:ListBucket",
-      "s3:List*",
-      "s3:Get*"
-    ]
-    resources = [
-      "${aws_s3_bucket.spot.arn}",
-      "${aws_s3_bucket.spot.arn}/*"
-     ]
   }
 }
 
@@ -431,7 +357,7 @@ module "eks_blueprints_addon" {
   version = "~> 1.1.1" #ensure to update this to the latest/desired version
 
   chart         = "cost-analyzer"
-  chart_version = "1.106.3"
+  chart_version = "1.108.1"
   repository    = "https://kubecost.github.io/cost-analyzer/"
   description   = "Kubecost helm Chart deployment configuration"
   namespace     = "kubecost"
@@ -442,8 +368,6 @@ module "eks_blueprints_addon" {
     service-account    = "kubecost-cost-analyzer"
     iam-role-arn       = module.kubecost_irsa.iam_role_arn
     projectID          = data.aws_caller_identity.current.account_id
-    awsSpotDataRegion  = var.region
-    awsSpotDataBucket  = aws_s3_bucket.spot.id
     athenaProjectID    = data.aws_caller_identity.current.account_id
     athenaBucketName   = "s3://${aws_s3_bucket.athena_results.id}"
     athenaRegion       = var.region
