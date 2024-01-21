@@ -110,16 +110,16 @@ module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
   version = "1.8.0"
 
-  cluster_name          = module.eks.cluster_name
-  cluster_endpoint      = module.eks.cluster_endpoint
-  cluster_version       = module.eks.cluster_version
-  oidc_provider_arn     = module.eks.oidc_provider_arn
+  cluster_name      = module.eks.cluster_name
+  cluster_endpoint  = module.eks.cluster_endpoint
+  cluster_version   = module.eks.cluster_version
+  oidc_provider_arn = module.eks.oidc_provider_arn
 
-  enable_metrics_server            = true
+  enable_metrics_server = true
 
   depends_on = [module.eks.eks_managed_node_groups]
 }
-  
+
 ################################################################################
 # CUR
 ################################################################################
@@ -129,7 +129,7 @@ resource "aws_s3_bucket" "cur" {
   force_destroy = true
 
   tags = local.tags
-} 
+}
 
 resource "aws_s3_bucket_public_access_block" "example" {
   bucket = aws_s3_bucket.cur.id
@@ -172,7 +172,7 @@ data "aws_iam_policy_document" "cur_bucket_policy" {
       aws_s3_bucket.cur.arn,
     ]
   }
-  
+
   statement {
     principals {
       type        = "Service"
@@ -212,7 +212,7 @@ resource "aws_s3_bucket" "athena_results" {
   force_destroy = true
 
   tags = local.tags
-} 
+}
 
 resource "aws_s3_bucket_lifecycle_configuration" "athena_results" {
   bucket = aws_s3_bucket.athena_results.id
@@ -248,7 +248,7 @@ module "kubecost_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 5.30"
 
-  role_name_prefix = "${local.name}-"
+  role_name_prefix           = "${local.name}-"
   assume_role_condition_test = "StringLike"
 
   role_policy_arns = {
@@ -266,7 +266,7 @@ module "kubecost_irsa" {
 }
 
 resource "aws_iam_policy" "kubecost" {
-  name = local.name
+  name   = local.name
   policy = data.aws_iam_policy_document.combined.json
 }
 
@@ -279,17 +279,17 @@ data "aws_iam_policy_document" "combined" {
 
 data "aws_iam_policy_document" "kubecost" {
   statement {
-    sid       = "KubecostSavingsAccess"
-    effect    = "Allow"
-    actions   = [
+    sid    = "KubecostSavingsAccess"
+    effect = "Allow"
+    actions = [
       "ec2:DescribeAddresses",
       "ec2:DescribeVolumes"
     ]
     resources = ["*"]
   }
   statement {
-    effect    = "Allow"
-    actions   = [
+    effect = "Allow"
+    actions = [
       "s3:ListAllMyBuckets",
     ]
     resources = ["*"]
@@ -353,31 +353,31 @@ data "aws_iam_policy_document" "athena" {
 }
 
 module "eks_blueprints_addon" {
-  source = "aws-ia/eks-blueprints-addon/aws"
+  source  = "aws-ia/eks-blueprints-addon/aws"
   version = "~> 1.1.1" #ensure to update this to the latest/desired version
 
-  chart         = "cost-analyzer"
-  chart_version = "1.108.1"
-  repository    = "https://kubecost.github.io/cost-analyzer/"
-  description   = "Kubecost helm Chart deployment configuration"
-  namespace     = "kubecost"
+  chart            = "cost-analyzer"
+  chart_version    = "1.108.1"
+  repository       = "https://kubecost.github.io/cost-analyzer/"
+  description      = "Kubecost helm Chart deployment configuration"
+  namespace        = "kubecost"
   create_namespace = true
 
   values = [templatefile("kubecost-values.yaml", {
-    kubecostToken      = var.kubecost_token
-    service-account    = "kubecost-cost-analyzer"
-    iam-role-arn       = module.kubecost_irsa.iam_role_arn
-    projectID          = data.aws_caller_identity.current.account_id
-    athenaProjectID    = data.aws_caller_identity.current.account_id
-    athenaBucketName   = "s3://${aws_s3_bucket.athena_results.id}"
-    athenaRegion       = var.region
-    athenaDatabase     = "athenacurcfn_kubecost"
-    athenaTable        = "kubecost"
-  })
+    kubecostToken    = var.kubecost_token
+    service-account  = "kubecost-cost-analyzer"
+    iam-role-arn     = module.kubecost_irsa.iam_role_arn
+    projectID        = data.aws_caller_identity.current.account_id
+    athenaProjectID  = data.aws_caller_identity.current.account_id
+    athenaBucketName = "s3://${aws_s3_bucket.athena_results.id}"
+    athenaRegion     = var.region
+    athenaDatabase   = "athenacurcfn_kubecost"
+    athenaTable      = "kubecost"
+    })
   ]
 
   tags = local.tags
-  
+
 }
 
 ################################################################################

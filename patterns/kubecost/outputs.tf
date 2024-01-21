@@ -5,15 +5,15 @@ output "configure_kubectl" {
 
 output "cur_bucket_id" {
   description = "Kubecost CUR bucket id"
-  value = aws_s3_bucket.cur.id
+  value       = aws_s3_bucket.cur.id
 }
 
 output "s3_cur_report_prefix" {
   description = "Kubecost CUR bucket prefix"
-  value = aws_cur_report_definition.cur.s3_prefix
+  value       = aws_cur_report_definition.cur.s3_prefix
 }
 
 output "region" {
   description = "region"
-  value = var.region
+  value       = var.region
 }
