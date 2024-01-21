@@ -14,20 +14,5 @@ terraform {
       source  = "hashicorp/kubernetes"
       version = ">= 2.20"
     }
-    random = {
-      source  = "hashicorp/random"
-      version = ">= 3.5"
-    }
-    bcrypt = {
-      source  = "viktorradnai/bcrypt"
-      version = ">= 0.1.2"
-    }
   }
-
-  # ##  Used for end-to-end testing on project; update to suit your needs
-  # backend "s3" {
-  #   bucket = "terraform-ssp-github-actions-state"
-  #   region = "us-west-2"
-  #   key    = "e2e/argocd/terraform.tfstate"
-  # }
 }
