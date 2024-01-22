@@ -1223,7 +1223,7 @@ concepts.</p>
 cluster with deployed Istio.</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">for</span><span class="w"> </span>ADDON<span class="w"> </span><span class="k">in</span><span class="w"> </span>kiali<span class="w"> </span>jaeger<span class="w"> </span>prometheus<span class="w"> </span>grafana
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">do</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nv">ADDON_URL</span><span class="o">=</span><span class="s2">&quot;https://raw.githubusercontent.com/istio/istio/release-1.18/samples/addons/</span><span class="nv">$ADDON</span><span class="s2">.yaml&quot;</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="nv">ADDON_URL</span><span class="o">=</span><span class="s2">&quot;https://raw.githubusercontent.com/istio/istio/release-1.20/samples/addons/</span><span class="nv">$ADDON</span><span class="s2">.yaml&quot;</span>
 </span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span><span class="nv">$ADDON_URL</span>
 </span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="k">done</span>
 </span></code></pre></div>
