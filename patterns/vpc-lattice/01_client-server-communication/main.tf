@@ -141,7 +141,7 @@ module "addons" {
 
   enable_aws_gateway_api_controller = true
   aws_gateway_api_controller = {
-    chart_version           = "v1.0.2"
+    chart_version           = "v1.0.3"
     create_namespace        = true
     namespace               = "aws-application-networking-system"
     source_policy_documents = [data.aws_iam_policy_document.gateway_api_controller.json]
