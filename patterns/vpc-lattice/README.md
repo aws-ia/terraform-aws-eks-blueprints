@@ -1,6 +1,6 @@
 # Amazon VPC Lattice
 
-This folder contains use case-driven patterns covering different aspects of the Amazon VPC Lattice service. 
+This folder contains use case-driven patterns covering different aspects of the Amazon VPC Lattice service.
 
 ## Use cases
 
@@ -12,4 +12,3 @@ This folder contains use case-driven patterns covering different aspects of the 
 
 - [Documentation](https://docs.aws.amazon.com/vpc-lattice/latest/ug/what-is-vpc-lattice.html)
 - [AWS Gateway API Controller](https://www.gateway-api-controller.eks.aws.dev/)
-
