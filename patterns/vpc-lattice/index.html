@@ -10,13 +10,13 @@
         <meta name="author" content="AWS">
       
       
-        <link rel="canonical" href="https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/stateful/">
+        <link rel="canonical" href="https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/vpc-lattice/">
       
       
-        <link rel="prev" href="../sso-okta/">
+        <link rel="prev" href="../tls-with-aws-pca-issuer/">
       
       
-        <link rel="next" href="../tls-with-aws-pca-issuer/">
+        <link rel="next" href="../wireguard-with-cilium/">
       
       
       <link rel="icon" href="../../images/colored-logo.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>Stateful - Amazon EKS Blueprints for Terraform</title>
+        <title>Amazon VPC Lattice - Amazon EKS Blueprints for Terraform</title>
       
     
     
@@ -116,7 +116,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#amazon-eks-cluster-for-stateful-workloads" class="md-skip">
+        <a href="#amazon-vpc-lattice" class="md-skip">
           Skip to content
         </a>
       
@@ -155,7 +155,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Stateful
+              Amazon VPC Lattice
             
           </span>
         </div>
@@ -721,29 +721,9 @@
                 
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Stateful
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../stateful/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -752,88 +732,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#features" class="md-nav__link">
-    Features
-  </a>
-  
-    <nav class="md-nav" aria-label="Features">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#velero" class="md-nav__link">
-    velero
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ebs-efs-csi-drivers" class="md-nav__link">
-    EBS &amp; EFS CSI Drivers
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#eks-managed-nodegroup-w-multiple-volumes" class="md-nav__link">
-    EKS Managed Nodegroup w/ Multiple Volumes
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#eks-managed-nodegroup-w-instance-store-volumes" class="md-nav__link">
-    EKS Managed Nodegroup w/ Instance Store Volume(s)
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#deploy" class="md-nav__link">
-    Deploy
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#validate" class="md-nav__link">
-    Validate
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#destroy" class="md-nav__link">
-    Destroy
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -863,9 +761,29 @@
                 
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../vpc-lattice/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Amazon VPC Lattice
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -874,6 +792,40 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    Use cases
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#supporting-resources" class="md-nav__link">
+    Supporting resources
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1154,63 +1106,15 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#features" class="md-nav__link">
-    Features
-  </a>
-  
-    <nav class="md-nav" aria-label="Features">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#velero" class="md-nav__link">
-    velero
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#ebs-efs-csi-drivers" class="md-nav__link">
-    EBS &amp; EFS CSI Drivers
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#eks-managed-nodegroup-w-multiple-volumes" class="md-nav__link">
-    EKS Managed Nodegroup w/ Multiple Volumes
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#eks-managed-nodegroup-w-instance-store-volumes" class="md-nav__link">
-    EKS Managed Nodegroup w/ Instance Store Volume(s)
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#deploy" class="md-nav__link">
-    Deploy
+  <a href="#use-cases" class="md-nav__link">
+    Use cases
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#validate" class="md-nav__link">
-    Validate
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#destroy" class="md-nav__link">
-    Destroy
+  <a href="#supporting-resources" class="md-nav__link">
+    Supporting resources
   </a>
   
 </li>
@@ -1233,151 +1137,21 @@
   
 
 
-<!-- BEGIN INCLUDE ../../patterns/stateful/README.md -->
-<h1 id="amazon-eks-cluster-for-stateful-workloads">Amazon EKS Cluster for Stateful Workloads<a class="headerlink" href="#amazon-eks-cluster-for-stateful-workloads" title="Permanent link">&para;</a></h1>
-<h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
-<p>Please note: not all of the features listed below are required for stateful workloads on EKS. We are simply grouping together a set of features that are commonly encountered when managing stateful workloads. Users are encouraged to only enable the features that are required for their workload(s) and use case(s).</p>
-<h3 id="velero"><a href="https://github.com/vmware-tanzu/velero">velero</a><a class="headerlink" href="#velero" title="Permanent link">&para;</a></h3>
-<p>(From the project documentation)
-<code>velero</code> (formerly Heptio Ark) gives you tools to back up and restore your Kubernetes cluster resources and persistent volumes. You can run Velero with a public cloud platform or on-premises. Velero lets you:</p>
+<!-- BEGIN INCLUDE ../../patterns/vpc-lattice/README.md -->
+<h1 id="amazon-vpc-lattice">Amazon VPC Lattice<a class="headerlink" href="#amazon-vpc-lattice" title="Permanent link">&para;</a></h1>
+<p>This folder contains use case-driven patterns covering different aspects of the Amazon VPC Lattice service.</p>
+<h2 id="use-cases">Use cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
 <ul>
-<li>Take backups of your cluster and restore in case of loss.</li>
-<li>Migrate cluster resources to other clusters.</li>
-<li>Replicate your production cluster to development and testing clusters.</li>
+<li>
+<p><a href="../../patterns/vpc-lattice/client-server-communication/">Simple Client to Server Communication</a></p>
+<p>This pattern describes how to expose a simple API within an Amazon EKS cluster deployed in VPC A to a client application hosted in VPC B through Amazon VPC Lattice.</p>
+</li>
 </ul>
-<h3 id="ebs-efs-csi-drivers">EBS &amp; EFS CSI Drivers<a class="headerlink" href="#ebs-efs-csi-drivers" title="Permanent link">&para;</a></h3>
+<h2 id="supporting-resources">Supporting resources<a class="headerlink" href="#supporting-resources" title="Permanent link">&para;</a></h2>
 <ul>
-<li>A second storage class for <code>gp3</code> backed volumes has been added and made the default over the EKS default <code>gp2</code> storage class (<code>gp2</code> storage class remains in the cluster for use, but it is no longer the default storage class)</li>
-<li>A standard implementation of the EFS CSI driver</li>
+<li><a href="https://docs.aws.amazon.com/vpc-lattice/latest/ug/what-is-vpc-lattice.html">Documentation</a></li>
+<li><a href="https://www.gateway-api-controller.eks.aws.dev/">AWS Gateway API Controller</a></li>
 </ul>
-<h3 id="eks-managed-nodegroup-w-multiple-volumes">EKS Managed Nodegroup w/ Multiple Volumes<a class="headerlink" href="#eks-managed-nodegroup-w-multiple-volumes" title="Permanent link">&para;</a></h3>
-<p>An EKS managed nodegroup that utilizes multiple EBS volumes. The primary use case demonstrated in this example is a second volume that is dedicated to the <code>containerd</code> runtime to ensure the root volume is not filled up nor has its I/O exhausted to ensure the instance does not reach a degraded state. The <code>containerd</code> directories are mapped to this volume. You can read more about this recommendation in our <a href="https://aws.github.io/aws-eks-best-practices/scalability/docs/data-plane/#use-multiple-ebs-volumes-for-containers">EKS best practices guide</a> and refer to the <code>containerd</code> <a href="https://github.com/containerd/containerd/blob/main/docs/ops.md#base-configuration">documentation</a> for more information. The update for <code>containerd</code> to use the second volume is managed through the provided user data.</p>
-<p>In addition, the following properties are configured on the nodegroup volumes:</p>
-<ul>
-<li>EBS encryption using a customer managed key (CMK)</li>
-<li>Configuring the volumes to use GP3 storage</li>
-</ul>
-<h3 id="eks-managed-nodegroup-w-instance-store-volumes">EKS Managed Nodegroup w/ Instance Store Volume(s)<a class="headerlink" href="#eks-managed-nodegroup-w-instance-store-volumes" title="Permanent link">&para;</a></h3>
-<p>An EKS managed nodegroup that utilizes EC2 instances with ephemeral instance store(s). Instance stores are ideal for temporary storage of information that changes frequently, such as buffers, caches, scratch data, and other temporary content, or for data that is replicated across a fleet of instances. You can read more about instance stores in the <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/InstanceStorage.html">AWS documentation</a>; and be sure to check out the <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/block-device-mapping-concepts.html#instance-block-device-mapping"><code>Block device mapping instance store caveats</code></a> section as well which covers why the example has provided user data for mounting the instance store(s). The size and number of instance stores will vary based on the EC2 instance type and class.</p>
-<p>In addition, the following properties are configured on the nodegroup volumes:</p>
-<ul>
-<li>EBS encryption using a customer managed key (CMK)</li>
-<li>Configuring the volumes to use GP3 storage</li>
-</ul>
-<h2 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h2>
-<p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#prerequisites">here</a> for the prerequisites and steps to deploy this pattern.</p>
-<h2 id="validate">Validate<a class="headerlink" href="#validate" title="Permanent link">&para;</a></h2>
-<p>The following command will update the <code>kubeconfig</code> on your local machine and allow you to interact with your EKS Cluster using <code>kubectl</code> to validate the Velero deployment.</p>
-<ol>
-<li>
-<p>Run <code>update-kubeconfig</code> command:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>aws<span class="w"> </span>eks<span class="w"> </span>--region<span class="w"> </span>&lt;REGION&gt;<span class="w"> </span>update-kubeconfig<span class="w"> </span>--name<span class="w"> </span>&lt;CLUSTER_NAME&gt;
-</span></code></pre></div>
-</li>
-<li>
-<p>List the storage classes to view that <code>efs</code>, <code>gp2</code>, and <code>gp3</code> classes are present and <code>gp3</code> is the default storage class</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>storageclasses
-</span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>NAME            PROVISIONER             RECLAIMPOLICY   VOLUMEBINDINGMODE      ALLOWVOLUMEEXPANSION   AGE
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>efs             efs.csi.aws.com         Delete          Immediate              true                   2m19s
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>gp2             kubernetes.io/aws-ebs   Delete          WaitForFirstConsumer   false                  15m
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>gp3 (default)   ebs.csi.aws.com         Delete          WaitForFirstConsumer   true                   2m19s
-</span></code></pre></div>
-</li>
-<li>
-<p>From an instance launched with instance store(s), check that the instance store has been mounted correctly. To verify, first install the <code>nvme-cli</code> tool and then use it to verify. To verify, you can access the instance using SSM Session Manager:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Install the nvme-cli tool</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>sudo<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>nvme-cli<span class="w"> </span>-y
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1"># Show NVMe volumes attached</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>sudo<span class="w"> </span>nvme<span class="w"> </span>list
-</span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a># Notice the model is `EC2 NVMe Instance Storage` for the instance store
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>Node             SN                   Model                                    Namespace Usage                      Format           FW Rev
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>---------------- -------------------- ---------------------------------------- --------- -------------------------- ---------------- --------
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>/dev/nvme0n1     vol0546d3c3b0af0bf6d Amazon Elastic Block Store               1          25.77  GB /  25.77  GB    512   B +  0 B   1.0
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>/dev/nvme1n1     AWS24BBF51AF55097008 Amazon EC2 NVMe Instance Storage         1          75.00  GB /  75.00  GB    512   B +  0 B   0
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a># Show disks, their partitions and mounts
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>sudo lsblk
-</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>
-</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a># Output should look like below
-</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>NAME          MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
-</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>nvme0n1       259:0    0   24G  0 disk
-</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>├─nvme0n1p1   259:2    0   24G  0 part /
-</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>└─nvme0n1p128 259:3    0    1M  0 part
-</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>nvme1n1       259:1    0 69.9G  0 disk /local1 # &lt;--- this is the instance store
-</span></code></pre></div>
-</li>
-<li>
-<p>From an instance launched with multiple volume(s), check that the instance store has been mounted correctly. To verify, first install the <code>nvme-cli</code> tool and then use it to verify. To verify, you can access the instance using SSM Session Manager:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Install the nvme-cli tool</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>sudo<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>nvme-cli<span class="w"> </span>-y
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="c1"># Show NVMe volumes attached</span>
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>sudo<span class="w"> </span>nvme<span class="w"> </span>list
-</span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a># /dev/nvme0n1 is the root volume and /dev/nvme1n1 is the second, additional volume
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>Node             SN                   Model                                    Namespace Usage                      Format           FW Rev
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>---------------- -------------------- ---------------------------------------- --------- -------------------------- ---------------- --------
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>/dev/nvme0n1     vol0cd37dab9e4a5c184 Amazon Elastic Block Store               1          68.72  GB /  68.72  GB    512   B +  0 B   1.0
-</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>/dev/nvme1n1     vol0ad3629c159ee869c Amazon Elastic Block Store               1          25.77  GB /  25.77  GB    512   B +  0 B   1.0
-</span></code></pre></div>
-</li>
-<li>
-<p>From the same instance used in step 4, check that the containerd directories are using the second <code>/dev/nvme1n1</code> volume:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>df<span class="w"> </span>/var/lib/containerd/
-</span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a># Output should look like below, which shows the directory on the
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a># /dev/nvme1n1 volume and NOT on /dev/nvme0n1 (root volume)
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>Filesystem     1K-blocks    Used Available Use% Mounted on
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>/dev/nvme1n1    24594768 2886716  20433380  13% /var/lib/containerd
-</span></code></pre></div>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>df<span class="w"> </span>/run/containerd/
-</span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a># Output should look like below, which shows the directory on the
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a># /dev/nvme1n1 volume and NOT on /dev/nvme0n1 (root volume)
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>Filesystem     1K-blocks    Used Available Use% Mounted on
-</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>/dev/nvme1n1    24594768 2886716  20433380  13% /run/containerd
-</span></code></pre></div>
-</li>
-<li>
-<p>Test by listing velero resources provisioned:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>all<span class="w"> </span>-n<span class="w"> </span>velero
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
-</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="c1"># Output should look similar to below</span>
-</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>NAME<span class="w">                         </span>READY<span class="w">   </span>STATUS<span class="w">    </span>RESTARTS<span class="w">   </span>AGE
-</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>pod/velero-b4d8fd5c7-5smp6<span class="w">   </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>112s
-</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>
-</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>NAME<span class="w">             </span>TYPE<span class="w">        </span>CLUSTER-IP<span class="w">       </span>EXTERNAL-IP<span class="w">   </span>PORT<span class="o">(</span>S<span class="o">)</span><span class="w">    </span>AGE
-</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>service/velero<span class="w">   </span>ClusterIP<span class="w">   </span><span class="m">172</span>.20.217.203<span class="w">   </span>&lt;none&gt;<span class="w">        </span><span class="m">8085</span>/TCP<span class="w">   </span>114s
-</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>
-</span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>NAME<span class="w">                     </span>READY<span class="w">   </span>UP-TO-DATE<span class="w">   </span>AVAILABLE<span class="w">   </span>AGE
-</span><span id="__span-11-11"><a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>deployment.apps/velero<span class="w">   </span><span class="m">1</span>/1<span class="w">     </span><span class="m">1</span><span class="w">            </span><span class="m">1</span><span class="w">           </span>114s
-</span><span id="__span-11-12"><a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>
-</span><span id="__span-11-13"><a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>NAME<span class="w">                               </span>DESIRED<span class="w">   </span>CURRENT<span class="w">   </span>READY<span class="w">   </span>AGE
-</span><span id="__span-11-14"><a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a>replicaset.apps/velero-b4d8fd5c7<span class="w">   </span><span class="m">1</span><span class="w">         </span><span class="m">1</span><span class="w">         </span><span class="m">1</span><span class="w">       </span>114s
-</span></code></pre></div>
-</li>
-<li>
-<p>Get backup location using velero <a href="https://velero.io/docs/v1.8/basic-install/#install-the-cli">CLI</a></p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>velero<span class="w"> </span>backup-location<span class="w"> </span>get
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>
-</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="c1"># Output should look similar to below</span>
-</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>NAME<span class="w">      </span>PROVIDER<span class="w">   </span>BUCKET/PREFIX<span class="w">             </span>PHASE<span class="w">       </span>LAST<span class="w"> </span>VALIDATED<span class="w">                  </span>ACCESS<span class="w"> </span>MODE<span class="w">   </span>DEFAULT
-</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>default<span class="w">   </span>aws<span class="w">        </span>velero-ssqwm44hvofzb32d<span class="w">   </span>Available<span class="w">   </span><span class="m">2022</span>-05-22<span class="w"> </span><span class="m">10</span>:53:26<span class="w"> </span>-0400<span class="w"> </span>EDT<span class="w">   </span>ReadWrite<span class="w">     </span><span class="nb">true</span>
-</span></code></pre></div>
-</li>
-</ol>
-<h2 id="destroy">Destroy<a class="headerlink" href="#destroy" title="Permanent link">&para;</a></h2>
-<!-- BEGIN INCLUDE ../../docs/_partials/destroy.md -->
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints_addons&quot;</span><span class="w"> </span>-auto-approve
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks&quot;</span><span class="w"> </span>-auto-approve
-</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
-</span></code></pre></div>
-<p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#destroy">here</a> for more details on cleaning up the resources created.</p>
-<!-- END INCLUDE -->
-
 <!-- END INCLUDE -->
 
 
