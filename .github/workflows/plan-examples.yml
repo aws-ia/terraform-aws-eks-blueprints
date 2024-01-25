@@ -71,7 +71,7 @@ jobs:
         if: "!contains(github.event_name, 'pull_request')"
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
 
-      - uses: dorny/paths-filter@v2
+      - uses: dorny/paths-filter@v3
         id: changes
         with:
           # Need to check not only the example directory
