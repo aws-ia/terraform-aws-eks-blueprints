@@ -52,10 +52,13 @@ Expected result:
 First destroy the CloudFormation template:
 ```
 cd run-me-in-24h/
-terraform destroy
+terraform destroy --auto-approve
 ```
 
 ```
 cd ..
-terraform destroy --var="kubecost_token=<your-kubecost-token>"
+terraform destroy -target="module.eks_blueprints_addon" --var="kubecost_token=<your-kubecost-token>" -auto-approve
+terraform destroy -target="module.eks_blueprints_addons" 
+terraform destroy -target="module.eks" -auto-approve
+terraform destroy -auto-approve
 ```
