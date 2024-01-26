@@ -48,7 +48,7 @@ resource "time_sleep" "wait_60_seconds" {
 resource "aws_cloudformation_stack" "athena_integration" {
   count = fileexists("${path.module}/crawler-cfn.yml") ? 1 : 0
 
-  name  = "kubecost"
+  name          = "kubecost"
   template_body = try(file("${path.module}/crawler-cfn.yml"), null)
   capabilities  = ["CAPABILITY_IAM"]
 
