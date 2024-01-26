@@ -10,13 +10,13 @@
         <meta name="author" content="AWS">
       
       
-        <link rel="canonical" href="https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/ipv6-eks-cluster/">
+        <link rel="canonical" href="https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/kubecost/">
       
       
-        <link rel="prev" href="../gitops-multi-cluster-hub-spoke-argocd/">
+        <link rel="prev" href="../karpenter/">
       
       
-        <link rel="next" href="../istio-multi-cluster/">
+        <link rel="next" href="../multi-tenancy-with-teams/">
       
       
       <link rel="icon" href="../../images/colored-logo.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>IPv6 Networking - Amazon EKS Blueprints for Terraform</title>
+        <title>Kubecost - Amazon EKS Blueprints for Terraform</title>
       
     
     
@@ -116,7 +116,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#amazon-eks-cluster-w-ipv6-networking" class="md-skip">
+        <a href="#kubecost-with-aws-cloud-billing-integration" class="md-skip">
           Skip to content
         </a>
       
@@ -155,7 +155,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              IPv6 Networking
+              Kubecost
             
           </span>
         </div>
@@ -541,29 +541,9 @@
                 
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    IPv6 Networking
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../ipv6-eks-cluster/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -572,47 +552,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#deploy" class="md-nav__link">
-    Deploy
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#validate" class="md-nav__link">
-    Validate
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#destroy" class="md-nav__link">
-    Destroy
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -682,9 +621,29 @@
                 
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../kubecost/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Kubecost
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -693,6 +652,33 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    Prerequisites
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1133,22 +1119,8 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#deploy" class="md-nav__link">
-    Deploy
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#validate" class="md-nav__link">
-    Validate
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#destroy" class="md-nav__link">
-    Destroy
+  <a href="#prerequisites" class="md-nav__link">
+    Prerequisites
   </a>
   
 </li>
@@ -1171,47 +1143,51 @@
   
 
 
-<!-- BEGIN INCLUDE ../../patterns/ipv6-eks-cluster/README.md -->
-<h1 id="amazon-eks-cluster-w-ipv6-networking">Amazon EKS Cluster w/ IPv6 Networking<a class="headerlink" href="#amazon-eks-cluster-w-ipv6-networking" title="Permanent link">&para;</a></h1>
-<p>This pattern demonstrates an EKS cluster that utilizes IPv6 networking.</p>
-<h2 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h2>
-<p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#prerequisites">here</a> for the prerequisites and steps to deploy this pattern.</p>
-<h2 id="validate">Validate<a class="headerlink" href="#validate" title="Permanent link">&para;</a></h2>
-<ol>
-<li>
-<p>Test by listing all the pods running currently; the <code>IP</code> should be an IPv6 address.</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-A<span class="w"> </span>-o<span class="w"> </span>wide
+<!-- BEGIN INCLUDE ../../patterns/kubecost/README.md -->
+<h1 id="kubecost-with-aws-cloud-billing-integration">Kubecost with AWS Cloud Billing Integration<a class="headerlink" href="#kubecost-with-aws-cloud-billing-integration" title="Permanent link">&para;</a></h1>
+<p>This pattern demostrates how to install and configure Kubecost with AWS CUR report.
+The terraform code was created following the official Kubecost documentation for <a href="https://docs.kubecost.com/install-and-configure/install/cloud-integration/aws-cloud-integrations">aws cloud billing integration</a>.</p>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
+<p>You need a valid Kubecost token. To generate one, follow the instructions <a href="https://www.kubecost.com/install#show-instructions">here</a>.</p>
+<h1 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h1>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>terraform init
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>terraform apply -target=&quot;module.vpc&quot; -auto-approve
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>terraform apply -target=&quot;module.eks&quot; -auto-approve
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>terraform apply -auto-approve --var=&quot;kubecost_token=&lt;your-kubecost-token&gt;&quot;
 </span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a># Output should look like below
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>NAMESPACE     NAME                       READY   STATUS    RESTARTS   AGE     IP                                       NODE                                        NOMINATED NODE   READINESS GATES
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>kube-system   aws-node-bhd2s             1/1     Running   0          3m5s    2600:1f13:6c4:a703:ecf8:3ac1:76b0:9303   ip-10-0-10-183.us-west-2.compute.internal   &lt;none&gt;           &lt;none&gt;
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>kube-system   aws-node-nmdgq             1/1     Running   0          3m21s   2600:1f13:6c4:a705:a929:f8d4:9350:1b20   ip-10-0-12-188.us-west-2.compute.internal   &lt;none&gt;           &lt;none&gt;
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>kube-system   coredns-799c5565b4-6wxrc   1/1     Running   0          10m     2600:1f13:6c4:a705:bbda::                ip-10-0-12-188.us-west-2.compute.internal   &lt;none&gt;           &lt;none&gt;
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>kube-system   coredns-799c5565b4-fjq4q   1/1     Running   0          10m     2600:1f13:6c4:a705:bbda::1               ip-10-0-12-188.us-west-2.compute.internal   &lt;none&gt;           &lt;none&gt;
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>kube-system   kube-proxy-58tp7           1/1     Running   0          4m25s   2600:1f13:6c4:a703:ecf8:3ac1:76b0:9303   ip-10-0-10-183.us-west-2.compute.internal   &lt;none&gt;           &lt;none&gt;
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>kube-system   kube-proxy-hqkgw           1/1     Running   0          4m25s   2600:1f13:6c4:a705:a929:f8d4:9350:1b20   ip-10-0-12-188.us-west-2.compute.internal   &lt;none&gt;           &lt;none&gt;
+<p>Once all of the resources have successfully been provisioned, the following command can be used to update the <code>kubeconfig</code> on your local machine and allow you to interact with your EKS Cluster using <code>kubectl</code>.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a> aws eks --region &lt;REGION&gt; update-kubeconfig --name &lt;CLUSTER_NAME&gt;
 </span></code></pre></div>
-</li>
-<li>
-<p>Test by listing all the nodes running currently; the <code>INTERNAL-IP</code> should be an IPv6 address.</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl<span class="w"> </span>nodes<span class="w"> </span>-A<span class="w"> </span>-o<span class="w"> </span>wide
+<p>This command will create a S3 bucket with prefix <code>kubecost-</code> and a Cost and Usage Report (CUR). Within 24h The CUR will generate a CloudFormation teamplate file called <code>crawler-cfn.yml</code> in the S3 bucket. Once that file is generated, navigate to:</p>
+<p><div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>cd run-me-in-24h/
 </span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a># Output should look like below
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>NAME                                        STATUS   ROLES    AGE     VERSION               INTERNAL-IP                              EXTERNAL-IP   OS-IMAGE         KERNEL-VERSION                 CONTAINER-RUNTIME
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>ip-10-0-10-183.us-west-2.compute.internal   Ready    &lt;none&gt;   4m57s   v1.24.7-eks-fb459a0   2600:1f13:6c4:a703:ecf8:3ac1:76b0:9303   &lt;none&gt;        Amazon Linux 2   5.4.226-129.415.amzn2.x86_64   containerd://1.6.6
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>ip-10-0-12-188.us-west-2.compute.internal   Ready    &lt;none&gt;   4m57s   v1.24.7-eks-fb459a0   2600:1f13:6c4:a705:a929:f8d4:9350:1b20   &lt;none&gt;        Amazon Linux 2   5.4.226-129.415.amzn2.x86_64   containerd://1.6.6
+To download and apply the CloudFormation template, run:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>terraform init
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>terraform apply --auto-approve
+</span></code></pre></div></p>
+<h2 id="kubecost-ui">Kubecost UI<a class="headerlink" href="#kubecost-ui" title="Permanent link">&para;</a></h2>
+<p>To access the Kubecost UI run:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>echo http://$(kubectl -n kubecost get svc cost-analyzer-cost-analyzer -o jsonpath=&#39;{.status.loadBalancer.ingress[0].hostname}&#39;):9090/
 </span></code></pre></div>
-</li>
-</ol>
+and navigate to the output URL.</p>
+<p>Navigate to Settings -&gt; Diagnostics -&gt; View Full Diagnostics</p>
+<p>Expected result:
+<img alt="screenshot" src="../../patterns/kubecost/static/screenshot.png" /></p>
+<blockquote>
+<p>[!NOTE]<br />
+Spot Data Feed is included in Savings Plan, Reserved Instance, and Out-Of-Cluster.</p>
+</blockquote>
 <h2 id="destroy">Destroy<a class="headerlink" href="#destroy" title="Permanent link">&para;</a></h2>
-<!-- BEGIN INCLUDE ../../docs/_partials/destroy.md -->
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints_addons&quot;</span><span class="w"> </span>-auto-approve
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks&quot;</span><span class="w"> </span>-auto-approve
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
+<p>First destroy the CloudFormation template:
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>cd run-me-in-24h/
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>terraform destroy --auto-approve
+</span></code></pre></div></p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>cd ..
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>terraform destroy -target=&quot;module.eks_blueprints_addon&quot; --var=&quot;kubecost_token=&lt;your-kubecost-token&gt;&quot; -auto-approve
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>terraform destroy -target=&quot;module.eks_blueprints_addons&quot;
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>terraform destroy -target=&quot;module.eks&quot; -auto-approve
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>terraform destroy -auto-approve
 </span></code></pre></div>
-<p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#destroy">here</a> for more details on cleaning up the resources created.</p>
-<!-- END INCLUDE -->
-
 <!-- END INCLUDE -->
 
 

@@ -96,6 +96,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/kubecost/</loc>
+         <lastmod>2024-01-26</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/multi-tenancy-with-teams/</loc>
          <lastmod>2024-01-26</lastmod>
          <changefreq>daily</changefreq>
