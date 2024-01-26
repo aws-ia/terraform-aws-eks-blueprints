@@ -29,7 +29,8 @@ cd run-me-in-24h/
 ```
 To download and apply the CloudFormation template, run:
 ```
-terraform apply
+terraform init
+terraform apply --auto-approve
 ```
 
 ## Kubecost UI
