@@ -3,5 +3,5 @@ title: Karpenter
 ---
 
 {%
-   include-markdown "../../patterns/kubecost/README.md"
+   include-markdown "../../patterns/karpenter/README.md"
 %}
