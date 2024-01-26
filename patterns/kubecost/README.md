@@ -16,7 +16,7 @@ terraform apply -target="module.eks" -auto-approve
 terraform apply -auto-approve --var="kubecost_token=<your-kubecost-token>"
 ```
 
-Once all of the resources have successfully been provisioned, the following command can be used to update the `kubeconfig` on your local machine and allow you to interact with your EKS Cluster using `kubectl`. 
+Once all of the resources have successfully been provisioned, the following command can be used to update the `kubeconfig` on your local machine and allow you to interact with your EKS Cluster using `kubectl`.
 
 ```
  aws eks --region <REGION> update-kubeconfig --name <CLUSTER_NAME>
@@ -58,7 +58,7 @@ terraform destroy --auto-approve
 ```
 cd ..
 terraform destroy -target="module.eks_blueprints_addon" --var="kubecost_token=<your-kubecost-token>" -auto-approve
-terraform destroy -target="module.eks_blueprints_addons" 
+terraform destroy -target="module.eks_blueprints_addons"
 terraform destroy -target="module.eks" -auto-approve
 terraform destroy -auto-approve
 ```
