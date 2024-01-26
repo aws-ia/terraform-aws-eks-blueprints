@@ -1,8 +1,25 @@
+terraform {
+  required_version = ">= 1.0"
+
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.47"
+    }
+    time = {
+      source = "hashicorp/time"
+      version = "0.10.0"
+    }
+    null = {
+      source = "hashicorp/null"
+      version = "3.2.2"
+    }
+  }
+}
+
 provider "aws" {
   region = local.region
 }
-data "aws_caller_identity" "current" {}
-data "aws_availability_zones" "available" {}
 
 data "terraform_remote_state" "main" {
   backend = "local"
@@ -25,7 +42,7 @@ locals {
 
 resource "null_resource" "download_file" {
   triggers = {
-    always_run = "${timestamp()}"
+    always_run = timestamp()
   }
 
   provisioner "local-exec" {
