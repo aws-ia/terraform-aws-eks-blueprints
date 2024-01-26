@@ -1,5 +1,5 @@
 ---
-title: Karpenter
+title: Kubecost
 ---
 
 {%
