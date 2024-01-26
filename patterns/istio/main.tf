@@ -38,7 +38,7 @@ locals {
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
   istio_chart_url     = "https://istio-release.storage.googleapis.com/charts"
-  istio_chart_version = "1.18.1"
+  istio_chart_version = "1.20.2"
 
   tags = {
     Blueprint  = local.name
@@ -55,7 +55,7 @@ module "eks" {
   version = "~> 19.16"
 
   cluster_name                   = local.name
-  cluster_version                = "1.27"
+  cluster_version                = "1.28"
   cluster_endpoint_public_access = true
 
   cluster_addons = {
