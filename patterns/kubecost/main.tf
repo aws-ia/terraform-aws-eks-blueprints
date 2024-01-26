@@ -333,7 +333,7 @@ data "aws_iam_policy_document" "athena" {
       "s3:PutObject"
     ]
     resources = [
-      "${aws_s3_bucket.athena_results.arn}",
+      aws_s3_bucket.athena_results.arn,
       "${aws_s3_bucket.athena_results.arn}/*"
     ]
   }
