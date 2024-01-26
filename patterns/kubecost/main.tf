@@ -346,7 +346,7 @@ data "aws_iam_policy_document" "athena" {
       "s3:Get*"
     ]
     resources = [
-      "${aws_s3_bucket.cur.arn}",
+      aws_s3_bucket.cur.arn,
       "${aws_s3_bucket.cur.arn}/*"
     ]
   }
