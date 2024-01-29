@@ -35,7 +35,6 @@ module "eks" {
     vpc-cni = {
       most_recent              = true
       before_compute           = true
-      service_account_role_arn = module.vpc_cni_irsa.iam_role_arn
     }
   }
 
@@ -98,41 +97,12 @@ module "eks" {
 
             [settings.kubernetes.node-labels]
             "foo" = "bar"
+            "bottlerocket.aws/updater-interface-version" = "2.0.0" 
+
+            [settings.kubernetes.node-taints]
+            "CriticalAddonsOnly" = "true:NoSchedule"
 
           EOT
-
-      labels = {
-        Blueprint                                    = local.name
-        GithubRepo                                   = "github.com/aws-ia/terraform-aws-eks-blueprints"
-        "bottlerocket.aws/updater-interface-version" = "2.0.0" # Comment this line if you don't want to automatically label nodes for Bottlerocket Update Operator
-      }
-
-      taints = [
-        {
-          key    = "nvidia.com/gpu"
-          value  = "true"
-          effect = "NO_SCHEDULE"
-        }
-      ]
-
-    }
-  }
-
-  tags = local.tags
-}
-
-module "vpc_cni_irsa" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.0"
-
-  role_name_prefix      = "VPC-CNI-IRSA"
-  attach_vpc_cni_policy = true
-  vpc_cni_enable_ipv4   = true
-
-  oidc_providers = {
-    main = {
-      provider_arn               = module.eks.oidc_provider_arn
-      namespace_service_accounts = ["kube-system:aws-node"]
     }
   }
 
