@@ -18,7 +18,7 @@ ip-10-0-26-48.us-west-2.compute.internal    Ready    <none>   7m23s   v1.27.4-ek
 ip-10-0-43-187.us-west-2.compute.internal   Ready    <none>   7m19s   v1.27.4-eks-cedffd4
 ```
 
-* Check for the Label `"bottlerocket.aws/updater-interface-version" = "2.0.0" ` that is set to all the Nodes in the MNG. This Label is responsible to mark the Nodes that will have updates managed by BRUPOP.
+* Check for the Label `"bottlerocket.aws/updater-interface-version"="2.0.0"` that is set to all the Nodes in the MNG. This Label is responsible to mark the Nodes that will have updates managed by BRUPOP.
 
 ```bash
 $ kubectl get nodes -L bottlerocket.aws/updater-interface-version
