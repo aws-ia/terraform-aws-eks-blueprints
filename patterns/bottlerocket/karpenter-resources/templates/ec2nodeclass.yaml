@@ -4,25 +4,25 @@ metadata:
   name: default
 spec:
   amiFamily: Bottlerocket
-  role: ${split("/", module.eks_blueprints_addons.karpenter.node_iam_role_arn)[1]}
+  role: {{- toYaml .Values.ec2nodeclass.role | nindent 4 }}
   securityGroupSelectorTerms:
   - tags:
-      karpenter.sh/discovery: ${module.eks.cluster_name}
+      karpenter.sh/discovery: {{ .Values.ec2nodeclass.securityGroupSelectorTerms.tags }}
   subnetSelectorTerms:
   - tags:
-      karpenter.sh/discovery: ${module.eks.cluster_name}
+      karpenter.sh/discovery: {{ .Values.ec2nodeclass.subnetSelectorTerms.tags }}
   tags:
-    karpenter.sh/discovery: ${module.eks.cluster_name}
+    karpenter.sh/discovery: {{ .Values.ec2nodeclass.tags }}
   blockDeviceMappings:
     - deviceName: /dev/xvda
       ebs:
         encrypted: true
-        kmsKeyID: ${module.ebs_kms_key.key_arn}
+        kmsKeyID: {{ .Values.ec2nodeclass.blockDeviceMappings.ebs.kmsKeyID }}
         deleteOnTermination: true
-        volumeSize: 2Gi
+        volumeSize: 4Gi
     - deviceName: /dev/xvdb
       ebs:
         encrypted: true
-        kmsKeyID: ${module.ebs_kms_key.key_arn}
+        kmsKeyID: {{ .Values.ec2nodeclass.blockDeviceMappings.ebs.kmsKeyID }}
         deleteOnTermination: true
         volumeSize: 20Gi

@@ -9,9 +9,6 @@ spec:
   limits:
     cpu: 1k
   template:
-    metadata:
-      labels:
-        bottlerocket.aws/updater-interface-version: 2.0.0
     spec:
       kubelet:
         maxPods: 110

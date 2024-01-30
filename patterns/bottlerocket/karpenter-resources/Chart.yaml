@@ -1,5 +1,4 @@
 apiVersion: v2
-name: application
-description: A Helm chart to deploy an example application
-type: application
+name: karpenter-resources
+description: Helm chart to deploy Karpenter resources
 version: 0.0.1

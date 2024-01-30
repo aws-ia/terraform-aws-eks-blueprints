@@ -33,12 +33,22 @@ module "eks" {
       most_recent = true
     }
     vpc-cni = {
-      most_recent              = true
-      before_compute           = true
+      most_recent    = true
+      before_compute = true
     }
   }
 
   manage_aws_auth_configmap = true
+  aws_auth_roles = [
+    {
+      rolearn  = module.eks_blueprints_addons.karpenter.node_iam_role_arn
+      username = "system:node:{{EC2PrivateDNSName}}"
+      groups = [
+        "system:bootstrappers",
+        "system:nodes",
+      ]
+    },
+  ]
 
   eks_managed_node_group_defaults = {
     ami_type       = "BOTTLEROCKET_x86_64"
@@ -96,7 +106,6 @@ module "eks" {
             lockdown = "integrity"
 
             [settings.kubernetes.node-labels]
-            "foo" = "bar"
             "bottlerocket.aws/updater-interface-version" = "2.0.0" 
 
             [settings.kubernetes.node-taints]
@@ -106,7 +115,9 @@ module "eks" {
     }
   }
 
-  tags = local.tags
+  tags = merge(local.tags, {
+    "karpenter.sh/discovery" = local.name
+  })
 }
 
 module "ebs_kms_key" {
@@ -123,6 +134,7 @@ module "ebs_kms_key" {
   key_service_roles_for_autoscaling = [
     "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling",
     module.eks.cluster_iam_role_arn,
+    module.eks_blueprints_addons.karpenter.iam_role_arn
   ]
 
   aliases = ["eks/${local.name}/ebs"]
