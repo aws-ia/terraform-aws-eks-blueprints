@@ -8,14 +8,14 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
 
 ## Validate
 
-* List all Nodes in the cluster. You should see three Nodes that belongs to the defined MNG, and should be in the `v1.27.4-eks-cedffd4` version since we are using a specific AMI ID to test the BRUPOP.
+* List all Nodes in the cluster. You should see three Nodes that belongs to the defined MNG, and should be in the `v1.28.1-eks-f0272c7` version since we are using a specific AMI ID to test the BRUPOP.
 
 ```bash
 $ kubectl get nodes  
 NAME                                        STATUS   ROLES    AGE     VERSION
-ip-10-0-2-29.us-west-2.compute.internal     Ready    <none>   7m24s   v1.27.4-eks-cedffd4
-ip-10-0-26-48.us-west-2.compute.internal    Ready    <none>   7m23s   v1.27.4-eks-cedffd4
-ip-10-0-43-187.us-west-2.compute.internal   Ready    <none>   7m19s   v1.27.4-eks-cedffd4
+ip-10-0-2-29.us-west-2.compute.internal     Ready    <none>   7m24s   v1.28.1-eks-f0272c7
+ip-10-0-26-48.us-west-2.compute.internal    Ready    <none>   7m23s   v1.28.1-eks-f0272c7
+ip-10-0-43-187.us-west-2.compute.internal   Ready    <none>   7m19s   v1.28.1-eks-f0272c7
 ```
 
 * Check for the Label `"bottlerocket.aws/updater-interface-version"="2.0.0"` that is set to all the Nodes in the MNG. This Label is responsible to mark the Nodes that will have updates managed by BRUPOP.
@@ -23,9 +23,9 @@ ip-10-0-43-187.us-west-2.compute.internal   Ready    <none>   7m19s   v1.27.4-ek
 ```bash
 $ kubectl get nodes -L bottlerocket.aws/updater-interface-version
 NAME                                        STATUS   ROLES    AGE   VERSION               UPDATER-INTERFACE-VERSION
-ip-10-0-2-29.us-west-2.compute.internal     Ready    <none>   79m   v1.27.4-eks-cedffd4   2.0.0
-ip-10-0-26-48.us-west-2.compute.internal    Ready    <none>   79m   v1.27.4-eks-cedffd4   2.0.0
-ip-10-0-43-187.us-west-2.compute.internal   Ready    <none>   79m   v1.27.4-eks-cedffd4   2.0.0
+ip-10-0-2-29.us-west-2.compute.internal     Ready    <none>   79m   v1.28.1-eks-f0272c7   2.0.0
+ip-10-0-26-48.us-west-2.compute.internal    Ready    <none>   79m   v1.28.1-eks-f0272c7   2.0.0
+ip-10-0-43-187.us-west-2.compute.internal   Ready    <none>   79m   v1.28.1-eks-f0272c7   2.0.0
 ```
 
 * Validate if all the Pods are in Running status, and Ready.
@@ -64,28 +64,28 @@ kube-system               kube-proxy-jwcqp                                1/1   
     }]
 ```
 
-Describe any Node with the `v1.27.4-eks-cedffd4` version.
+Describe any Node with the `v1.28.1-eks-f0272c7` version.
 
 ```bash
 $ kubectl describe node ip-10-0-43-187.us-west-2.compute.internal | grep Image
-  OS Image:                   Bottlerocket OS 1.15.1 (aws-k8s-1.27)
+  OS Image:                   Bottlerocket OS 1.15.1 (aws-k8s-1.28)
 ```
 
-Wait until the next full hour and check that one of the Nodes were updated to a newer version without downtime, in this example, `v1.27.8-eks-75169ff`.
+Wait until the next full hour and check that one of the Nodes were updated to a newer version without downtime, in this example, `v1.28.4-eks-d91a302`.
 
 ```bash
 $ kubectl get nodes
 NAME                                        STATUS   ROLES    AGE   VERSION
-ip-10-0-2-29.us-west-2.compute.internal     Ready    <none>   83m   v1.27.8-eks-75169ff
-ip-10-0-26-48.us-west-2.compute.internal    Ready    <none>   83m   v1.27.4-eks-75169ff
-ip-10-0-43-187.us-west-2.compute.internal   Ready    <none>   83m   v1.27.4-eks-cedffd4
+ip-10-0-2-29.us-west-2.compute.internal     Ready    <none>   83m   v1.28.4-eks-d91a302
+ip-10-0-26-48.us-west-2.compute.internal    Ready    <none>   83m   v1.28.1-eks-f0272c7
+ip-10-0-43-187.us-west-2.compute.internal   Ready    <none>   83m   v1.28.1-eks-f0272c7
 ```
 
-Describe the Node with the `v1.27.8-eks-75169ff` version.
+Describe the Node with the `v1.28.4-eks-d91a302` version.
 
 ```bash
 $ kubectl describe node ip-10-0-2-29.us-west-2.compute.internal | grep Image
-  OS Image:                   Bottlerocket OS 1.18.0 (aws-k8s-1.27)
+  OS Image:                   Bottlerocket OS 1.18.0 (aws-k8s-1.28)
 ```
 
 * In the Karpenter's EC2NodeClass configuration, the default OS is also set to Bottlerocket, but in it's latest version, and the label to perform automated updates is not set, since Karpenter is configured to expire the Nodes every 24 hours.
@@ -93,18 +93,18 @@ $ kubectl describe node ip-10-0-2-29.us-west-2.compute.internal | grep Image
 ```bash
 kubectl describe ec2nodeclasses.karpenter.k8s.aws default | grep Status -A50 | egrep 'Amis|Id|Name'
   Amis:
-    Id:    ami-0c4bb4696a144016a
-    Name:  bottlerocket-aws-k8s-1.27-nvidia-x86_64-v1.18.0-7452c37e
-    Id:          ami-0c4bb4696a144016a
-    Name:        bottlerocket-aws-k8s-1.27-nvidia-x86_64-v1.18.0-7452c37e
-    Id:          ami-0098fe4a512ff1e38
-    Name:        bottlerocket-aws-k8s-1.27-nvidia-aarch64-v1.18.0-7452c37e
-    Id:          ami-0098fe4a512ff1e38
-    Name:        bottlerocket-aws-k8s-1.27-nvidia-aarch64-v1.18.0-7452c37e
-    Id:          ami-0854001d0bbfc98a6
-    Name:        bottlerocket-aws-k8s-1.27-x86_64-v1.18.0-7452c37e
-    Id:          ami-0e494f9d930b6d2a0
-    Name:        bottlerocket-aws-k8s-1.27-aarch64-v1.18.0-7452c37e
+    Id:    ami-01b71889c3f284b0a
+    Name:  bottlerocket-aws-k8s-1.28-x86_64-v1.18.0-7452c37e
+    Id:          ami-0ce0c1aa90b150d58
+    Name:        bottlerocket-aws-k8s-1.28-nvidia-x86_64-v1.18.0-7452c37e
+    Id:          ami-0ce0c1aa90b150d58
+    Name:        bottlerocket-aws-k8s-1.28-nvidia-x86_64-v1.18.0-7452c37e
+    Id:          ami-051b2c0f7fbcb46f0
+    Name:        bottlerocket-aws-k8s-1.28-nvidia-aarch64-v1.18.0-7452c37e
+    Id:          ami-051b2c0f7fbcb46f0
+    Name:        bottlerocket-aws-k8s-1.28-nvidia-aarch64-v1.18.0-7452c37e
+    Id:          ami-0e0f7fff616a55a1c
+    Name:        bottlerocket-aws-k8s-1.28-aarch64-v1.18.0-7452c37e
 ```
 
 To validate that, use the `kubectl` command to create an example deployment, and scale it to any desired amount of replicas. Karpenter should provision a new Node in with the latest available version for Bottlerocket.
@@ -128,13 +128,13 @@ inflate-7849c696cd-rzjzr   1/1     Running   0          49s   10.0.33.210   ip-1
 
 $ kubect get nodes
 NAME                                        STATUS                     ROLES    AGE   VERSION
-ip-10-0-2-29.us-west-2.compute.internal     Ready                      <none>   90m   v1.27.8-eks-75169ff
-ip-10-0-26-48.us-west-2.compute.internal    Ready                      <none>   90m   v1.27.4-eks-75169ff
-ip-10-0-43-187.us-west-2.compute.internal   Ready                      <none>   90m   v1.27.4-eks-75169ff
-ip-10-0-45-41.us-west-2.compute.internal    Ready                      <none>   60s   v1.27.8-eks-75169ff
+ip-10-0-2-29.us-west-2.compute.internal     Ready                      <none>   90m   v1.28.4-eks-d91a302
+ip-10-0-26-48.us-west-2.compute.internal    Ready                      <none>   90m   v1.28.1-eks-f0272c7
+ip-10-0-43-187.us-west-2.compute.internal   Ready                      <none>   90m   v1.28.1-eks-f0272c7
+ip-10-0-45-41.us-west-2.compute.internal    Ready                      <none>   60s   v1.28.4-eks-d91a302
 
 $ kubectl describe node ip-10-0-45-41.us-west-2.compute.internal | grep Image
-  OS Image:                   Bottlerocket OS 1.18.0 (aws-k8s-1.27)
+  OS Image:                   Bottlerocket OS 1.18.0 (aws-k8s-1.28)
 ```
 
 ## Destroy

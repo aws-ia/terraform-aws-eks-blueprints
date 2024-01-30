@@ -8,7 +8,7 @@ data "aws_ami" "eks_bottlerocket" {
 
   filter {
     name   = "name"
-    values = ["bottlerocket-aws-k8s-1.27-x86_64-v1.15*"]
+    values = ["bottlerocket-aws-k8s-1.28-x86_64-v1.15*"]
   }
 }
 
@@ -17,7 +17,7 @@ module "eks" {
   version = "~> 19.21"
 
   cluster_name                   = local.name
-  cluster_version                = "1.27"
+  cluster_version                = "1.28"
   cluster_endpoint_public_access = true
 
   cluster_enabled_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
