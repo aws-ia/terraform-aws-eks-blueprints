@@ -106,7 +106,7 @@ module "eks" {
             lockdown = "integrity"
 
             [settings.kubernetes.node-labels]
-            "bottlerocket.aws/updater-interface-version" = "2.0.0" 
+            "bottlerocket.aws/updater-interface-version" = "2.0.0"
 
             [settings.kubernetes.node-taints]
             "CriticalAddonsOnly" = "true:NoSchedule"
