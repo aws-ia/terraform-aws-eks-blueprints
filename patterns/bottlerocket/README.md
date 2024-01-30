@@ -8,7 +8,7 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
 
 ## Validate
 
-* List all Nodes in the cluster. You should see three Nodes that belongs to the defined MNG, and should be in the `v1.27.4-eks-cedffd4` version since we are using a specific AMI ID to teste the BRUPOP.
+* List all Nodes in the cluster. You should see three Nodes that belongs to the defined MNG, and should be in the `v1.27.4-eks-cedffd4` version since we are using a specific AMI ID to test the BRUPOP.
 
 ```bash
 $ kubectl get nodes  

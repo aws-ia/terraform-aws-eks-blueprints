@@ -1,11 +1,11 @@
 nodepool:
   zone: []
-ec2nodeclass: 
+ec2nodeclass:
   role: ""
-  securityGroupSelectorTerms: 
-    tags: 
+  securityGroupSelectorTerms:
+    tags:
        karpenter.sh/discovery: ""
-  subnetSelectorTerms: 
+  subnetSelectorTerms:
     tags:
        karpenter.sh/discovery: ""
   blockDeviceMappings:
