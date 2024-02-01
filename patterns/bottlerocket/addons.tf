@@ -59,6 +59,39 @@ module "eks_blueprints_addons" {
     version             = "v0.33"
   }
 
+  enable_bottlerocket_update_operator = true
+  bottlerocket_update_operator = {
+    set = [{
+      name  = "scheduler_cron_expression"
+      value = "0 * * * * * *" # Default Unix Cron syntax, set to check every hour. Example "0 0 23 * * Sat *" Perform update checks every Saturday at 23H / 11PM
+      },
+      {
+        name  = "placement.agent.tolerations[0].key"
+        value = "CriticalAddonsOnly"
+      },
+      {
+        name  = "placement.agent.tolerations[0].operator"
+        value = "Exists"
+      },
+      {
+        name  = "placement.controller.tolerations[0].key"
+        value = "CriticalAddonsOnly"
+      },
+      {
+        name  = "placement.controller.tolerations[0].operator"
+        value = "Exists"
+      },
+      {
+        name  = "placement.apiserver.tolerations[0].key"
+        value = "CriticalAddonsOnly"
+      },
+      {
+        name  = "placement.apiserver.tolerations[0].operator"
+        value = "Exists"
+      }
+    ]
+  }
+
   tags = local.tags
 }
 
@@ -92,61 +125,6 @@ resource "helm_release" "karpenter_resources" {
     name  = "nodepool.zone"
     value = local.azs
   }
-
-  depends_on = [module.eks_blueprints_addons]
-}
-
-module "bottlerocket_update_operator_crds" {
-  source  = "aws-ia/eks-blueprints-addon/aws"
-  version = "~> 1.1.1"
-
-  description   = "CRDs for Bottlerocket Update Operator"
-  chart         = "bottlerocket-shadow"
-  chart_version = "1.0.0"
-  repository    = "https://bottlerocket-os.github.io/bottlerocket-update-operator/"
-
-  depends_on = [module.eks_blueprints_addons]
-}
-
-module "bottlerocket_update_operator" {
-  source  = "aws-ia/eks-blueprints-addon/aws"
-  version = "~> 1.1.1"
-
-  description      = "A Helm chart for Bottlerocket Update Operator"
-  chart            = "bottlerocket-update-operator"
-  chart_version    = "1.3.0"
-  namespace        = "brupop-bottlerocket-aws"
-  create_namespace = true
-  repository       = "https://bottlerocket-os.github.io/bottlerocket-update-operator/"
-  set = [{
-    name  = "scheduler_cron_expression"
-    value = "0 * * * * * *" # Default Unix Cron syntax, set to check every hour. Example "0 0 23 * * Sat *" Perform update checks every Saturday at 23H / 11PM
-    },
-    {
-      name  = "placement.agent.tolerations[0].key"
-      value = "CriticalAddonsOnly"
-    },
-    {
-      name  = "placement.agent.tolerations[0].operator"
-      value = "Exists"
-    },
-    {
-      name  = "placement.controller.tolerations[0].key"
-      value = "CriticalAddonsOnly"
-    },
-    {
-      name  = "placement.controller.tolerations[0].operator"
-      value = "Exists"
-    },
-    {
-      name  = "placement.apiserver.tolerations[0].key"
-      value = "CriticalAddonsOnly"
-    },
-    {
-      name  = "placement.apiserver.tolerations[0].operator"
-      value = "Exists"
-    }
-  ]
 
   depends_on = [module.eks_blueprints_addons]
 }
