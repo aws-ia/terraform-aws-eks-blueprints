@@ -4,12 +4,11 @@
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.21"
+  version = "~> 20.0"
 
   cluster_name                   = local.name
-  cluster_version                = "1.28"
+  cluster_version                = "1.29"
   cluster_endpoint_public_access = true
-  enable_irsa                    = true
 
   vpc_id     = module.cluster_vpc.vpc_id
   subnet_ids = module.cluster_vpc.private_subnets
@@ -33,7 +32,7 @@ module "eks" {
 
 module "cluster_vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 5.4"
+  version = "~> 5.0"
 
   name = local.name
   cidr = local.cluster_vpc_cidr

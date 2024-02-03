@@ -2,18 +2,6 @@ provider "aws" {
   region = local.region
 }
 
-provider "kubernetes" {
-  host                   = module.eks.cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-
-  exec {
-    api_version = "client.authentication.k8s.io/v1beta1"
-    command     = "aws"
-    # This requires the awscli to be installed locally where Terraform is executed
-    args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
-  }
-}
-
 provider "helm" {
   kubernetes {
     host                   = module.eks.cluster_endpoint
@@ -66,10 +54,10 @@ locals {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.16"
+  version = "~> 20.0"
 
   cluster_name                   = local.name
-  cluster_version                = "1.27"
+  cluster_version                = "1.29"
   cluster_endpoint_public_access = true
 
   vpc_id     = module.vpc.vpc_id

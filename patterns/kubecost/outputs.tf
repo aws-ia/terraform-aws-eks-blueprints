@@ -15,5 +15,5 @@ output "s3_cur_report_prefix" {
 
 output "region" {
   description = "region"
-  value       = var.region
+  value       = local.region
 }
