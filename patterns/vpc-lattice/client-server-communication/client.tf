@@ -4,7 +4,7 @@
 
 module "client" {
   source  = "terraform-aws-modules/ec2-instance/aws"
-  version = "5.5.0"
+  version = "~> 5.0"
 
   name = "client"
 
@@ -90,7 +90,7 @@ module "endpoint_sg" {
 
 module "client_vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 5.4"
+  version = "~> 5.0"
 
   name = local.name
   cidr = local.client_vpc_cidr

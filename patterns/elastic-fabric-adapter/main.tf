@@ -34,7 +34,7 @@ locals {
   name   = basename(path.cwd)
   region = "us-west-2"
 
-  cluster_version = "1.27"
+  cluster_version = "1.29"
 
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
@@ -51,7 +51,7 @@ locals {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.16"
+  version = "~> 20.0"
 
   cluster_name                   = local.name
   cluster_version                = local.cluster_version
@@ -127,29 +127,6 @@ module "eks" {
         group_name = aws_placement_group.efa.name
       }
 
-      pre_bootstrap_user_data = <<-EOT
-        EFA_BIN='/opt/amazon/efa/bin/'
-
-        # EFA driver is installed by default on EKS GPU AMI starting on EKS 1.28
-        if [ ! -s "$EFA_BIN" ]; then
-
-          # Install EFA
-          # Note: It is recommended to install the EFA driver on a custom AMI and
-          # not rely on dynamic installation during instance provisioning in user data
-          curl -O https://efa-installer.amazonaws.com/aws-efa-installer-latest.tar.gz
-          tar -xf aws-efa-installer-latest.tar.gz && cd aws-efa-installer
-          ./efa_installer.sh -y --minimal
-          cd .. && rm -rf aws-efa-installer*
-
-          # Not required - just displays info on the EFA interfaces
-          $EFA_BIN/fi_info -p efa
-
-          # Disable ptrace
-          sysctl -w kernel.yama.ptrace_scope=0
-
-        fi
-      EOT
-
       taints = {
         dedicated = {
           key    = "nvidia.com/gpu"
@@ -169,7 +146,7 @@ module "eks" {
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "~> 1.0"
+  version = "~> 1.14"
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
@@ -275,7 +252,7 @@ resource "kubernetes_daemonset" "aws_efa_k8s_device_plugin" {
 
         container {
           name  = "aws-efa-k8s-device-plugin"
-          image = "602401143452.dkr.ecr.us-west-2.amazonaws.com/eks/aws-efa-k8s-device-plugin:v0.3.3"
+          image = "602401143452.dkr.ecr.us-west-2.amazonaws.com/eks/aws-efa-k8s-device-plugin:v0.4.3"
 
           volume_mount {
             name       = "device-plugin"

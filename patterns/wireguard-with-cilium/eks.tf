@@ -4,10 +4,10 @@
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.16"
+  version = "~> 20.0"
 
   cluster_name                   = local.name
-  cluster_version                = "1.28"
+  cluster_version                = "1.29"
   cluster_endpoint_public_access = true
 
   # EKS Addons
@@ -60,7 +60,7 @@ output "configure_kubectl" {
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "~> 1.7"
+  version = "~> 1.14"
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
