@@ -90,7 +90,7 @@ kubectl get pods -A
 NAMESPACE     NAME                       READY   STATUS    RESTARTS   AGE
 kube-system   aws-node-4f8g8             1/1     Running   0          1m
 kube-system   coredns-6ff9c46cd8-59sqp   1/1     Running   0          1m
-kube-system   coredns-6ff9c46cd8-svnpb   1/1     Running   0          2m
+kube-system   coredns-6ff9c46cd8-1npb   1/1     Running   0          2m
 kube-system   kube-proxy-mm2zc           1/1     Running   0          1m
 ```
 

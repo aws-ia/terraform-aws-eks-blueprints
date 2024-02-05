@@ -159,7 +159,7 @@ The following command will update the `kubeconfig` on your local machine and all
 
     # Output should look similar to below
     NAME      PROVIDER   BUCKET/PREFIX             PHASE       LAST VALIDATED                  ACCESS MODE   DEFAULT
-    default   aws        velero-ssqwm44hvofzb32d   Available   2022-05-22 10:53:26 -0400 EDT   ReadWrite     true
+    default   aws        velero-ss1wm44hv1fzb32d   Available   2022-05-22 10:53:26 -0400 EDT   ReadWrite     true
     ```
 
 ## Destroy

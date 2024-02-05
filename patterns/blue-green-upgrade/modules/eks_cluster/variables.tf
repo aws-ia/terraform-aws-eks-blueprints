@@ -12,7 +12,7 @@ variable "environment_name" {
 
 variable "ingress_type" {
   type        = string
-  description = "Type of ingress to uses (alb | nginx | ...). this parameter will be sent to arocd via gitops bridge"
+  description = "Type of ingress to uses (alb | nginx | ...). this parameter will be sent to argocd via gitops bridge"
   default     = "alb"
 }
 
@@ -109,7 +109,7 @@ variable "argocd_route53_weight" {
 }
 
 variable "ecsfrontend_route53_weight" {
-  description = "The Route53 weighted records weight for ecsdeo-frontend application"
+  description = "The Route53 weighted records weight for ecsdemo-frontend application"
   type        = string
   default     = "100"
 }

@@ -1,3 +1,4 @@
+---
 # Copyright Istio Authors
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,8 +30,8 @@ metadata:
     service: sleep
 spec:
   ports:
-  - port: 80
-    name: http
+    - port: 80
+      name: http
   selector:
     app: sleep
 ---
@@ -51,16 +52,16 @@ spec:
       terminationGracePeriodSeconds: 0
       serviceAccountName: sleep
       containers:
-      - name: sleep
-        image: curlimages/curl
-        command: ["/bin/sleep", "infinity"]
-        imagePullPolicy: IfNotPresent
-        volumeMounts:
-        - mountPath: /etc/sleep/tls
-          name: secret-volume
+        - name: sleep
+          image: curlimages/curl
+          command: ["/bin/sleep", "infinity"]
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - mountPath: /etc/sleep/tls
+              name: secret-volume
       volumes:
-      - name: secret-volume
-        secret:
-          secretName: sleep-secret
-          optional: true
+        - name: secret-volume
+          secret:
+            secretName: sleep-secret
+            optional: true
 ---

@@ -34,12 +34,12 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
     ```text
     NAMESPACE       NAME                                            READY   STATUS    RESTARTS   AGE
     app-2048        app-2048-65bd744dfb-7g9rx                       1/1     Running   0          2m34s
-    app-2048        app-2048-65bd744dfb-nxcbm                       1/1     Running   0          2m34s
+    app-2048        app-2048-65bd744dfb-n1cbm                       1/1     Running   0          2m34s
     app-2048        app-2048-65bd744dfb-z4b6z                       1/1     Running   0          2m34s
-    kube-system     aws-load-balancer-controller-6cbdb58654-fvskt   1/1     Running   0          26m
+    kube-system     aws-load-balancer-controller-6cbdb58654-f1skt   1/1     Running   0          26m
     kube-system     aws-load-balancer-controller-6cbdb58654-sc7dk   1/1     Running   0          26m
-    kube-system     coredns-7b7bddbc85-jmbv6                        1/1     Running   0          26m
-    kube-system     coredns-7b7bddbc85-rgmzq                        1/1     Running   0          26m
+    kube-system     coredns-7b7bddbc85-j1bv6                        1/1     Running   0          26m
+    kube-system     coredns-7b7bddbc85-rg2zq                        1/1     Running   0          26m
     ```
 
 3. Validate the `aws-logging` configMap for Fargate Fluentbit was created:
@@ -118,10 +118,10 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
     ```json
     [
         "fargate-logs-flblogs.var.log.fluent-bit.log",
-        "fargate-logs-kube.var.log.containers.aws-load-balancer-controller-7f989fc6c-grjsq_kube-system_aws-load-balancer-controller-feaa22b4cdaa71ecfc8355feb81d4b61ea85598a7bb57aef07667c767c6b98e4.log",
+        "fargate-logs-kube.var.log.containers.aws-load-balancer-controller-7f989fc6c-gr1sq_kube-system_aws-load-balancer-controller-feaa22b4cdaa71ecfc8355feb81d4b61ea85598a7bb57aef07667c767c6b98e4.log",
         "fargate-logs-kube.var.log.containers.aws-load-balancer-controller-7f989fc6c-wzr46_kube-system_aws-load-balancer-controller-69075ea9ab3c7474eac2a1696d3a84a848a151420cd783d79aeef960b181567f.log",
-        "fargate-logs-kube.var.log.containers.coredns-7b7bddbc85-8cxvq_kube-system_coredns-9e4f3ab435269a566bcbaa606c02c146ad58508e67cef09fa87d5c09e4ac0088.log",
-        "fargate-logs-kube.var.log.containers.coredns-7b7bddbc85-gcjwp_kube-system_coredns-11016818361cd68c32bf8f0b1328f3d92a6d7b8cf5879bfe8b301f393cb011cc.log"
+        "fargate-logs-kube.var.log.containers.coredns-7b7bddbc85-8cx1q_kube-system_coredns-9e4f3ab435269a566bcbaa606c02c146ad58508e67cef09fa87d5c09e4ac0088.log",
+        "fargate-logs-kube.var.log.containers.coredns-7b7bddbc85-g1jwp_kube-system_coredns-11016818361cd68c32bf8f0b1328f3d92a6d7b8cf5879bfe8b301f393cb011cc.log"
     ]
     ```
 

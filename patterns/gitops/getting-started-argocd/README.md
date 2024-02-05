@@ -286,7 +286,7 @@ The expected output should look like the following:
 
 ```text
 NAME                         CPU(cores)   MEMORY(bytes)
-game-2048-66fb78b995-hqbjv   1m           2Mi
+game-2048-66fb78b995-h1bjv   1m           2Mi
 ```
 
 Check the CPU and memory metrics for all pods for Addons and Workloads:
@@ -303,19 +303,19 @@ argocd        argo-cd-argocd-application-controller-0                     43m   
 argocd        argo-cd-argocd-applicationset-controller-5db688844c-79skp   1m           25Mi
 argocd        argo-cd-argocd-dex-server-cd48d7bc-x7flf                    1m           16Mi
 argocd        argo-cd-argocd-notifications-controller-7d7ccc6b9d-dg9r6    1m           17Mi
-argocd        argo-cd-argocd-redis-7f89c69877-6mmcj                       2m           3Mi
+argocd        argo-cd-argocd-redis-7f89c69877-6m2cj                       2m           3Mi
 argocd        argo-cd-argocd-repo-server-644b9b5668-m9ddg                 8m           62Mi
 argocd        argo-cd-argocd-server-57cbbd6f94-lp4wx                      2m           26Mi
-game-2048     game-2048-66fb78b995-hqbjv                                  1m           2Mi
+game-2048     game-2048-66fb78b995-h1bjv                                  1m           2Mi
 kube-system   aws-load-balancer-controller-8488df87c-4nxv6                2m           26Mi
 kube-system   aws-load-balancer-controller-8488df87c-zs4p6                1m           19Mi
 kube-system   aws-node-ck6vq                                              3m           57Mi
-kube-system   aws-node-fvvsg                                              3m           56Mi
-kube-system   coredns-59754897cf-5rlxp                                    1m           13Mi
+kube-system   aws-node-fv2sg                                              3m           56Mi
+kube-system   coredns-59754897cf-5r2xp                                    1m           13Mi
 kube-system   coredns-59754897cf-fn7jb                                    1m           13Mi
-kube-system   kube-proxy-lzbdc                                            1m           11Mi
-kube-system   kube-proxy-pdvlm                                            1m           12Mi
-kube-system   metrics-server-5b76987ff-5gzsv                              4m           17Mi
+kube-system   kube-proxy-lz2dc                                            1m           11Mi
+kube-system   kube-proxy-pd2lm                                            1m           12Mi
+kube-system   metrics-server-5b76987ff-5g1sv                              4m           17Mi
 ```
 
 ## Destroy the EKS Cluster

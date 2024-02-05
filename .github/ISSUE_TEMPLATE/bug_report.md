@@ -38,11 +38,11 @@ Steps to reproduce the behavior:
 <!-- Have you cleared the local cache (see Notice section above)? -->
 <!-- List steps in order that led up to the issue you encountered -->
 
-## Expected behaviour
+## Expected behavior
 
 <!-- A clear and concise description of what you expected to happen -->
 
-## Actual behaviour
+## Actual behavior
 
 <!-- A clear and concise description of what actually happened -->
 

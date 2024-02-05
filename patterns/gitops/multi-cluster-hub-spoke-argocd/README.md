@@ -1,6 +1,6 @@
 # Multi-Cluster centralized hub-spoke topology
 
-This tutorial guides you through deploying an Amazon EKS cluster with addons configured via ArgoCD in a Multi-Cluster Hub-Spoke topoloy, employing the [GitOps Bridge Pattern](https://github.com/gitops-bridge-dev).
+This tutorial guides you through deploying an Amazon EKS cluster with addons configured via ArgoCD in a Multi-Cluster Hub-Spoke topology, employing the [GitOps Bridge Pattern](https://github.com/gitops-bridge-dev).
 
 <img src="https://raw.githubusercontent.com/aws-ia/terraform-aws-eks-blueprints/main/patterns/gitops/multi-cluster-hub-spoke-argocd/static/gitops-bridge-multi-cluster-hup-spoke.drawio.png" width=100%>
 
@@ -97,7 +97,7 @@ echo "ArgoCD Password: $(kubectl --context hub get secrets argocd-initial-admin-
 echo "ArgoCD URL: https://$(kubectl --context hub get svc -n argocd argo-cd-argocd-server -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
 ```
 
-## Verify that ArgoCD Service Accouts has the annotation for IRSA
+## Verify that ArgoCD Service Accounts has the annotation for IRSA
 
 ```shell
 kubectl --context hub get sa -n argocd argocd-application-controller -o json | jq '.metadata.annotations."eks.amazonaws.com/role-arn"'
@@ -220,7 +220,7 @@ cd ../hub
 
 ## Fork GitOps Repositories
 
-To modify the `values.yaml` file or the helm chart version for addons, you'll need to fork tthe repository [aws-samples/eks-blueprints-add-ons](https://github.com/aws-samples/eks-blueprints-add-ons).
+To modify the `values.yaml` file or the helm chart version for addons, you'll need to fork the repository [aws-samples/eks-blueprints-add-ons](https://github.com/aws-samples/eks-blueprints-add-ons).
 
 After forking, update the following environment variables to point to your forks, replacing the default values.
 

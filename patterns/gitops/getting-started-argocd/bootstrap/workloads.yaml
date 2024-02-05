@@ -27,6 +27,6 @@ spec:
         automated:
           allowEmpty: true
         syncOptions:
-        - CreateNamespace=true
+          - CreateNamespace=true
         retry:
           limit: 60

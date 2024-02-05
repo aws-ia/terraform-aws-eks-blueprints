@@ -12,7 +12,7 @@ variable "environment_name" {
 
 variable "ingress_type" {
   type        = string
-  description = "Type of ingress to uses (alb | nginx | ...). this parameter will be sent to arocd via gitops bridge"
+  description = "Type of ingress to uses (alb | nginx | ...). this parameter will be sent to argocd via gitops bridge"
   default     = "alb"
 }
 

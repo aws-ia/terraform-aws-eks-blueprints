@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -19,11 +20,11 @@ spec:
         app.kubernetes.io/name: game-2048
     spec:
       containers:
-      - image: public.ecr.aws/l6m2t8p7/docker-2048
-        name: game-2048
-        ports:
-        - containerPort: 80
-          name: http
+        - image: public.ecr.aws/l6m2t8p7/docker-2048
+          name: game-2048
+          ports:
+            - containerPort: 80
+              name: http
 ---
 apiVersion: v1
 kind: Service
@@ -53,10 +54,10 @@ spec:
   rules:
     - http:
         paths:
-        - path: /
-          pathType: Prefix
-          backend:
-            service:
-              name: game-2048
-              port:
-                name: http
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: game-2048
+                port:
+                  name: http

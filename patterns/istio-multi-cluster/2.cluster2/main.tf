@@ -224,7 +224,7 @@ resource "helm_release" "istio_ingress" {
 }
 
 ################################################################################
-# Isito certs for cross-cluster traffice
+# Istio certs for cross-cluster traffic
 # https://istio.io/latest/docs/ops/deployment/deployment-models/#trust-within-a-mesh
 # https://istio.io/latest/docs/ops/diagnostic-tools/multicluster/#trust-configuration
 ################################################################################
