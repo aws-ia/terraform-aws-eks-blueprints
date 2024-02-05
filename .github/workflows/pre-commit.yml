@@ -1,4 +1,4 @@
-name: pre-commit
+name: Pre-commit
 
 on:
   pull_request:
@@ -10,41 +10,19 @@ on:
       - '**.yaml'
 
 env:
+  TERRAFORM_VERSION: 1.3.10
   TERRAFORM_DOCS_VERSION: v0.16.0
-  TFSEC_VERSION: v1.22.0
   TF_PLUGIN_CACHE_DIR: ${{ github.workspace }}/.terraform.d/plugin-cache
-  TFLINT_VERSION: v0.42.1
+  TFLINT_VERSION: v0.50.2
 
 concurrency:
   group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
   cancel-in-progress: true
 
 jobs:
-  collectInputs:
-    name: Collect workflow inputs
-    runs-on: ubuntu-latest
-    outputs:
-      directories: ${{ steps.dirs.outputs.directories }}
-    steps:
-      - name: Harden Runner
-        uses: step-security/harden-runner@v2
-        with:
-          egress-policy: audit
-
-      - name: Checkout
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
-
-      - name: Get root directories
-        id: dirs
-        uses: clowdhaus/terraform-composite-actions/directories@v1.8.3
-
-  preCommitMinVersions:
+  pre-commit:
     name: Min TF pre-commit
-    needs: collectInputs
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        directory: ${{ fromJson(needs.collectInputs.outputs.directories) }}
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@v2
@@ -62,7 +40,7 @@ jobs:
         with:
           filters: |
             src:
-              - '${{ matrix.directory }}/*.tf'
+              - '*.tf'
 
       - name: Config Terraform plugin cache
         if: steps.changes.outputs.src== 'true'
@@ -76,18 +54,10 @@ jobs:
           key: ${{ runner.os }}-terraform-${{ hashFiles('**/.terraform.lock.hcl') }}
           restore-keys: ${{ runner.os }}-terraform-
 
-      - name: Terraform min/max versions
-        uses: clowdhaus/terraform-min-max@v1.2.7
-        if: steps.changes.outputs.src== 'true'
-        id: minMax
-        with:
-          directory: ${{ matrix.directory }}
-
       - name: Pre-commit Terraform ${{ steps.minMax.outputs.minVersion }}
         uses: clowdhaus/terraform-composite-actions/pre-commit@v1.8.3
         if: steps.changes.outputs.src== 'true'
         with:
-          terraform-version: ${{ steps.minMax.outputs.maxVersion }}
+          terraform-version: ${{ env.TERRAFORM_VERSION }}
           terraform-docs-version: ${{ env.TERRAFORM_DOCS_VERSION }}
           tflint-version: ${{ env.TFLINT_VERSION }}
-          args: '--files ${{ matrix.directory }}/*'
