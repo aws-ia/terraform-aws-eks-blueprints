@@ -17,11 +17,11 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
     ```text
     NAMESPACE          NAME                                       READY   STATUS    RESTARTS   AGE
     appmesh-system     appmesh-controller-7c98b87bdc-q6226        1/1     Running   0          4h44m
-    cert-manager       cert-manager-87f5555f-tcxj7                1/1     Running   0          4h43m
-    cert-manager       cert-manager-cainjector-8448ff8ddb-wwjsc   1/1     Running   0          4h43m
-    cert-manager       cert-manager-webhook-5468b675b-fvdwk       1/1     Running   0          4h43m
+    cert-manager       cert-manager-87f5555f-t1xj7                1/1     Running   0          4h43m
+    cert-manager       cert-manager-cainjector-8448ff8ddb-ww2sc   1/1     Running   0          4h43m
+    cert-manager       cert-manager-webhook-5468b675b-fv2wk       1/1     Running   0          4h43m
     kube-system        aws-node-rf4wg                             1/1     Running   0          4h43m
-    kube-system        aws-node-skkwh                             1/1     Running   0          4h43m
+    kube-system        aws-node-sk1wh                             1/1     Running   0          4h43m
     kube-system        aws-privateca-issuer-b6fb8c5bd-hh8q4       1/1     Running   0          4h44m
     kube-system        coredns-5f9f955df6-qhr6p                   1/1     Running   0          4h44m
     kube-system        coredns-5f9f955df6-tw8r7                   1/1     Running   0          4h44m
@@ -243,7 +243,7 @@ The full documentation for this example can be found [here](https://docs.aws.ama
 
     ```text
     NAME                                   READY   STATUS    RESTARTS   AGE
-    appmesh-example-app-6946cdbdf6-gnxww   2/2     Running   0          54s
+    appmesh-example-app-6946cdbdf6-gn1ww   2/2     Running   0          54s
     appmesh-example-app-6946cdbdf6-nx9tg   2/2     Running   0          54s
     ```
 

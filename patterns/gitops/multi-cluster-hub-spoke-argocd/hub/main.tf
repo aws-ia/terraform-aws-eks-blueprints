@@ -223,7 +223,7 @@ module "eks_blueprints_addons" {
 ################################################################################
 # EKS Cluster
 ################################################################################
-#tfsec:ignore:aws-eks-enable-control-plane-logging
+
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 19.13"

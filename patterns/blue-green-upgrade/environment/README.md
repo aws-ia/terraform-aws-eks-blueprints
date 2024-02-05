@@ -1,8 +1,8 @@
-# Common Environement Infrastructure
+# Common Environment Infrastructure
 
 ## Table of content
 
-- [Common Environement Infrastructure](#common-environement-infrastructure)
+- [Common Environment Infrastructure](#common-environment-infrastructure)
   - [Table of content](#table-of-content)
   - [Getting Started](#getting-started)
   - [Usage](#usage)
@@ -69,7 +69,7 @@ Example:
 
 ```
 aws_acm_certificate_status = "ISSUED"
-aws_route53_zone = "eks-blueprint.eks.mydomain.org"
+aws_route53_zone = "eks-blueprint.eks.example.org"
 vpc_id = "vpc-0d649baf641a8071e"
 ```
 

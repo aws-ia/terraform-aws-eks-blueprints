@@ -60,7 +60,7 @@ kubectl get pods,svc -n istio-system
 ```
 # Output should look like below
 NAME                                 READY   STATUS    RESTARTS   AGE
-pod/istio-ingress-6f7c5dffd8-chkww   1/1     Running   0          48m
+pod/istio-ingress-6f7c5dffd8-4kww   1/1     Running   0          48m
 pod/istiod-ff577f8b8-t9ww2           1/1     Running   0          48m
 
 NAME                    TYPE           CLUSTER-IP      EXTERNAL-IP                                                                     PORT(S)                                      AGE
@@ -235,25 +235,7 @@ kubectl exec -n sample -c sleep \
 ```
 ```
 * processing: helloworld.sample:5000/hello
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying 172.20.26.38:5000...
-* Connected to helloworld.sample (172.20.26.38) port 5000
-> GET /hello HTTP/1.1
-> Host: helloworld.sample:5000
-> User-Agent: curl/8.2.0
-> Accept: */*
->
-< HTTP/1.1 200 OK
-< server: envoy
-< date: Fri, 21 Jul 2023 18:56:09 GMT
-< content-type: text/html; charset=utf-8
-< content-length: 58
-< x-envoy-upstream-service-time: 142
-<
-{ [58 bytes data]
-100    58  100    58  Hello version: v1, instance: helloworld-v1-b6c45f55-h592c
-  0     0    392      0 --:--:-- --:--:-- --:--:--   394
+  ...
 * Connection #0 to host helloworld.sample left intact
 ```
 

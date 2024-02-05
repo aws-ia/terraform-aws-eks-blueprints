@@ -8,7 +8,7 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
 
 ## Validate
 
-After the `terraform` commands are executed sucessfully, check if the newly created users are active.
+After the `terraform` commands are executed successfully, check if the newly created users are active.
 
 To do that use the link provided in the email invite if you added a valid email address for your users, or go to the [Okta Admin Dashboard](https://dev-ORGID-admin.okta.com/admin/users/), select the user, and click on *Set Password and Activate* button.
 
@@ -34,16 +34,16 @@ The read-only user has a `cluster-viewer` Kubernetes role bound to it's group, w
 kubectl get pods -A
 NAMESPACE          NAME                        READY   STATUS    RESTARTS   AGE
 amazon-guardduty   aws-guardduty-agent-bl2v2   1/1     Running   0          3h54m
-amazon-guardduty   aws-guardduty-agent-sqvcx   1/1     Running   0          3h54m
+amazon-guardduty   aws-guardduty-agent-s1vcx   1/1     Running   0          3h54m
 amazon-guardduty   aws-guardduty-agent-w8gfc   1/1     Running   0          3h54m
 kube-system        aws-node-m9hmd              1/1     Running   0          3h53m
 kube-system        aws-node-w42b8              1/1     Running   0          3h53m
 kube-system        aws-node-wm6rm              1/1     Running   0          3h53m
 kube-system        coredns-6ff9c46cd8-94jlr    1/1     Running   0          3h59m
-kube-system        coredns-6ff9c46cd8-nwmrb    1/1     Running   0          3h59m
+kube-system        coredns-6ff9c46cd8-nw2rb    1/1     Running   0          3h59m
 kube-system        kube-proxy-7fb86            1/1     Running   0          3h54m
 kube-system        kube-proxy-p4f5g            1/1     Running   0          3h54m
-kube-system        kube-proxy-qkfmc            1/1     Running   0          3h54m
+kube-system        kube-proxy-qk2mc            1/1     Running   0          3h54m
 ```
 
 You can also use the `configure_kubectl` output to assume the *Cluster creator* role with `cluster-admin` access.
@@ -52,7 +52,7 @@ You can also use the `configure_kubectl` output to assume the *Cluster creator* 
 configure_kubectl = "aws eks --region us-west-2 update-kubeconfig --name okta"
 ```
 
-It's also possible to preconfigure your `kubeconfig` using the `okta_login` output. This will also require you to authenticate in a browser window.
+It's also possible to pre-configure your `kubeconfig` using the `okta_login` output. This will also require you to authenticate in a browser window.
 
 ```
 okta_login = "kubectl oidc-login setup --oidc-issuer-url=https://dev-ORGID.okta.com/oauth2/1234567890abcdefghij--oidc-client-id=1234567890abcdefghij"

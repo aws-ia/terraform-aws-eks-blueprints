@@ -8,7 +8,7 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
 
 ## Validate
 
-After the `terraform` commands are executed sucessfully, check if the newly created users are active.
+After the `terraform` commands are executed successfully, check if the newly created users are active.
 
 To do that use the link provided in the email invite - *if you added a valid email address for your users either in your Terraform code or IAM Identity Center Console* - or go to the [IAM Identity Center Console](https://console.aws.amazon.com/singlesignon/home/), in the *Users* dashboard on the left hand side menu, then select the user, and click on *Reset password* button on the upper right corner. Choose the option to *Generate a one-time password and share the password with the user*.
 
@@ -80,16 +80,16 @@ With the `kubeconfig` configured, you'll be able to run `kubectl` commands in yo
 kubectl get pods -A
 NAMESPACE          NAME                        READY   STATUS    RESTARTS   AGE
 amazon-guardduty   aws-guardduty-agent-bl2v2   1/1     Running   0          3h54m
-amazon-guardduty   aws-guardduty-agent-sqvcx   1/1     Running   0          3h54m
+amazon-guardduty   aws-guardduty-agent-s2vcx   1/1     Running   0          3h54m
 amazon-guardduty   aws-guardduty-agent-w8gfc   1/1     Running   0          3h54m
 kube-system        aws-node-m9hmd              1/1     Running   0          3h53m
 kube-system        aws-node-w42b8              1/1     Running   0          3h53m
 kube-system        aws-node-wm6rm              1/1     Running   0          3h53m
 kube-system        coredns-6ff9c46cd8-94jlr    1/1     Running   0          3h59m
-kube-system        coredns-6ff9c46cd8-nwmrb    1/1     Running   0          3h59m
+kube-system        coredns-6ff9c46cd8-n2mrb    1/1     Running   0          3h59m
 kube-system        kube-proxy-7fb86            1/1     Running   0          3h54m
 kube-system        kube-proxy-p4f5g            1/1     Running   0          3h54m
-kube-system        kube-proxy-qkfmc            1/1     Running   0          3h54m
+kube-system        kube-proxy-q1fmc            1/1     Running   0          3h54m
 ```
 
 You can also use the `configure_kubectl` output to assume the *Cluster creator* role with `cluster-admin` access.

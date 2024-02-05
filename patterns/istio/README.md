@@ -55,7 +55,7 @@ done
     pod/istiod-ff577f8b8-c8ssk       1/1     Running   0          4m40s
     pod/jaeger-58c79c85cd-n7bkx      1/1     Running   0          4m14s
     pod/kiali-749d76d7bb-8kjg7       1/1     Running   0          4m14s
-    pod/prometheus-5d5d6d6fc-sptxl   2/2     Running   0          4m15s
+    pod/prometheus-5d5d6d6fc-s1txl   2/2     Running   0          4m15s
 
     NAME                       TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                                 AGE
     service/grafana            ClusterIP   172.20.141.12    <none>        3000/TCP                                4m14s
@@ -67,7 +67,7 @@ done
     service/zipkin             ClusterIP   172.20.221.157   <none>        9411/TCP                                4m15s
 
     NAME                                 READY   STATUS    RESTARTS   AGE
-    pod/istio-ingress-6f7c5dffd8-glszr   1/1     Running   0          4m28s
+    pod/istio-ingress-6f7c5dffd8-g1szr   1/1     Running   0          4m28s
 
     NAME                    TYPE           CLUSTER-IP      EXTERNAL-IP                                                                     PORT(S)                                      AGE
     service/istio-ingress   LoadBalancer   172.20.104.27   k8s-istioing-istioing-844c89b6c2-875b8c9a4b4e9365.elb.us-west-2.amazonaws.com   15021:32760/TCP,80:31496/TCP,443:32534/TCP   4m28s
@@ -271,25 +271,7 @@ kubectl port-forward svc/jaeger 16686:16686 -n istio-system
 
     ```text
     * processing: helloworld.sample:5000/hello
-    % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                    Dload  Upload   Total   Spent    Left  Speed
-    0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying 172.20.26.38:5000...
-    * Connected to helloworld.sample (172.20.26.38) port 5000
-    > GET /hello HTTP/1.1
-    > Host: helloworld.sample:5000
-    > User-Agent: curl/8.2.0
-    > Accept: */*
-    >
-    < HTTP/1.1 200 OK
-    < server: envoy
-    < date: Fri, 21 Jul 2023 18:56:09 GMT
-    < content-type: text/html; charset=utf-8
-    < content-length: 58
-    < x-envoy-upstream-service-time: 142
-    <
-    { [58 bytes data]
-    100    58  100    58  Hello version: v1, instance: helloworld-v1-b6c45f55-h592c
-    0     0    392      0 --:--:-- --:--:-- --:--:--   394
+    ...
     * Connection #0 to host helloworld.sample left intact
     ```
 

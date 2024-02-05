@@ -2,7 +2,7 @@
 
 aws_region          = "eu-west-1"
 environment_name     = "eks-blueprint"
-hosted_zone_name    = "eks.mydomain.org" # your Existing Hosted Zone
+hosted_zone_name    = "eks.example.org" # your Existing Hosted Zone
 eks_admin_role_name = "Admin" # Additional role admin in the cluster (usually the role I use in the AWS console)
 
 #gitops_addons_org      = "git@github.com:aws-samples"

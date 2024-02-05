@@ -1,6 +1,6 @@
 # Kubecost with AWS Cloud Billing Integration
 
-This pattern demostrates how to install and configure Kubecost with AWS CUR report.
+This pattern demonstrates how to install and configure Kubecost with AWS CUR report.
 The terraform code was created following the official Kubecost documentation for [aws cloud billing integration](https://docs.kubecost.com/install-and-configure/install/cloud-integration/aws-cloud-integrations).
 
 ## Prerequisites
@@ -22,7 +22,7 @@ Once all of the resources have successfully been provisioned, the following comm
  aws eks --region <REGION> update-kubeconfig --name <CLUSTER_NAME>
 ```
 
-This command will create a S3 bucket with prefix `kubecost-` and a Cost and Usage Report (CUR). Within 24h The CUR will generate a CloudFormation teamplate file called `crawler-cfn.yml` in the S3 bucket. Once that file is generated, navigate to:
+This command will create a S3 bucket with prefix `kubecost-` and a Cost and Usage Report (CUR). Within 24h The CUR will generate a CloudFormation template file called `crawler-cfn.yml` in the S3 bucket. Once that file is generated, navigate to:
 
 ```
 cd run-me-in-24h/

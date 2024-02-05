@@ -1,4 +1,4 @@
-# Generating Certificates for Bootstrapping Multicluster / Mesh Expansion Chain of Trust
+# Generating Certificates for Bootstrapping Multi-cluster / Mesh Expansion Chain of Trust
 
 The directory contains two Makefiles for generating new root, intermediate certificates and workload certificates:
 - `Makefile.k8s.mk`: Creates certificates based on a root-ca from a k8s cluster. The current context in the default `kubeconfig` is used for accessing the cluster.

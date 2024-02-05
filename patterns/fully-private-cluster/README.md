@@ -49,14 +49,14 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
 
     ```text
     NAMESPACE     NAME                       READY   STATUS    RESTARTS   AGE
-    kube-system   aws-node-jvn9x             1/1     Running   0          7m42s
-    kube-system   aws-node-mnjlf             1/1     Running   0          7m45s
+    kube-system   aws-node-j2n9x             1/1     Running   0          7m42s
+    kube-system   aws-node-m1jlf             1/1     Running   0          7m45s
     kube-system   aws-node-q458h             1/1     Running   0          7m49s
     kube-system   coredns-6c45d94f67-495rr   1/1     Running   0          14m
     kube-system   coredns-6c45d94f67-5c8tc   1/1     Running   0          14m
     kube-system   kube-proxy-47wfh           1/1     Running   0          8m32s
     kube-system   kube-proxy-f6chz           1/1     Running   0          8m30s
-    kube-system   kube-proxy-xcfkc           1/1     Running   0          8m31s
+    kube-system   kube-proxy-x2fkc           1/1     Running   0          8m31s
     ```
 
 ## Destroy
