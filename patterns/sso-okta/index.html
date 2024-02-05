@@ -1177,7 +1177,7 @@
 <h2 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h2>
 <p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#prerequisites">here</a> for the prerequisites and steps to deploy this pattern.</p>
 <h2 id="validate">Validate<a class="headerlink" href="#validate" title="Permanent link">&para;</a></h2>
-<p>After the <code>terraform</code> commands are executed sucessfully, check if the newly created users are active.</p>
+<p>After the <code>terraform</code> commands are executed successfully, check if the newly created users are active.</p>
 <p>To do that use the link provided in the email invite if you added a valid email address for your users, or go to the <a href="https://dev-ORGID-admin.okta.com/admin/users/">Okta Admin Dashboard</a>, select the user, and click on <em>Set Password and Activate</em> button.</p>
 <p>With the active users, use the <code>terraform output</code> example to setup your <code>kubeconfig</code> profile to authenticate through Okta.</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>configure_kubeconfig = &lt;&lt;EOT
@@ -1195,21 +1195,21 @@
 <div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>kubectl get pods -A
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>NAMESPACE          NAME                        READY   STATUS    RESTARTS   AGE
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>amazon-guardduty   aws-guardduty-agent-bl2v2   1/1     Running   0          3h54m
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>amazon-guardduty   aws-guardduty-agent-sqvcx   1/1     Running   0          3h54m
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>amazon-guardduty   aws-guardduty-agent-s1vcx   1/1     Running   0          3h54m
 </span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>amazon-guardduty   aws-guardduty-agent-w8gfc   1/1     Running   0          3h54m
 </span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>kube-system        aws-node-m9hmd              1/1     Running   0          3h53m
 </span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>kube-system        aws-node-w42b8              1/1     Running   0          3h53m
 </span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>kube-system        aws-node-wm6rm              1/1     Running   0          3h53m
 </span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>kube-system        coredns-6ff9c46cd8-94jlr    1/1     Running   0          3h59m
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>kube-system        coredns-6ff9c46cd8-nwmrb    1/1     Running   0          3h59m
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>kube-system        coredns-6ff9c46cd8-nw2rb    1/1     Running   0          3h59m
 </span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>kube-system        kube-proxy-7fb86            1/1     Running   0          3h54m
 </span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>kube-system        kube-proxy-p4f5g            1/1     Running   0          3h54m
-</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>kube-system        kube-proxy-qkfmc            1/1     Running   0          3h54m
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>kube-system        kube-proxy-qk2mc            1/1     Running   0          3h54m
 </span></code></pre></div>
 <p>You can also use the <code>configure_kubectl</code> output to assume the <em>Cluster creator</em> role with <code>cluster-admin</code> access.</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>configure_kubectl = &quot;aws eks --region us-west-2 update-kubeconfig --name okta&quot;
 </span></code></pre></div>
-<p>It's also possible to preconfigure your <code>kubeconfig</code> using the <code>okta_login</code> output. This will also require you to authenticate in a browser window.</p>
+<p>It's also possible to pre-configure your <code>kubeconfig</code> using the <code>okta_login</code> output. This will also require you to authenticate in a browser window.</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>okta_login = &quot;kubectl oidc-login setup --oidc-issuer-url=https://dev-ORGID.okta.com/oauth2/1234567890abcdefghij--oidc-client-id=1234567890abcdefghij&quot;
 </span></code></pre></div>
 <h2 id="destroy">Destroy<a class="headerlink" href="#destroy" title="Permanent link">&para;</a></h2>

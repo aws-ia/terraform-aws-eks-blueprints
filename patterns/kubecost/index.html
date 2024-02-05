@@ -1145,7 +1145,7 @@
 
 <!-- BEGIN INCLUDE ../../patterns/kubecost/README.md -->
 <h1 id="kubecost-with-aws-cloud-billing-integration">Kubecost with AWS Cloud Billing Integration<a class="headerlink" href="#kubecost-with-aws-cloud-billing-integration" title="Permanent link">&para;</a></h1>
-<p>This pattern demostrates how to install and configure Kubecost with AWS CUR report.
+<p>This pattern demonstrates how to install and configure Kubecost with AWS CUR report.
 The terraform code was created following the official Kubecost documentation for <a href="https://docs.kubecost.com/install-and-configure/install/cloud-integration/aws-cloud-integrations">aws cloud billing integration</a>.</p>
 <h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
 <p>You need a valid Kubecost token. To generate one, follow the instructions <a href="https://www.kubecost.com/install#show-instructions">here</a>.</p>
@@ -1158,7 +1158,7 @@ The terraform code was created following the official Kubecost documentation for
 <p>Once all of the resources have successfully been provisioned, the following command can be used to update the <code>kubeconfig</code> on your local machine and allow you to interact with your EKS Cluster using <code>kubectl</code>.</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a> aws eks --region &lt;REGION&gt; update-kubeconfig --name &lt;CLUSTER_NAME&gt;
 </span></code></pre></div>
-<p>This command will create a S3 bucket with prefix <code>kubecost-</code> and a Cost and Usage Report (CUR). Within 24h The CUR will generate a CloudFormation teamplate file called <code>crawler-cfn.yml</code> in the S3 bucket. Once that file is generated, navigate to:</p>
+<p>This command will create a S3 bucket with prefix <code>kubecost-</code> and a Cost and Usage Report (CUR). Within 24h The CUR will generate a CloudFormation template file called <code>crawler-cfn.yml</code> in the S3 bucket. Once that file is generated, navigate to:</p>
 <p><div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>cd run-me-in-24h/
 </span></code></pre></div>
 To download and apply the CloudFormation template, run:
@@ -1174,7 +1174,7 @@ and navigate to the output URL.</p>
 <p>Expected result:
 <img alt="screenshot" src="../../patterns/kubecost/static/screenshot.png" /></p>
 <blockquote>
-<p>[!NOTE]<br />
+<p>[!NOTE]
 Spot Data Feed is included in Savings Plan, Reserved Instance, and Out-Of-Cluster.</p>
 </blockquote>
 <h2 id="destroy">Destroy<a class="headerlink" href="#destroy" title="Permanent link">&para;</a></h2>
