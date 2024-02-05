@@ -49,7 +49,7 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
     CNI Chaining:            aws-cni
     Cilium:                  Ok   1.14.2 (v1.14.2-a6748946)
     NodeMonitor:             Listening for events on 2 CPUs with 64x4096 of shared memory
-    Cilium health daemon:    Ok  
+    Cilium health daemon:    Ok
     IPAM:                    IPv4: 1/254 allocated from 10.0.0.0/24,
     IPv4 BIG TCP:            Disabled
     IPv6 BIG TCP:            Disabled

@@ -6,7 +6,7 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-  - port: 80
-    targetPort: 9001
+    - port: 80
+      targetPort: 9001
   selector:
     role: management-ui

@@ -45,7 +45,7 @@ Navigate to Settings -> Diagnostics -> View Full Diagnostics
 Expected result:
 ![screenshot](static/screenshot.png)
 
-> [!NOTE]  
+> [!NOTE]
 > Spot Data Feed is included in Savings Plan, Reserved Instance, and Out-Of-Cluster.
 
 ## Destroy
