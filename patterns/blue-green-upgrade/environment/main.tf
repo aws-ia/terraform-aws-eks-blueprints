@@ -94,7 +94,6 @@ resource "random_password" "argocd" {
   override_special = "!#$%&*()-_=+[]{}<>:?"
 }
 
-#tfsec:ignore:aws-ssm-secret-use-customer-key
 resource "aws_secretsmanager_secret" "argocd" {
   name                    = "${local.argocd_secret_manager_name}.${local.name}"
   recovery_window_in_days = 0 # Set to zero for this example to force delete during Terraform destroy

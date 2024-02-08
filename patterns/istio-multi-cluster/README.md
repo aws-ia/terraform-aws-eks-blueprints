@@ -7,8 +7,8 @@ Refer to the [documentation](https://istio.io/latest/docs/concepts/) for `Istio`
 
 ## Notable configuration
 
-* This sample rely on reading data from Terraform Remote State in the different folders. In a production setup, Terraform Remote State is stored in a persistent backend such as Terraform Cloud or S3. For more information, please refer to the Terraform [Backends](https://developer.hashicorp.com/terraform/language/settings/backends/configuration) documentation
-* The process for connecting clusters is seperated from the cluster creation as it requires all cluster to be created first, and excahnge configuration between one to the other
+* This sample relies on reading data from Terraform Remote State in the different folders. In a production setup, Terraform Remote State is stored in a persistent backend such as Terraform Cloud or S3. For more information, please refer to the Terraform [Backends](https://developer.hashicorp.com/terraform/language/settings/backends/configuration) documentation
+* The process for connecting clusters is separated from the cluster creation as it requires all cluster to be created first, and exchange configuration between one to the other
 
 ## Folder structure
 
@@ -20,7 +20,7 @@ This folder is the [Makefiles](https://github.com/istio/istio/tree/master/tools/
 
 ### [`0.vpc`](0.vpc/)
 
-This folder creates the VPC for both clusters. The VPC creation is not part of the cluster provisionig and therefore lives in a seperate folder.
+This folder creates the VPC for both clusters. The VPC creation is not part of the cluster provisioning and therefore lives in a separate folder.
 To support the multi-cluster/Multi-Primary setup, this folder also creates additional security group to be used by each cluster worker nodes to allow cross-cluster communication (resources `cluster1_additional_sg` and `cluster2_additional_sg`). These security groups allow communication from one to the other and each will be added to the worker nodes of the relevant cluster
 
 ### [`1.cluster1`](1.cluster1/)
@@ -30,7 +30,7 @@ Configurations in this folder to be aware of:
 
 * The cluster is configured to use the security groups created in the `0.vpc` folder (`cluster1_additional_sg` in this case).
 * Kubernetes Secret named `cacerts` is created with the certificates created by the [0.certs-tool/create-certs.sh](0.certs-tool/create-certs.sh) script
-* Kubernetes Secret named `cacerts` named `istio-reader-service-account-istio-remote-secret-token` of type `Service-Account` is being created. This is to replicate the [istioctl experimental create-remote-secret](https://istio.io/latest/docs/reference/commands/istioctl/#istioctl-experimental-create-remote-secret) command. This secret will be used in folder [`3.istio-multi-primary`](3.istio-multi-primary/) to apply kubeconfig secret with tokens from the other cluster to be abble to communicate to the other cluster API Server
+* Kubernetes Secret named `cacerts` named `istio-reader-service-account-istio-remote-secret-token` of type `Service-Account` is being created. This is to replicate the [istioctl experimental create-remote-secret](https://istio.io/latest/docs/reference/commands/istioctl/#istioctl-experimental-create-remote-secret) command. This secret will be used in folder [`3.istio-multi-primary`](3.istio-multi-primary/) to apply kubeconfig secret with tokens from the other cluster to be able to communicate to the other cluster API Server
 
 ### [`2.cluster2`](2.cluster2/)
 

@@ -17,12 +17,12 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
     ```text
     # Output should look like below
     NAMESPACE     NAME                       READY   STATUS    RESTARTS   AGE     IP                                       NODE                                        NOMINATED NODE   READINESS GATES
-    kube-system   aws-node-bhd2s             1/1     Running   0          3m5s    2600:1f13:6c4:a703:ecf8:3ac1:76b0:9303   ip-10-0-10-183.us-west-2.compute.internal   <none>           <none>
-    kube-system   aws-node-nmdgq             1/1     Running   0          3m21s   2600:1f13:6c4:a705:a929:f8d4:9350:1b20   ip-10-0-12-188.us-west-2.compute.internal   <none>           <none>
-    kube-system   coredns-799c5565b4-6wxrc   1/1     Running   0          10m     2600:1f13:6c4:a705:bbda::                ip-10-0-12-188.us-west-2.compute.internal   <none>           <none>
-    kube-system   coredns-799c5565b4-fjq4q   1/1     Running   0          10m     2600:1f13:6c4:a705:bbda::1               ip-10-0-12-188.us-west-2.compute.internal   <none>           <none>
+    kube-system   aws-node-1hd2s             1/1     Running   0          3m5s    2600:1f13:6c4:a703:ecf8:3ac1:76b0:9303   ip-10-0-10-183.us-west-2.compute.internal   <none>           <none>
+    kube-system   aws-node-2mdg             1/1     Running   0          3m21s   2600:1f13:6c4:a705:a929:f8d4:9350:1b20   ip-10-0-12-188.us-west-2.compute.internal   <none>           <none>
+    kube-system   coredns-799c5565b4-6xrc   1/1     Running   0          10m     2600:1f13:6c4:a705:1bda::                ip-10-0-12-188.us-west-2.compute.internal   <none>           <none>
+    kube-system   coredns-799c5565b4-fjq4q   1/1     Running   0          10m     2600:1f13:6c4:a705:1bda::1               ip-10-0-12-188.us-west-2.compute.internal   <none>           <none>
     kube-system   kube-proxy-58tp7           1/1     Running   0          4m25s   2600:1f13:6c4:a703:ecf8:3ac1:76b0:9303   ip-10-0-10-183.us-west-2.compute.internal   <none>           <none>
-    kube-system   kube-proxy-hqkgw           1/1     Running   0          4m25s   2600:1f13:6c4:a705:a929:f8d4:9350:1b20   ip-10-0-12-188.us-west-2.compute.internal   <none>           <none>
+    kube-system   kube-proxy-3kgw           1/1     Running   0          4m25s   2600:1f13:6c4:a705:a929:f8d4:9350:1b20   ip-10-0-12-188.us-west-2.compute.internal   <none>           <none>
     ```
 
 2. Test by listing all the nodes running currently; the `INTERNAL-IP` should be an IPv6 address.

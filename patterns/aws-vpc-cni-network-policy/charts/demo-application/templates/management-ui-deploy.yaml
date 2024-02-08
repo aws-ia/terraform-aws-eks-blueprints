@@ -14,8 +14,8 @@ spec:
         role: management-ui
     spec:
       containers:
-      - name: management-ui
-        image: calico/star-collect:v0.1.0
-        imagePullPolicy: Always
-        ports:
-        - containerPort: 9001
+        - name: management-ui
+          image: calico/star-collect:v0.1.0
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 9001

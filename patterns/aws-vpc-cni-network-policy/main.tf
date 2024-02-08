@@ -49,10 +49,10 @@ locals {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.16"
+  version = "~> 20.0"
 
   cluster_name                   = local.name
-  cluster_version                = "1.27" # Must be 1.25 or higher
+  cluster_version                = "1.29" # Must be 1.25 or higher
   cluster_endpoint_public_access = true
 
   vpc_id     = module.vpc.vpc_id
@@ -118,7 +118,6 @@ module "addons" {
     coredns    = {}
     kube-proxy = {}
     vpc-cni = {
-      preserve    = true
       most_recent = true # Must be 1.14.0 or higher
 
       timeouts = {

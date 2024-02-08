@@ -55,10 +55,10 @@ locals {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.16"
+  version = "~> 20.0"
 
   cluster_name                   = local.name
-  cluster_version                = "1.27"
+  cluster_version                = "1.29"
   cluster_endpoint_public_access = true
 
   vpc_id     = module.vpc.vpc_id
@@ -105,7 +105,7 @@ module "eks" {
       }
 
       # This user data mounts the containerd directories to the second EBS volume which
-      # is dedicated to just contianerd. You can read more about the practice and why
+      # is dedicated to just containerd. You can read more about the practice and why
       # here https://aws.github.io/aws-eks-best-practices/scalability/docs/data-plane/#use-multiple-ebs-volumes-for-containers
       # and https://github.com/containerd/containerd/blob/main/docs/ops.md#base-configuration
       pre_bootstrap_user_data = <<-EOT
@@ -194,7 +194,7 @@ module "eks" {
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "~> 1.0"
+  version = "~> 1.14"
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
@@ -322,7 +322,6 @@ module "vpc" {
   tags = local.tags
 }
 
-#tfsec:ignore:*
 module "velero_backup_s3_bucket" {
   source  = "terraform-aws-modules/s3-bucket/aws"
   version = "~> 3.0"
@@ -377,7 +376,7 @@ module "efs" {
   security_group_vpc_id      = module.vpc.vpc_id
   security_group_rules = {
     vpc = {
-      # relying on the defaults provdied for EFS/NFS (2049/TCP + ingress)
+      # relying on the defaults provided for EFS/NFS (2049/TCP + ingress)
       description = "NFS ingress from VPC private subnets"
       cidr_blocks = module.vpc.private_subnets_cidr_blocks
     }

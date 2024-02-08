@@ -25,9 +25,9 @@ directory of your choice.
     terraform apply -auto-approve
     ```
 
-    For patterns that deviate from this general flow, see the pattern's respective `REAMDE.md` for more details.
+    For patterns that deviate from this general flow, see the pattern's respective `README.md` for more details.
 
-    !!! info "Terraform targetted apply"
+    !!! info "Terraform targeted apply"
         Please see the [Terraform Caveats](https://aws-ia.github.io/terraform-aws-eks-blueprints/#terraform-caveats) section for details on the use of targeted Terraform apply's
 
 3. Once all of the resources have successfully been provisioned, the following command can be used to update the `kubeconfig`

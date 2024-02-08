@@ -16,10 +16,10 @@ provider "kubernetes" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.16"
+  version = "~> 19.21"
 
   cluster_name    = local.name
-  cluster_version = "1.27"
+  cluster_version = "1.29"
 
   cluster_endpoint_public_access = true
   manage_aws_auth_configmap      = true

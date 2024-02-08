@@ -14,12 +14,12 @@ spec:
         role: backend
     spec:
       containers:
-      - name: backend
-        image: calico/star-probe:v0.1.0
-        imagePullPolicy: Always
-        command:
-        - probe
-        - --http-port=6379
-        - --urls=http://frontend.stars:80/status,http://backend.stars:6379/status,http://client.client:9000/status
-        ports:
-        - containerPort: 6379
+        - name: backend
+          image: calico/star-probe:v0.1.0
+          imagePullPolicy: Always
+          command:
+            - probe
+            - --http-port=6379
+            - --urls=http://frontend.stars:80/status,http://backend.stars:6379/status,http://client.client:9000/status
+          ports:
+            - containerPort: 6379

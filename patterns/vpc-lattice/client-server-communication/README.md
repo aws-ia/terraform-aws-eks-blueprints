@@ -4,7 +4,7 @@ This pattern demonstrates how to expose an EKS cluster hosted application to an 
 
 ## Scenario
 
-With this soluton we showcase how to configure Amazon VPC Lattice using the AWS Gateway API Controller in order to manage Amazon VPC Lattice resources through native K8S Gateway API objects. This pattern deploys two distinct VPCs with a client application running in one of them and a server application in the other. The server application is deployed inside an EKS cluster and made exposed to the client application through Amazon VPC Lattice which establishes connectivity between the two applications. Further we demonstrate how to configure a custom domain name for the exposed service using Amazon Route53 and the external-dns project.
+With this solution we showcase how to configure Amazon VPC Lattice using the AWS Gateway API Controller in order to manage Amazon VPC Lattice resources through native K8S Gateway API objects. This pattern deploys two distinct VPCs with a client application running in one of them and a server application in the other. The server application is deployed inside an EKS cluster and made exposed to the client application through Amazon VPC Lattice which establishes connectivity between the two applications. Further we demonstrate how to configure a custom domain name for the exposed service using Amazon Route53 and the external-dns project.
 
 ![diagram](assets/diagram.png)
 
@@ -15,11 +15,11 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
 
 ## Validate
 
-In order to test the connectivty between the client and server, please follow the steps outlined below:
+In order to test the connectivity between the client and server, please follow the steps outlined below:
 
 1. Login to the management console of your AWS account and navigate to the EC2 service
 2. Select your the EC2 Instance with the name **client**, click **Connect**, choose **Session Manager** and click **Connect**
-3. Within the console test the connecvity to the server application by entering the following command:
+3. Within the console test the connectivity to the server application by entering the following command:
 
     ```sh
     $ curl -i http://server.example.com

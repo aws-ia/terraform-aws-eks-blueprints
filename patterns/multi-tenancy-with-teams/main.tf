@@ -50,10 +50,10 @@ locals {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.16"
+  version = "~> 19.21"
 
   cluster_name                   = local.name
-  cluster_version                = "1.27"
+  cluster_version                = "1.29"
   cluster_endpoint_public_access = true
 
   vpc_id     = module.vpc.vpc_id
@@ -174,7 +174,7 @@ module "eks_blueprints_dev_teams" {
 }
 
 ################################################################################
-# Supporting Resoruces
+# Supporting Resources
 ################################################################################
 
 module "vpc" {
