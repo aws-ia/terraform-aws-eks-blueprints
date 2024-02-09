@@ -11,7 +11,7 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
 * List all Nodes in the cluster. You should see three Nodes that belongs to the defined MNG, and should be in the `v1.28.1-eks-f0272c7` version since we are using a specific AMI ID to test the BRUPOP.
 
 ```bash
-$ kubectl get nodes  
+$ kubectl get nodes
 NAME                                        STATUS   ROLES    AGE     VERSION
 ip-10-0-2-29.us-west-2.compute.internal     Ready    <none>   7m24s   v1.28.1-eks-f0272c7
 ip-10-0-26-48.us-west-2.compute.internal    Ready    <none>   7m23s   v1.28.1-eks-f0272c7
@@ -110,10 +110,10 @@ kubectl describe ec2nodeclasses.karpenter.k8s.aws default | grep Status -A50 | e
 To validate that, use the `kubectl` command to create an example deployment, and scale it to any desired amount of replicas. Karpenter should provision a new Node in with the latest available version for Bottlerocket.
 
 ```bash
-$ kubectl scale deployment inflate --replicas 10  
+$ kubectl scale deployment inflate --replicas 10
 deployment.apps/inflate scaled
 
-$ kubectl get pods -o wide  
+$ kubectl get pods -o wide
 NAME                       READY   STATUS    RESTARTS   AGE   IP            NODE                                       NOMINATED NODE   READINESS GATES
 inflate-7849c696cd-2668t   1/1     Running   0          49s   10.0.34.254   ip-10-0-45-41.us-west-2.compute.internal   <none>           <none>
 inflate-7849c696cd-5wffm   1/1     Running   0          49s   10.0.46.13    ip-10-0-45-41.us-west-2.compute.internal   <none>           <none>
