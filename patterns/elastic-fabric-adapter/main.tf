@@ -57,6 +57,10 @@ module "eks" {
   cluster_version                = local.cluster_version
   cluster_endpoint_public_access = true
 
+  # Give the Terraform identity admin access to the cluster
+  # which will allow resources to be deployed into the cluster
+  enable_cluster_creator_admin_permissions = true
+
   cluster_addons = {
     coredns    = {}
     kube-proxy = {}
@@ -252,7 +256,7 @@ resource "kubernetes_daemonset" "aws_efa_k8s_device_plugin" {
 
         container {
           name  = "aws-efa-k8s-device-plugin"
-          image = "602401143452.dkr.ecr.us-west-2.amazonaws.com/eks/aws-efa-k8s-device-plugin:v0.4.3"
+          image = "602401143452.dkr.ecr.us-west-2.amazonaws.com/eks/aws-efa-k8s-device-plugin:v0.4.4"
 
           volume_mount {
             name       = "device-plugin"
