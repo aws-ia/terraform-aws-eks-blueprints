@@ -48,6 +48,10 @@ module "eks" {
   cluster_version                = local.cluster_version
   cluster_endpoint_public_access = true
 
+  # Give the Terraform identity admin access to the cluster
+  # which will allow resources to be deployed into the cluster
+  enable_cluster_creator_admin_permissions = true
+
   vpc_id                   = module.vpc.vpc_id
   control_plane_subnet_ids = module.vpc.private_subnets
   subnet_ids               = module.vpc.public_subnets
