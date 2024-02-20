@@ -23,5 +23,6 @@ else
 fi
 
 terraform workspace select $env
+terraform workspace list
 terraform init
 terraform apply -var-file="workspaces/${env}.tfvars"

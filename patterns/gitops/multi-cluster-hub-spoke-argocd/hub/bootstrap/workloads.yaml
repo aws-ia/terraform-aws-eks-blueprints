@@ -10,9 +10,6 @@ spec:
     - clusters:
         selector:
           matchExpressions:
-            - key: akuity.io/argo-cd-cluster-name
-              operator: NotIn
-              values: [in-cluster]
             - key: environment
               operator: NotIn
               values: [control-plane]

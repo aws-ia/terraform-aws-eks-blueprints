@@ -59,7 +59,20 @@ that temporary file with the `kubectl` configuration. This approach offers the
 advantage of not altering your existing `kubectl` context, allowing you to work
 in other terminal windows without interference.
 
-### Monitor GitOps Progress for Addons
+### Deploy ArgoCD Apps of ApplicationSets for Addons
+
+This command verifies the initial ArgoCD installation, ArgoCD will be re-configured when the addons are deployed and configured from git.
+```shell
+kubectl --context hub get all -n argocd
+```
+This command creates the application set manifest to deploy the addons.
+```shell
+kubectl --context hub apply -n argocd -f ../hub/bootstrap/addons.yaml
+```
+The application sets defined here will then deploy addons to any spoke clusters provisioned later using Terraform
+
+
+### Monitor GitOps Progress for Addons on Hub EKS Cluster
 
 Wait until all the ArgoCD applications' `HEALTH STATUS` is `Healthy`.
 Use `Ctrl+C` or `Cmd+C` to exit the `watch` command. ArgoCD Applications
@@ -164,15 +177,22 @@ The output have a section `awsAuthConfig` with the `clusterName` and the `roleAR
 
 ### Verify the Addons on Spoke Clusters
 
-Verify that the addons are ready:
+The addons on the spoke clusters are deployed using the Application Sets created on the EKS Hub Cluster. Verify that the addons are ready:
 
 ```shell
 for i in dev staging prod ; do echo $i && kubectl --context $i get deployment -n kube-system ; done
 ```
 
+### Deploy the sample application to EKS Spoke Clusters
+
+This command will deploy the application using kubectl to all clusters connected to the hub cluster, using the manifest files in [./hub/bootstrap/workloads.yaml](./hub/bootstrap/workloads.yaml).
+```shell
+kubectl --context hub apply -n argocd -f ../hub/bootstrap/workloads.yaml
+```
+
 ### Monitor GitOps Progress for Workloads from Hub Cluster (run on Hub Cluster context)
 
-Watch until **all* the Workloads ArgoCD Applications are `Healthy`
+Watch until all the Workloads ArgoCD Applications are `Healthy`
 
 ```shell
 kubectl --context hub get -n argocd applications -w
