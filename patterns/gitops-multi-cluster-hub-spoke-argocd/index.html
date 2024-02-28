@@ -591,8 +591,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#monitor-gitops-progress-for-addons" class="md-nav__link">
-    Monitor GitOps Progress for Addons
+  <a href="#deploy-argocd-apps-of-applicationsets-for-addons" class="md-nav__link">
+    Deploy ArgoCD Apps of ApplicationSets for Addons
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#monitor-gitops-progress-for-addons-on-hub-eks-cluster" class="md-nav__link">
+    Monitor GitOps Progress for Addons on Hub EKS Cluster
   </a>
   
 </li>
@@ -634,6 +641,13 @@
           <li class="md-nav__item">
   <a href="#verify-the-addons-on-spoke-clusters" class="md-nav__link">
     Verify the Addons on Spoke Clusters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploy-the-sample-application-to-eks-spoke-clusters" class="md-nav__link">
+    Deploy the sample application to EKS Spoke Clusters
   </a>
   
 </li>
@@ -1258,8 +1272,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#monitor-gitops-progress-for-addons" class="md-nav__link">
-    Monitor GitOps Progress for Addons
+  <a href="#deploy-argocd-apps-of-applicationsets-for-addons" class="md-nav__link">
+    Deploy ArgoCD Apps of ApplicationSets for Addons
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#monitor-gitops-progress-for-addons-on-hub-eks-cluster" class="md-nav__link">
+    Monitor GitOps Progress for Addons on Hub EKS Cluster
   </a>
   
 </li>
@@ -1301,6 +1322,13 @@
           <li class="md-nav__item">
   <a href="#verify-the-addons-on-spoke-clusters" class="md-nav__link">
     Verify the Addons on Spoke Clusters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deploy-the-sample-application-to-eks-spoke-clusters" class="md-nav__link">
+    Deploy the sample application to EKS Spoke Clusters
   </a>
   
 </li>
@@ -1419,107 +1447,119 @@ that temporary file with the <code>kubectl</code> configuration. This approach o
 advantage of not altering your existing <code>kubectl</code> context, allowing you to work
 in other terminal windows without interference.</p>
 </blockquote>
-<h3 id="monitor-gitops-progress-for-addons">Monitor GitOps Progress for Addons<a class="headerlink" href="#monitor-gitops-progress-for-addons" title="Permanent link">&para;</a></h3>
+<h3 id="deploy-argocd-apps-of-applicationsets-for-addons">Deploy ArgoCD Apps of ApplicationSets for Addons<a class="headerlink" href="#deploy-argocd-apps-of-applicationsets-for-addons" title="Permanent link">&para;</a></h3>
+<p>This command verifies the initial ArgoCD installation, ArgoCD will be re-configured when the addons are deployed and configured from git.
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>kubectl<span class="w"> </span>--context<span class="w"> </span>hub<span class="w"> </span>get<span class="w"> </span>all<span class="w"> </span>-n<span class="w"> </span>argocd
+</span></code></pre></div>
+This command creates the application set manifest to deploy the addons.
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>kubectl<span class="w"> </span>--context<span class="w"> </span>hub<span class="w"> </span>apply<span class="w"> </span>-n<span class="w"> </span>argocd<span class="w"> </span>-f<span class="w"> </span>../hub/bootstrap/addons.yaml
+</span></code></pre></div>
+The application sets defined here will then deploy addons to any spoke clusters provisioned later using Terraform</p>
+<h3 id="monitor-gitops-progress-for-addons-on-hub-eks-cluster">Monitor GitOps Progress for Addons on Hub EKS Cluster<a class="headerlink" href="#monitor-gitops-progress-for-addons-on-hub-eks-cluster" title="Permanent link">&para;</a></h3>
 <p>Wait until all the ArgoCD applications' <code>HEALTH STATUS</code> is <code>Healthy</code>.
 Use <code>Ctrl+C</code> or <code>Cmd+C</code> to exit the <code>watch</code> command. ArgoCD Applications
 can take a couple of minutes in order to achieve the Healthy status.</p>
-<div class="language-shell highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>kubectl<span class="w"> </span>--context<span class="w"> </span>hub<span class="w"> </span>get<span class="w"> </span>applications<span class="w"> </span>-n<span class="w"> </span>argocd<span class="w"> </span>-w
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>kubectl<span class="w"> </span>--context<span class="w"> </span>hub<span class="w"> </span>get<span class="w"> </span>applications<span class="w"> </span>-n<span class="w"> </span>argocd<span class="w"> </span>-w
 </span></code></pre></div>
 <p>The expected output should look like the following:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>NAME                                            SYNC STATUS   HEALTH STATUS
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>addon-in-cluster-argo-cd                        Synced        Healthy
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>addon-in-cluster-aws-load-balancer-controller   Synced        Healthy
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>addon-in-cluster-metrics-server                 Synced        Healthy
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>cluster-addons                                  Synced        Healthy
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>NAME                                            SYNC STATUS   HEALTH STATUS
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>addon-in-cluster-argo-cd                        Synced        Healthy
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>addon-in-cluster-aws-load-balancer-controller   Synced        Healthy
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>addon-in-cluster-metrics-server                 Synced        Healthy
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>cluster-addons                                  Synced        Healthy
 </span></code></pre></div>
 <h2 id="optional-access-argocd">(Optional) Access ArgoCD<a class="headerlink" href="#optional-access-argocd" title="Permanent link">&para;</a></h2>
 <p>Access to the ArgoCD's UI is completely optional, if you want to do it,
 run the commands shown in the Terraform output as the example below:</p>
-<div class="language-shell highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>terraform<span class="w"> </span>output<span class="w"> </span>-raw<span class="w"> </span>access_argocd
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>terraform<span class="w"> </span>output<span class="w"> </span>-raw<span class="w"> </span>access_argocd
 </span></code></pre></div>
 <p>The expected output should contain the <code>kubectl</code> config followed by <code>kubectl</code> command to retrieve
 the URL, username, password to login into ArgoCD UI or CLI.</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>echo &quot;ArgoCD Username: admin&quot;
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>echo &quot;ArgoCD Password: $(kubectl --context hub get secrets argocd-initial-admin-secret -n argocd --template=&quot;{{index .data.password | base64decode}}&quot;)&quot;
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>echo &quot;ArgoCD URL: https://$(kubectl --context hub get svc -n argocd argo-cd-argocd-server -o jsonpath=&#39;{.status.loadBalancer.ingress[0].hostname}&#39;)&quot;
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>echo &quot;ArgoCD Username: admin&quot;
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>echo &quot;ArgoCD Password: $(kubectl --context hub get secrets argocd-initial-admin-secret -n argocd --template=&quot;{{index .data.password | base64decode}}&quot;)&quot;
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>echo &quot;ArgoCD URL: https://$(kubectl --context hub get svc -n argocd argo-cd-argocd-server -o jsonpath=&#39;{.status.loadBalancer.ingress[0].hostname}&#39;)&quot;
 </span></code></pre></div>
 <h2 id="verify-that-argocd-service-accounts-has-the-annotation-for-irsa">Verify that ArgoCD Service Accounts has the annotation for IRSA<a class="headerlink" href="#verify-that-argocd-service-accounts-has-the-annotation-for-irsa" title="Permanent link">&para;</a></h2>
-<div class="language-shell highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>kubectl<span class="w"> </span>--context<span class="w"> </span>hub<span class="w"> </span>get<span class="w"> </span>sa<span class="w"> </span>-n<span class="w"> </span>argocd<span class="w"> </span>argocd-application-controller<span class="w"> </span>-o<span class="w"> </span>json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.metadata.annotations.&quot;eks.amazonaws.com/role-arn&quot;&#39;</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>kubectl<span class="w"> </span>--context<span class="w"> </span>hub<span class="w"> </span>get<span class="w"> </span>sa<span class="w"> </span>-n<span class="w"> </span>argocd<span class="w"> </span>argocd-server<span class="w">  </span>-o<span class="w"> </span>json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.metadata.annotations.&quot;eks.amazonaws.com/role-arn&quot;&#39;</span>
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>kubectl<span class="w"> </span>--context<span class="w"> </span>hub<span class="w"> </span>get<span class="w"> </span>sa<span class="w"> </span>-n<span class="w"> </span>argocd<span class="w"> </span>argocd-application-controller<span class="w"> </span>-o<span class="w"> </span>json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.metadata.annotations.&quot;eks.amazonaws.com/role-arn&quot;&#39;</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>kubectl<span class="w"> </span>--context<span class="w"> </span>hub<span class="w"> </span>get<span class="w"> </span>sa<span class="w"> </span>-n<span class="w"> </span>argocd<span class="w"> </span>argocd-server<span class="w">  </span>-o<span class="w"> </span>json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.metadata.annotations.&quot;eks.amazonaws.com/role-arn&quot;&#39;</span>
 </span></code></pre></div>
 <p>The output should match the <code>arn</code> for the IAM Role that will assume the IAM Role in spoke/remote clusters</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>arn:aws:iam::0123456789:role/argocd-hub-0123abc..
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>arn:aws:iam::0123456789:role/argocd-hub-0123abc..
+<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>arn:aws:iam::0123456789:role/argocd-hub-0123abc..
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>arn:aws:iam::0123456789:role/argocd-hub-0123abc..
 </span></code></pre></div>
 <h2 id="deploy-the-spoke-eks-cluster">Deploy the Spoke EKS Cluster<a class="headerlink" href="#deploy-the-spoke-eks-cluster" title="Permanent link">&para;</a></h2>
 <p>Use the <code>deploy.sh</code> script to create terraform workspace, initialize Terraform, and deploy the EKS clusters:</p>
-<div class="language-shell highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nb">cd</span><span class="w"> </span>../spokes
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>./deploy.sh<span class="w"> </span>dev
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>./deploy.sh<span class="w"> </span>staging
-</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>./deploy.sh<span class="w"> </span>prod
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">cd</span><span class="w"> </span>../spokes
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>./deploy.sh<span class="w"> </span>dev
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>./deploy.sh<span class="w"> </span>staging
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>./deploy.sh<span class="w"> </span>prod
 </span></code></pre></div>
 <p>Each environment uses a Terraform workspace</p>
 <p>To retrieve <code>kubectl</code> config, execute the terraform output command:</p>
-<div class="language-shell highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>terraform<span class="w"> </span>workspace<span class="w"> </span><span class="k">select</span><span class="w"> </span>dev
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>terraform<span class="w"> </span>output<span class="w"> </span>-raw<span class="w"> </span>configure_kubectl
-</span></code></pre></div>
-<div class="language-shell highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>terraform<span class="w"> </span>workspace<span class="w"> </span><span class="k">select</span><span class="w"> </span>staging
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>terraform<span class="w"> </span>output<span class="w"> </span>-raw<span class="w"> </span>configure_kubectl
-</span></code></pre></div>
-<div class="language-shell highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>terraform<span class="w"> </span>workspace<span class="w"> </span><span class="k">select</span><span class="w"> </span>prod
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>terraform<span class="w"> </span>workspace<span class="w"> </span><span class="k">select</span><span class="w"> </span>dev
 </span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>terraform<span class="w"> </span>output<span class="w"> </span>-raw<span class="w"> </span>configure_kubectl
 </span></code></pre></div>
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>terraform<span class="w"> </span>workspace<span class="w"> </span><span class="k">select</span><span class="w"> </span>staging
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>terraform<span class="w"> </span>output<span class="w"> </span>-raw<span class="w"> </span>configure_kubectl
+</span></code></pre></div>
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>terraform<span class="w"> </span>workspace<span class="w"> </span><span class="k">select</span><span class="w"> </span>prod
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>terraform<span class="w"> </span>output<span class="w"> </span>-raw<span class="w"> </span>configure_kubectl
+</span></code></pre></div>
 <h3 id="verify-argocd-cluster-secret-for-spokes-have-the-correct-iam-role-to-be-assume-by-hub-cluster">Verify ArgoCD Cluster Secret for Spokes have the correct IAM Role to be assume by Hub Cluster<a class="headerlink" href="#verify-argocd-cluster-secret-for-spokes-have-the-correct-iam-role-to-be-assume-by-hub-cluster" title="Permanent link">&para;</a></h3>
-<div class="language-shell highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span>dev<span class="w"> </span>staging<span class="w"> </span>prod<span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="nv">$i</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>kubectl<span class="w"> </span>--context<span class="w"> </span>hub<span class="w"> </span>get<span class="w"> </span>secret<span class="w"> </span>-n<span class="w"> </span>argocd<span class="w"> </span>spoke-<span class="nv">$i</span><span class="w"> </span>--template<span class="o">=</span><span class="s1">&#39;{{index .data.config | base64decode}}&#39;</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="k">done</span>
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span>dev<span class="w"> </span>staging<span class="w"> </span>prod<span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="nv">$i</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>kubectl<span class="w"> </span>--context<span class="w"> </span>hub<span class="w"> </span>get<span class="w"> </span>secret<span class="w"> </span>-n<span class="w"> </span>argocd<span class="w"> </span>spoke-<span class="nv">$i</span><span class="w"> </span>--template<span class="o">=</span><span class="s1">&#39;{{index .data.config | base64decode}}&#39;</span><span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="k">done</span>
 </span></code></pre></div>
 <p>The output have a section <code>awsAuthConfig</code> with the <code>clusterName</code> and the <code>roleARN</code> that has write access to the spoke cluster</p>
-<div class="language-json highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="p">{</span>
-</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="w">  </span><span class="nt">&quot;tlsClientConfig&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="w">    </span><span class="nt">&quot;insecure&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="w">    </span><span class="nt">&quot;caData&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LS0tL....&quot;</span>
-</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="w">  </span><span class="p">},</span>
-</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="w">  </span><span class="nt">&quot;awsAuthConfig&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="w">    </span><span class="nt">&quot;clusterName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hub-spoke-dev&quot;</span><span class="p">,</span>
-</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="w">    </span><span class="nt">&quot;roleARN&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;arn:aws:iam::0123456789:role/hub-spoke-dev-argocd-spoke&quot;</span>
-</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="w">  </span><span class="p">}</span>
-</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="p">}</span>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="p">{</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="w">  </span><span class="nt">&quot;tlsClientConfig&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">    </span><span class="nt">&quot;insecure&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">    </span><span class="nt">&quot;caData&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LS0tL....&quot;</span>
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="w">  </span><span class="p">},</span>
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="w">  </span><span class="nt">&quot;awsAuthConfig&quot;</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="w">    </span><span class="nt">&quot;clusterName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hub-spoke-dev&quot;</span><span class="p">,</span>
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="w">    </span><span class="nt">&quot;roleARN&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;arn:aws:iam::0123456789:role/hub-spoke-dev-argocd-spoke&quot;</span>
+</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="p">}</span>
 </span></code></pre></div>
 <h3 id="verify-the-addons-on-spoke-clusters">Verify the Addons on Spoke Clusters<a class="headerlink" href="#verify-the-addons-on-spoke-clusters" title="Permanent link">&para;</a></h3>
-<p>Verify that the addons are ready:</p>
-<div class="language-shell highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span>dev<span class="w"> </span>staging<span class="w"> </span>prod<span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="nv">$i</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>kubectl<span class="w"> </span>--context<span class="w"> </span><span class="nv">$i</span><span class="w"> </span>get<span class="w"> </span>deployment<span class="w"> </span>-n<span class="w"> </span>kube-system<span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="k">done</span>
+<p>The addons on the spoke clusters are deployed using the Application Sets created on the EKS Hub Cluster. Verify that the addons are ready:</p>
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span>dev<span class="w"> </span>staging<span class="w"> </span>prod<span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="nv">$i</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>kubectl<span class="w"> </span>--context<span class="w"> </span><span class="nv">$i</span><span class="w"> </span>get<span class="w"> </span>deployment<span class="w"> </span>-n<span class="w"> </span>kube-system<span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="k">done</span>
 </span></code></pre></div>
+<h3 id="deploy-the-sample-application-to-eks-spoke-clusters">Deploy the sample application to EKS Spoke Clusters<a class="headerlink" href="#deploy-the-sample-application-to-eks-spoke-clusters" title="Permanent link">&para;</a></h3>
+<p>This command will deploy the application using kubectl to all clusters connected to the hub cluster, using the manifest files in <a href="../../patterns/gitops/multi-cluster-hub-spoke-argocd/hub/bootstrap/workloads.yaml">./hub/bootstrap/workloads.yaml</a>.
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>kubectl<span class="w"> </span>--context<span class="w"> </span>hub<span class="w"> </span>apply<span class="w"> </span>-n<span class="w"> </span>argocd<span class="w"> </span>-f<span class="w"> </span>../hub/bootstrap/workloads.yaml
+</span></code></pre></div></p>
 <h3 id="monitor-gitops-progress-for-workloads-from-hub-cluster-run-on-hub-cluster-context">Monitor GitOps Progress for Workloads from Hub Cluster (run on Hub Cluster context)<a class="headerlink" href="#monitor-gitops-progress-for-workloads-from-hub-cluster-run-on-hub-cluster-context" title="Permanent link">&para;</a></h3>
-<p>Watch until *<em>all</em> the Workloads ArgoCD Applications are <code>Healthy</code></p>
-<div class="language-shell highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>kubectl<span class="w"> </span>--context<span class="w"> </span>hub<span class="w"> </span>get<span class="w"> </span>-n<span class="w"> </span>argocd<span class="w"> </span>applications<span class="w"> </span>-w
+<p>Watch until all the Workloads ArgoCD Applications are <code>Healthy</code></p>
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>kubectl<span class="w"> </span>--context<span class="w"> </span>hub<span class="w"> </span>get<span class="w"> </span>-n<span class="w"> </span>argocd<span class="w"> </span>applications<span class="w"> </span>-w
 </span></code></pre></div>
 <p>Wait until the ArgoCD Applications <code>HEALTH STATUS</code> is <code>Healthy</code>. Crl+C to exit the <code>watch</code> command</p>
 <h3 id="verify-the-application">Verify the Application<a class="headerlink" href="#verify-the-application" title="Permanent link">&para;</a></h3>
 <p>Verify that the application configuration is present and the pod is running:</p>
-<div class="language-shell highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span>dev<span class="w"> </span>staging<span class="w"> </span>prod<span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="nv">$i</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>kubectl<span class="w"> </span>--context<span class="w"> </span><span class="nv">$i</span><span class="w"> </span>get<span class="w"> </span>all<span class="w"> </span>-n<span class="w"> </span>workload<span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="k">done</span>
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span>dev<span class="w"> </span>staging<span class="w"> </span>prod<span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="nv">$i</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>kubectl<span class="w"> </span>--context<span class="w"> </span><span class="nv">$i</span><span class="w"> </span>get<span class="w"> </span>all<span class="w"> </span>-n<span class="w"> </span>workload<span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="k">done</span>
 </span></code></pre></div>
 <h3 id="container-metrics">Container Metrics<a class="headerlink" href="#container-metrics" title="Permanent link">&para;</a></h3>
 <p>Check the application's CPU and memory metrics:</p>
-<div class="language-shell highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span>dev<span class="w"> </span>staging<span class="w"> </span>prod<span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="nv">$i</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>kubectl<span class="w"> </span>--context<span class="w"> </span><span class="nv">$i</span><span class="w"> </span>top<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>workload<span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="k">done</span>
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="k">for</span><span class="w"> </span>i<span class="w"> </span><span class="k">in</span><span class="w"> </span>dev<span class="w"> </span>staging<span class="w"> </span>prod<span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="nv">$i</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>kubectl<span class="w"> </span>--context<span class="w"> </span><span class="nv">$i</span><span class="w"> </span>top<span class="w"> </span>pods<span class="w"> </span>-n<span class="w"> </span>workload<span class="w"> </span><span class="p">;</span><span class="w"> </span><span class="k">done</span>
 </span></code></pre></div>
 <h2 id="destroy-the-spoke-eks-clusters">Destroy the Spoke EKS Clusters<a class="headerlink" href="#destroy-the-spoke-eks-clusters" title="Permanent link">&para;</a></h2>
 <p>To tear down all the resources and the EKS cluster, run the following command:</p>
-<div class="language-shell highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>./destroy.sh<span class="w"> </span>dev
-</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>./destroy.sh<span class="w"> </span>staging
-</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>./destroy.sh<span class="w"> </span>prod
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>./destroy.sh<span class="w"> </span>dev
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>./destroy.sh<span class="w"> </span>staging
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>./destroy.sh<span class="w"> </span>prod
 </span></code></pre></div>
 <h2 id="destroy-the-hub-eks-clusters">Destroy the Hub EKS Clusters<a class="headerlink" href="#destroy-the-hub-eks-clusters" title="Permanent link">&para;</a></h2>
 <p>To tear down all the resources and the EKS cluster, run the following command:
 Destroy Hub Clusters</p>
-<div class="language-shell highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="nb">cd</span><span class="w"> </span>../hub
-</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>./destroy.sh
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="nb">cd</span><span class="w"> </span>../hub
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>./destroy.sh
 </span></code></pre></div>
 <h2 id="appendix">Appendix<a class="headerlink" href="#appendix" title="Permanent link">&para;</a></h2>
 <h2 id="fork-gitops-repositories">Fork GitOps Repositories<a class="headerlink" href="#fork-gitops-repositories" title="Permanent link">&para;</a></h2>
 <p>To modify the <code>values.yaml</code> file or the helm chart version for addons, you'll need to fork the repository <a href="https://github.com/aws-samples/eks-blueprints-add-ons">aws-samples/eks-blueprints-add-ons</a>.</p>
 <p>After forking, update the following environment variables to point to your forks, replacing the default values.</p>
-<div class="language-shell highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">TF_VAR_gitops_addons_org</span><span class="o">=</span>https://github.com/aws-samples
-</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">TF_VAR_gitops_addons_repo</span><span class="o">=</span>eks-blueprints-add-ons
-</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">TF_VAR_gitops_addons_revision</span><span class="o">=</span>main
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">TF_VAR_gitops_addons_org</span><span class="o">=</span>https://github.com/aws-samples
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">TF_VAR_gitops_addons_repo</span><span class="o">=</span>eks-blueprints-add-ons
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="nb">export</span><span class="w"> </span><span class="nv">TF_VAR_gitops_addons_revision</span><span class="o">=</span>main
 </span></code></pre></div>
 <!-- END INCLUDE -->
 
