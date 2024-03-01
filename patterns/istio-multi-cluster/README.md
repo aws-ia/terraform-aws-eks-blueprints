@@ -1,5 +1,29 @@
 # Istio multi-primary on different networks on EKS
 
+## Business Use Case for Istio Multi-Cluster
+
+**Global Scalability:** Multi-cluster Istio on Amazon EKS allows businesses to scale services globally, ensuring that infrastructure can grow with the demands of international markets.
+
+**Service Isolation:** Services are isolated within clusters, enhancing stability and minimizing the risk of widespread system failures.
+
+**Localized Compliance:** Adherence to regional data protection laws is simplified by deploying services in appropriate AWS regions.
+
+**High Availability:** Geographic distribution of clusters on AWS enhances service availability and reliability.
+
+**Performance Optimization:** Service latency is reduced by deploying clusters closer to users, with Istio managing efficient traffic routing.
+
+**Operational Simplicity:** Istio streamlines complex operations across clusters, providing a unified approach to traffic management, policy enforcement, and monitoring.
+
+**Resilience to Failures:** Multiple clusters act as separate failure domains, ensuring that an issue in one cluster doesn’t impact the overall service availability.
+
+**Data Sovereignty:** Multi-cluster architecture supports data sovereignty requirements by keeping data within the borders of the required jurisdiction.
+
+**Cost-Effective Infrastructure:** AWS's diverse resource offerings enable cost optimization strategies without compromising service quality.
+
+## Istio Multi-Cluster Architecture on Amazon EKS
+![Istio Multi-Cluster Architecture](images/istio-multi-cluster-architecture.png "Istio Multi-Cluster Architecture on Amazon EKS")
+
+
 ## Prerequisites
 
 Ensure that you have installed the following tools locally:
