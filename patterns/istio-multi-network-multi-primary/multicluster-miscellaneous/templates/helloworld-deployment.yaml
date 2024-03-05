@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helloworld-{{ .Values.version }}
+  labels:
+    app: helloworld
+    version: {{ .Values.version }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: helloworld
+      version: {{ .Values.version }}
+  template:
+    metadata:
+      labels:
+        app: helloworld
+        version: {{ .Values.version }}
+    spec:
+      containers:
+      - name: helloworld
+        image: docker.io/istio/examples-helloworld-{{ .Values.version }}
+        resources:
+          requests:
+            cpu: "100m"
+        imagePullPolicy: IfNotPresent #Always
+        ports:
+        - containerPort: 5000
