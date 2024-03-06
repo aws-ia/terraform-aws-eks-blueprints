@@ -1,4 +1,4 @@
-# Istio multi-primary on different networks on EKS
+# Istio multi-network, multi-primary on EKS
 
 ## Prerequisites
 
@@ -13,32 +13,21 @@ Ensure that you have installed the following tools locally:
 
 To deploy the terraform repo, run the commands shown below:
 ```sh 
-terraform init
-
-terraform apply --auto-approve \
-    -target=module.vpc_1 \
-    -target=module.vpc_2 \
-    -target=module.eks_1 \
-    -target=module.eks_2 \
-    -target=kubernetes_secret.cacerts_cluster1 \
-    -target=kubernetes_secret.cacerts_cluster2 
-
-terraform apply --auto-approve \
-    -target="module.eks_1_addons.helm_release.this[\"istiod\"]" \
-    -target="module.eks_2_addons.helm_release.this[\"istiod\"]" \
-    -target=module.eks_1_addons.module.aws_load_balancer_controller \
-    -target=module.eks_2_addons.module.aws_load_balancer_controller 
-
-terraform apply --auto-approve 
+./scripts/deploy.sh 
 ```
 
 After running the command successfully, set the kubeconfig for both EKS clusters:
 ```sh 
-aws eks update-kubeconfig --region us-west-2 --name eks-1
-aws eks update-kubeconfig --region us-west-2 --name eks-2
-CTX_CLUSTER1=`aws eks describe-cluster --name eks-1 | jq -r '.cluster.arn'`
-CTX_CLUSTER2=`aws eks describe-cluster --name eks-2 | jq -r '.cluster.arn'`
+source scripts/set-cluster-contexts.sh
 ```
+
+> **Note:** If using different cluster names other than the default `eks-1` and 
+`eks-2`, use the following command:
+
+```sh 
+source scripts/set-cluster-contexts.sh eks_cluster_name_1 eks_cluster_name_2
+```
+
 
 ## Testing
 
@@ -48,27 +37,41 @@ Before you could do any testing, you need to ensure that:
 * The loadbalancer for `istio-eastwestgateway` service is ready for the traffic 
 * The loadblanncer target groups have their targets ready. 
 
-Use the following scripts to test the readiness of the LBs.
-> Note: Change the k8s context to run it against the other cluster
+Use the following script to test the readiness of the LBs:
 ```sh 
-EW_LB_NAME=$(k get svc istio-eastwestgateway -n istio-ingress --context $CTX_CLUSTER1 -o=jsonpath='{.status.loadBalancer.ingress[0].hostname}')
-
-EW_LB_ARN=$(aws elbv2 describe-load-balancers | \
-jq -r --arg EW_LB_NAME "$EW_LB_NAME" \
-'.LoadBalancers[] | select(.DNSName == $EW_LB_NAME) | .LoadBalancerArn')
-
-TG_ARN=$(aws elbv2 describe-listeners --load-balancer-arn $EW_LB_ARN | jq -r '.Listeners[] | select(.Port == 15443) | .DefaultActions[0].TargetGroupArn')
-
-aws elbv2 describe-target-health --target-group-arn $TG_ARN | jq -r '.TargetHealthDescriptions[0]'
+./scripts/check-lb-readiness.sh
 ```
+> **Note:** If using different cluster names other than the default `eks-1` and 
+`eks-2` use the following command:
+```sh 
+./scripts/check-lb-readiness.sh eks_cluster_name_1 eks_cluster_name_2
+```
+
 
 You should see an output similar to below before proceeding any further:
 ```
+Updated context arn:aws:eks:us-west-2:XXXXXXXXXXXX:cluster/eks-1 in /Users/maverick/.kube/config
+Updated context arn:aws:eks:us-west-2:XXXXXXXXXXXX:cluster/eks-2 in /Users/maverick/.kube/config
+
+Readiness check for arn:aws:eks:us-west-2:XXXXXXXXXXXX:cluster/eks-1:
 {
   "Target": {
-    "Id": "10.1.0.227",
+    "Id": "10.1.21.197",
     "Port": 15443,
-    "AvailabilityZone": "us-west-2a"
+    "AvailabilityZone": "us-west-2b"
+  },
+  "HealthCheckPort": "15443",
+  "TargetHealth": {
+    "State": "healthy"
+  }
+}
+
+Readiness check for arn:aws:eks:us-west-2:XXXXXXXXXXXX:cluster/eks-2:
+{
+  "Target": {
+    "Id": "10.2.23.10",
+    "Port": 15443,
+    "AvailabilityZone": "us-west-2b"
   },
   "HealthCheckPort": "15443",
   "TargetHealth": {
@@ -82,28 +85,42 @@ You should see an output similar to below before proceeding any further:
 Run the following commands to ensure that the public Load Balancer IP addresses 
 are displayed in the output as shown. 
 
-> Note: Change the k8s context to run it against the other cluster
-
 ```sh 
-POD_NAME=$(kubectl get pod --context="${CTX_CLUSTER1}" -l app=sleep -o jsonpath='{.items[0].metadata.name}' -n sample)
-
-istioctl --context $CTX_CLUSTER1 proxy-config endpoint $POD_NAME -n sample | grep helloworld
+./scripts/check-cross-cluster-sync.sh
 ```
+
+> **Note:** If using different cluster names other than the default `eks-1` and 
+`eks-2` use the following command:
+```sh 
+./scripts/check-cross-cluster-sync.sh eks_cluster_name_1 eks_cluster_name_2
+```
+
 
 The output should be similar to:
 ```
-10.1.8.162:5000                                         HEALTHY     OK                outbound|5000||helloworld.sample.svc.cluster.local
-100.21.48.49:15443                                      HEALTHY     OK                outbound|5000||helloworld.sample.svc.cluster.local
-34.209.120.99:15443                                     HEALTHY     OK                outbound|5000||helloworld.sample.svc.cluster.local
-52.36.169.59:15443                                      HEALTHY     OK                outbound|5000||helloworld.sample.svc.cluster.local
+Updated context arn:aws:eks:us-west-2:XXXXXXXXXXXX:cluster/eks-1 in /Users/maverick/.kube/config
+Updated context arn:aws:eks:us-west-2:XXXXXXXXXXXX:cluster/eks-2 in /Users/maverick/.kube/config
+
+Cross cluster sync check for arn:aws:eks:us-west-2:XXXXXXXXXXXX:cluster/eks-1:
+10.1.24.17:5000                                         HEALTHY     OK                outbound|5000||helloworld.sample.svc.cluster.local
+44.227.39.238:15443                                     HEALTHY     OK                outbound|5000||helloworld.sample.svc.cluster.local
+44.229.207.145:15443                                    HEALTHY     OK                outbound|5000||helloworld.sample.svc.cluster.local
+52.33.147.49:15443                                      HEALTHY     OK                outbound|5000||helloworld.sample.svc.cluster.local
+
+Cross cluster sync check for arn:aws:eks:us-west-2:XXXXXXXXXXXX:cluster/eks-2:
+10.2.30.251:5000                                        HEALTHY     OK                outbound|5000||helloworld.sample.svc.cluster.local
+34.213.174.24:15443                                     HEALTHY     OK                outbound|5000||helloworld.sample.svc.cluster.local
+54.148.164.231:15443                                    HEALTHY     OK                outbound|5000||helloworld.sample.svc.cluster.local
+54.148.184.188:15443                                    HEALTHY     OK                outbound|5000||helloworld.sample.svc.cluster.local
 ```
 
-If you do public IP addresses in the output proceed further to test multi-cluster 
-communication.
+If you see public IP addresses in the output for both the clusters proceed 
+further to test multi-cluster communication.
 
 ### Cross-cluster Load-Balancing 
 
-Run the following command to check cross-cluster loadbalancing from the first cluster.
+Run the following command to check cross-cluster loadbalancing from the first 
+cluster.
 
 ```
 for i in {1..10}
@@ -114,7 +131,8 @@ kubectl exec --context="${CTX_CLUSTER1}" -n sample -c sleep \
     -- curl -sS helloworld.sample:5000/hello
 done
 ```
-Also test similar command to check cross-cluster loadbalancing from the second cluster.
+Also test similar command to check cross-cluster loadbalancing from the second 
+cluster.
 
 ```
 for i in {1..10}
@@ -143,16 +161,7 @@ Hello version: v2, instance: helloworld-v2-7f46498c69-5g9rk
 
 ## Destroy 
 ```sh 
-# Remove all the Helm installs first, this ensures that all the Load Balancers
-# are cleanly destroyed before removing other infrastructure
-terraform destroy --auto-approve \
-    -target=module.eks_1_addons.helm_release.this \
-    -target=module.eks_2_addons.helm_release.this \
-    -target=helm_release.multicluster_miscellaneous_1 \
-    -target=helm_release.multicluster_miscellaneous_2
-
-# Remove all the rest 
-terraform destroy --auto-approve
+./scripts/destroy.sh 
 ```
 
 ## Troubleshooting
@@ -167,10 +176,10 @@ it is:
 1. Deploy the VPCs and EKS clusters 
 2. Deploy the `cacerts` secret in the `istio-system` namespace in both clusters
 4. Deploy the control plane `istiod` in both clusters
-5. Deploy the rest of the resources, including Helm Chart `multicluster-miscelleneous`
+5. Deploy the rest of the resources, including Helm Chart `multicluster-gateway-n-apps`
 in both clusters. 
 
-The `multicluster-miscelleneous` Helm chart includes the following key resources:
+The `multicluster-gateway-n-apps` Helm chart includes the following key resources:
 1. `Deployment`, `Service Account` and `Service` definitions for `sleep` app
 2. `Deployment` and `Service` definitions for `helloworld` app
 3. Static `Gateway` definition of `cross-network-gateway` in `istio-ingress` namespace 

@@ -293,24 +293,9 @@ module "eks_1_addons" {
               }
               ports = [
                 {
-                  name       = "status-port"
-                  port       = 15021
-                  targetPort = 15021
-                },
-                {
                   name       = "tls"
                   port       = 15443
                   targetPort = 15443
-                },
-                {
-                  name       = "tls-istiod"
-                  port       = 15012
-                  targetPort = 15012
-                },
-                {
-                  name       = "tls-webhook"
-                  port       = 15017
-                  targetPort = 15017
                 }
               ]
             }
@@ -359,11 +344,11 @@ resource "kubernetes_namespace_v1" "sample_namespace_1" {
   provider = kubernetes.kubernetes_1
 }
 
-resource "helm_release" "multicluster_miscellaneous_1" {
-  name       = "multicluster-miscellaneous"
-  repository = "./"
+resource "helm_release" "multicluster_gateway_n_apps_1" {
+  name       = "multicluster-gateway-n-apps"
+  repository = "charts"
   namespace  = kubernetes_namespace_v1.sample_namespace_1.metadata[0].name
-  chart      = "multicluster-miscellaneous"
+  chart      = "multicluster-gateway-n-apps"
 
   set {
     name  = "version"
