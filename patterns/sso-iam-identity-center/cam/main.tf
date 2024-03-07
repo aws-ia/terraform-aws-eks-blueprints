@@ -5,7 +5,7 @@ provider "aws" {
 data "aws_availability_zones" "available" {}
 
 locals {
-  name   = basename(path.cwd)
+  name   = "sso-${basename(path.cwd)}"
   region = "us-west-2"
 
   vpc_cidr = "10.0.0.0/16"
@@ -23,7 +23,7 @@ locals {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.21"
+  version = "~> 20.0"
 
   cluster_name                   = local.name
   cluster_version                = "1.29"
@@ -48,14 +48,39 @@ module "eks" {
       desired_size = 3
     }
   }
+  # Give the Terraform identity admin access to the cluster just for the deployment phase.
+  # You can revoke this permissions cluster is created since the below referenced "operators" have the same access level
+  enable_cluster_creator_admin_permissions = true
 
-  manage_aws_auth_configmap = true
-  aws_auth_roles = flatten(
-    [
-      module.operators_team.aws_auth_configmap_role,
-      module.developers_team.aws_auth_configmap_role,
-    ]
-  )
+  access_entries = {
+    # One access entry with a policy associated
+    operators = {
+      principal_arn = tolist(data.aws_iam_roles.admin.arns)[0]
+
+      policy_associations = {
+        operators = {
+          policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+          access_scope = {
+            type = "cluster"
+          }
+        }
+      }
+    },
+    developers = {
+      kubernetes_groups = ["eks-developers"]
+      principal_arn     = tolist(data.aws_iam_roles.user.arns)[0]
+
+      policy_associations = {
+        developers = {
+          policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSViewPolicy"
+          access_scope = {
+            namespaces = ["default"]
+            type       = "namespace"
+          }
+        }
+      }
+    }
+  }
 
   tags = local.tags
 }

@@ -5,7 +5,7 @@ provider "aws" {
 data "aws_availability_zones" "available" {}
 
 locals {
-  name   = "${basename(path.cwd)}-sso"
+  name   = "sso-${basename(path.cwd)}"
   region = "us-west-2"
 
   vpc_cidr = "10.0.0.0/16"
@@ -23,7 +23,7 @@ locals {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.21"
+  version = "~> 20.0"
 
   cluster_name                   = local.name
   cluster_version                = "1.29"
@@ -49,6 +49,14 @@ module "eks" {
     }
   }
 
+  tags = local.tags
+
+}
+
+module "aws_auth" {
+  source  = "terraform-aws-modules/eks/aws//modules/aws-auth"
+  version = "~> 20.0"
+
   manage_aws_auth_configmap = true
   aws_auth_roles = flatten(
     [
@@ -57,7 +65,6 @@ module "eks" {
     ]
   )
 
-  tags = local.tags
 }
 
 ################################################################################

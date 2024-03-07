@@ -18,7 +18,7 @@ With the active users, use one of the `terraform output` examples to configure y
 
 ```bash
 configure_sso_admin = <<EOT
-  # aws configure sso
+  # aws configure sso --profile EKSClusterAdmin
   SSO session name (Recommended): <SESSION_NAME>
   SSO start URL [None]: https://d-1234567890.awsapps.com/start
   SSO region [None]: us-west-2
@@ -40,7 +40,8 @@ configure_sso_admin = <<EOT
 
   To use this profile, specify the profile name using --profile, as shown:
 
-  aws eks --region us-west-2 update-kubeconfig --name iam-identity-center --profile EKSClusterAdmin-123456789012
+  aws eks --region us-west-2 update-kubeconfig --name iam-identity-center --profile EKSClusterAdmin
+
 
 EOT
 ```
@@ -49,7 +50,7 @@ EOT
 
 ```bash
 configure_sso_user = <<EOT
-  # aws configure sso
+  # aws configure sso --profile EKSClusterUser
   SSO session name (Recommended): <SESSION_NAME>
   SSO start URL [None]: https://d-1234567890.awsapps.com/start
   SSO region [None]: us-west-2
@@ -71,7 +72,7 @@ configure_sso_user = <<EOT
 
   To use this profile, specify the profile name using --profile, as shown:
 
-  aws eks --region us-west-2 update-kubeconfig --name iam-identity-center --profile EKSClusterUser-123456789012
+  aws eks --region us-west-2 update-kubeconfig --name iam-identity-center --profile EKSClusterUser
 
 EOT
 ```
@@ -102,6 +103,10 @@ configure_kubectl = "aws eks --region us-west-2 update-kubeconfig --name iam-ide
 
 ## Destroy
 
-{%
-   include-markdown "../../docs/_partials/destroy.md"
-%}
+If you revoked the *Cluster creator* `cluster-admin` permission, you may need to re-associate the `AmazonEKSClusterAdminPolicy` access entry to run `terraform destroy`.
+
+```bash
+terraform destroy -target module.developers_team -auto-approve
+terraform destroy -target module.eks -auto-approve
+terraform destroy -auto-approve
+```
