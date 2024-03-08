@@ -1,5 +1,18 @@
 # Istio multi-network, multi-primary on EKS
 
+## Business Use Cases for Istio Multi-Cluster
+
+**Fault Tolerance and High Availability:** Reduces downtime and ensures continuous service by distributing workloads across multiple clusters, enhancing resilience to failures and outages.
+
+**Enhanced Security and Isolation:** Strengthens security posture by implementing strict access controls and network segmentation, preventing unauthorized inter-service communications.
+
+**Regulatory Compliance:** Istio's multi-cluster architecture ensures data segregation and compliance with regulations like GDPR and PCI DSS through Istio's multi-cluster architecture.
+
+**Scalability and Performance:** Achieves horizontal scaling and performance optimization by adding clusters in different regions, catering to traffic surges and reducing latency.
+
+
+![Istio Multi-Cluster Architecture](istio-multi-cluster-architecture.png "Istio Multi-Cluster Architecture on Amazon EKS")
+
 ## Prerequisites
 
 Ensure that you have installed the following tools locally:
