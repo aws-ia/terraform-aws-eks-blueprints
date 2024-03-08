@@ -52,6 +52,9 @@ module "eks" {
   # You can revoke this permissions cluster is created since the below referenced "operators" have the same access level
   enable_cluster_creator_admin_permissions = true
 
+  # This will set the cluster authentication use API only, meaning that the `aws-auth` configMap will not work on this example.
+  authentication_mode = "API"
+
   access_entries = {
     # One access entry with a policy associated
     operators = {
