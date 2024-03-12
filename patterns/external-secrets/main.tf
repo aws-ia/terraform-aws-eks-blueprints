@@ -147,22 +147,23 @@ resource "aws_kms_key" "secrets" {
 }
 
 resource "kubectl_manifest" "cluster_secretstore" {
-  yaml_body  = <<YAML
-apiVersion: external-secrets.io/v1beta1
-kind: ClusterSecretStore
-metadata:
-  name: ${local.cluster_secretstore_name}
-spec:
-  provider:
-    aws:
-      service: SecretsManager
-      region: ${local.region}
-      auth:
-        jwt:
-          serviceAccountRef:
-            name: ${local.cluster_secretstore_sa}
-            namespace: ${local.namespace}
-YAML
+  yaml_body = <<YAML
+    apiVersion: external-secrets.io/v1beta1
+    kind: ClusterSecretStore
+    metadata:
+      name: ${local.cluster_secretstore_name}
+    spec:
+      provider:
+        aws:
+          service: SecretsManager
+          region: ${local.region}
+          auth:
+            jwt:
+              serviceAccountRef:
+                name: ${local.cluster_secretstore_sa}
+                namespace: ${local.namespace}
+  YAML
+
   depends_on = [module.eks_blueprints_addons]
 }
 
@@ -180,21 +181,22 @@ resource "aws_secretsmanager_secret_version" "secret" {
 }
 
 resource "kubectl_manifest" "secret" {
-  yaml_body  = <<YAML
-apiVersion: external-secrets.io/v1beta1
-kind: ExternalSecret
-metadata:
-  name: ${local.name}-sm
-  namespace: ${local.namespace}
-spec:
-  refreshInterval: 1h
-  secretStoreRef:
-    name: ${local.cluster_secretstore_name}
-    kind: ClusterSecretStore
-  dataFrom:
-  - extract:
-      key: ${aws_secretsmanager_secret.secret.name}
-YAML
+  yaml_body = <<-YAML
+    apiVersion: external-secrets.io/v1beta1
+    kind: ExternalSecret
+    metadata:
+      name: ${local.name}-sm
+      namespace: ${local.namespace}
+    spec:
+      refreshInterval: 1h
+      secretStoreRef:
+        name: ${local.cluster_secretstore_name}
+        kind: ClusterSecretStore
+      dataFrom:
+      - extract:
+          key: ${aws_secretsmanager_secret.secret.name}
+  YAML
+
   depends_on = [kubectl_manifest.cluster_secretstore]
 }
 
@@ -203,22 +205,23 @@ YAML
 #---------------------------------------------------------------
 
 resource "kubectl_manifest" "secretstore" {
-  yaml_body  = <<YAML
-apiVersion: external-secrets.io/v1beta1
-kind: SecretStore
-metadata:
-  name: ${local.secretstore_name}
-  namespace: ${local.namespace}
-spec:
-  provider:
-    aws:
-      service: ParameterStore
-      region: ${local.region}
-      auth:
-        jwt:
-          serviceAccountRef:
-            name: ${local.secretstore_sa}
-YAML
+  yaml_body = <<-YAML
+    apiVersion: external-secrets.io/v1beta1
+    kind: SecretStore
+    metadata:
+      name: ${local.secretstore_name}
+      namespace: ${local.namespace}
+    spec:
+      provider:
+        aws:
+          service: ParameterStore
+          region: ${local.region}
+          auth:
+            jwt:
+              serviceAccountRef:
+                name: ${local.secretstore_sa}
+  YAML
+
   depends_on = [module.eks_blueprints_addons]
 }
 
@@ -326,27 +329,27 @@ module "secretstore_role" {
 
 resource "aws_iam_policy" "secretstore" {
   name_prefix = local.secretstore_sa
-  policy      = <<POLICY
-{
-	"Version": "2012-10-17",
-  "Statement": [
+  policy      = <<-POLICY
     {
-      "Effect": "Allow",
-      "Action": [
-        "ssm:GetParameter*"
-      ],
-      "Resource": "arn:aws:ssm:${local.region}:${data.aws_caller_identity.current.account_id}:parameter/${local.name}/*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "kms:Decrypt"
-      ],
-      "Resource": "${aws_kms_key.secrets.arn}"
+      "Version": "2012-10-17",
+      "Statement": [
+        {
+          "Effect": "Allow",
+          "Action": [
+            "ssm:GetParameter*"
+          ],
+          "Resource": "arn:aws:ssm:${local.region}:${data.aws_caller_identity.current.account_id}:parameter/${local.name}/*"
+        },
+        {
+          "Effect": "Allow",
+          "Action": [
+            "kms:Decrypt"
+          ],
+          "Resource": "${aws_kms_key.secrets.arn}"
+        }
+      ]
     }
-  ]
-}
-POLICY
+  POLICY
 }
 
 module "ebs_csi_driver_irsa" {
