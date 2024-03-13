@@ -8,6 +8,10 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
 
 ## Validate
 
+!!! note
+
+    The following steps are shown with `g5.8xlarge` due to cost and availability. Values shown below will change based on the instance type selected (i.e. - `p5.48xlarge` has 8 GPUs and 32 EFA interfaces)
+
 1. List the nodes by instance type:
 
     ```sh

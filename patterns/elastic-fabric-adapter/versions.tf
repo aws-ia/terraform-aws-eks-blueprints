@@ -10,10 +10,6 @@ terraform {
       source  = "hashicorp/helm"
       version = ">= 2.9"
     }
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = ">= 2.20"
-    }
   }
 
   # ##  Used for end-to-end testing on project; update to suit your needs
