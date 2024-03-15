@@ -16,7 +16,7 @@ With the active users, use one of the `terraform output` examples to configure y
 
 ### Admin user example
 
-```bash
+```sh
 configure_sso_admin = <<EOT
   # aws configure sso --profile EKSClusterAdmin
   SSO session name (Recommended): <SESSION_NAME>
@@ -47,7 +47,7 @@ EOT
 
 ### Read-only user example
 
-```bash
+```sh
 configure_sso_user = <<EOT
   # aws configure sso --profile EKSClusterUser
   SSO session name (Recommended): <SESSION_NAME>
@@ -78,7 +78,7 @@ EOT
 
 With the `kubeconfig` configured, you'll be able to run `kubectl` commands in your Amazon EKS Cluster with the impersonated user. The read-only user has a `cluster-viewer` Kubernetes role bound to it's group, whereas the admin user, has the `admin` Kubernetes role bound to it's group.
 
-```bash
+```sh
 kubectl get pods -A
 NAMESPACE          NAME                        READY   STATUS    RESTARTS   AGE
 amazon-guardduty   aws-guardduty-agent-bl2v2   1/1     Running   0          3h54m
@@ -96,13 +96,13 @@ kube-system        kube-proxy-q1fmc            1/1     Running   0          3h54
 
 If not revoked after the cluster creation, it's possible to use the `configure_kubectl` output to assume the *Cluster creator* role with `cluster-admin` access.
 
-```bash
+```sh
 configure_kubectl = "aws eks --region us-west-2 update-kubeconfig --name iam-identity-center"
 ```
 
 ## Destroy
 
-```bash
+```sh
 terraform destroy -target module.developers_team -target module.operators._team -auto-approve
 terraform destroy -target module.eks -auto-approve
 terraform destroy -auto-approve
