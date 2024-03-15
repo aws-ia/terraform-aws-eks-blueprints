@@ -23,25 +23,3 @@ output "ssm_test" {
     --output text
   EOT
 }
-
-output "cluster_endpoint_private" {
-  description = "Command to set the EKS API server endpoint access private"
-  value       = <<-EOT
-
-    aws eks update-cluster-config \
-    --region ${local.region} \
-    --name ${module.eks.cluster_name} \
-    --resources-vpc-config endpointPublicAccess=false,endpointPrivateAccess=true
-  EOT
-}
-
-output "cluster_endpoint_public" {
-  description = "Command to set the EKS API server endpoint access private"
-  value       = <<-EOT
-
-    aws eks update-cluster-config \
-    --region ${local.region} \
-    --name ${module.eks.cluster_name} \
-    --resources-vpc-config endpointPublicAccess=true,endpointPrivateAccess=true
-  EOT
-}
