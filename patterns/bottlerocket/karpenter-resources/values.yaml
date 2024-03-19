@@ -1,0 +1,15 @@
+nodepool:
+  zone: []
+ec2nodeclass:
+  role: ""
+  securityGroupSelectorTerms:
+    tags:
+       karpenter.sh/discovery: ""
+  subnetSelectorTerms:
+    tags:
+       karpenter.sh/discovery: ""
+  blockDeviceMappings:
+    ebs:
+      kmsKeyID: ""
+  tags:
+    karpenter.sh/discovery: ""
