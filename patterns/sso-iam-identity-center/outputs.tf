@@ -14,7 +14,7 @@ output "configure_sso_admins" {
   Attempting to automatically open the SSO authorization page in your default browser.
   If the browser does not open or you wish to use a different device to authorize this request, open the following URL:
 
-  https://device.sso.us-west-2.amazonaws.com/
+  https://device.sso.${local.region}.amazonaws.com/
 
   Then enter the code:
 
@@ -43,7 +43,7 @@ output "configure_sso_users" {
   Attempting to automatically open the SSO authorization page in your default browser.
   If the browser does not open or you wish to use a different device to authorize this request, open the following URL:
 
-  https://device.sso.us-west-2.amazonaws.com/
+  https://device.sso.${local.region}.amazonaws.com/
 
   Then enter the code:
 

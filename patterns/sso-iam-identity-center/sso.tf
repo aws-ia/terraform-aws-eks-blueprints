@@ -1,18 +1,6 @@
 # Pre requisite
 # Enable AWS IAM Identity Manager (https://console.aws.amazon.com/singlesignon/home/)
 
-provider "kubernetes" {
-  host                   = module.eks.cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
-
-  exec {
-    api_version = "client.authentication.k8s.io/v1beta1"
-    command     = "aws"
-    # This requires the awscli to be installed locally where Terraform is executed
-    args = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
-  }
-}
-
 data "aws_caller_identity" "current" {}
 
 data "aws_ssoadmin_instances" "this" {}
@@ -21,7 +9,7 @@ resource "aws_ssoadmin_permission_set" "admin" {
   name             = "EKSClusterAdmin"
   description      = "Amazon EKS Cluster Admins."
   instance_arn     = tolist(data.aws_ssoadmin_instances.this.arns)[0]
-  relay_state      = "https://s3.console.aws.amazon.com/s3/home?region=us-west-2#"
+  relay_state      = "https://s3.console.aws.amazon.com/s3/home?region=${local.region}#"
   session_duration = "PT1H"
 }
 
@@ -29,7 +17,7 @@ resource "aws_ssoadmin_permission_set" "user" {
   name             = "EKSClusterUser"
   description      = "Amazon EKS Cluster Users."
   instance_arn     = tolist(data.aws_ssoadmin_instances.this.arns)[0]
-  relay_state      = "https://s3.console.aws.amazon.com/s3/home?region=us-west-2#"
+  relay_state      = "https://s3.console.aws.amazon.com/s3/home?region=${local.region}#"
   session_duration = "PT1H"
 }
 
