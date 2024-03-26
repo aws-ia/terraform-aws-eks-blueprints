@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/streetsidesoftware/cspell-cli
-    rev: v8.3.0
+    rev: v8.6.0
     hooks:
       - id: cspell
         args: [--exclude, 'ADOPTERS.md', --exclude, '.pre-commit-config.yaml', --exclude, '.gitignore', --exclude, '*.drawio', --exclude, 'mkdocs.yml', --exclude, '.helmignore', --exclude, '.github/workflows/*', --exclude, 'patterns/istio-multi-cluster/*', --exclude, 'patterns/blue-green-upgrade/*']
@@ -19,7 +19,7 @@ repos:
       - id: detect-aws-credentials
         args: [--allow-missing-credentials]
   - repo: https://github.com/antonbabenko/pre-commit-terraform
-    rev: v1.86.0
+    rev: v1.88.2
     hooks:
       - id: terraform_fmt
       - id: terraform_docs

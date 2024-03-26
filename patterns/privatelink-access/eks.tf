@@ -16,19 +16,28 @@ provider "kubernetes" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.21"
+  version = "~> 20.0"
 
   cluster_name    = local.name
   cluster_version = "1.29"
 
-  cluster_endpoint_public_access = true
-  manage_aws_auth_configmap      = true
+  cluster_endpoint_public_access           = false
+  enable_cluster_creator_admin_permissions = true
 
-  aws_auth_roles = [{
-    rolearn  = module.client_ec2_instance.iam_role_arn
-    username = "ec2-client"
-    groups   = ["system:masters"]
-  }]
+  access_entries = {
+    ec2-access-entry = {
+      principal_arn = module.client_ec2_instance.iam_role_arn
+      policy_associations = {
+        cluster-admin-policy = {
+          policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+          access_scope = {
+            namespaces = []
+            type       = "cluster"
+          }
+        }
+      }
+    }
+  }
 
   cluster_addons = {
     coredns    = {}

@@ -85,6 +85,10 @@ related projects that users should be aware of:
     AWS-managed observability services such as Amazon Managed Service for Prometheus, Amazon
     Managed Grafana, AWS Distro for OpenTelemetry (ADOT) and Amazon CloudWatch
 
+4. Karpenter Blueprints
+   - [`karpenter-blueprints`](https://github.com/aws-samples/karpenter-blueprints) - includes a list of common workload scenarios,
+   some of them go in depth with the explanation of why configuring Karpenter and Kubernetes objects in such a way is important.
+
 ## Terraform Caveats
 
 EKS Blueprints for Terraform does not intend to teach users the recommended practices for Terraform

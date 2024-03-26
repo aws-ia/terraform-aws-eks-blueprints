@@ -33,7 +33,7 @@ jobs:
         run: rm -rf $(which terraform)
 
       - name: Checkout
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+        uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633
 
       - uses: dorny/paths-filter@v3
         id: changes
@@ -55,7 +55,7 @@ jobs:
           restore-keys: ${{ runner.os }}-terraform-
 
       - name: Pre-commit Terraform ${{ steps.minMax.outputs.minVersion }}
-        uses: clowdhaus/terraform-composite-actions/pre-commit@v1.8.3
+        uses: clowdhaus/terraform-composite-actions/pre-commit@v1.9.0
         if: steps.changes.outputs.src== 'true'
         with:
           terraform-version: ${{ env.TERRAFORM_VERSION }}

@@ -74,15 +74,3 @@ variable "gitops_workload_path" {
   type        = string
   default     = "getting-started-argocd/k8s"
 }
-
-variable "enable_gitops_auto_addons" {
-  description = "Automatically deploy addons"
-  type        = bool
-  default     = false
-}
-
-variable "enable_gitops_auto_workloads" {
-  description = "Automatically deploy addons"
-  type        = bool
-  default     = false
-}
