@@ -1,6 +1,6 @@
 site_name: Amazon EKS Blueprints for Terraform
 docs_dir: docs/
-copyright: Copyright &copy; Amazon 2023
+copyright: Copyright &copy; Amazon 2024
 site_author: AWS
 site_url: https://aws-ia.github.io/terraform-aws-eks-blueprints/
 repo_name: terraform-aws-eks-blueprints
