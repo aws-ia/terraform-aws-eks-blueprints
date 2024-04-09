@@ -1,6 +1,6 @@
-# IAM Identity Center Single Sign-On for Amazon EKS Cluster
+# IAM Identity Center Single Sign-On for Amazon EKS Cluster with Cluster Access Manager
 
-This example demonstrates how to deploy an Amazon EKS cluster that is deployed on the AWS Cloud, integrated with IAM Identity Center (former AWS SSO) as an the Identity Provider (IdP) for Single Sign-On (SSO) authentication. The configuration for authorization is done using Kubernetes Role-based access control (RBAC).
+This example demonstrates how to deploy an Amazon EKS cluster that is deployed on the AWS Cloud, integrated with IAM Identity Center (former AWS SSO) as an the Identity Provider (IdP) for Single Sign-On (SSO) authentication having [Cluster Access Manager](https://aws.amazon.com/about-aws/whats-new/2023/12/amazon-eks-controls-iam-cluster-access-management/) as the entry point API. The configuration to provide authorization for users is simplified using a combination of [Access Entries](https://docs.aws.amazon.com/eks/latest/userguide/access-entries.html) and Kubernetes Role-based access control (RBAC).
 
 ## Deploy
 
@@ -14,10 +14,11 @@ To do that use the link provided in the email invite - *if you added a valid ema
 
 With the active users, use one of the `terraform output` examples to configure your AWS credentials for SSO, as shown in the examples below. After you choose the *SSO registration scopes*, your browser windows will appear and request to login using your IAM Identity Center username and password.
 
-**Admin user example**
-```
+### Admin user example
+
+```sh
 configure_sso_admin = <<EOT
-  # aws configure sso
+  # aws configure sso --profile EKSClusterAdmin
   SSO session name (Recommended): <SESSION_NAME>
   SSO start URL [None]: https://d-1234567890.awsapps.com/start
   SSO region [None]: us-west-2
@@ -39,15 +40,17 @@ configure_sso_admin = <<EOT
 
   To use this profile, specify the profile name using --profile, as shown:
 
-  aws eks --region us-west-2 update-kubeconfig --name iam-identity-center --profile EKSClusterAdmin-123456789012
+  aws eks --region us-west-2 update-kubeconfig --name iam-identity-center --profile EKSClusterAdmin
+
 
 EOT
 ```
 
-**Read-only user example**
-```
+### Read-only user example
+
+```sh
 configure_sso_user = <<EOT
-  # aws configure sso
+  # aws configure sso --profile EKSClusterUser
   SSO session name (Recommended): <SESSION_NAME>
   SSO start URL [None]: https://d-1234567890.awsapps.com/start
   SSO region [None]: us-west-2
@@ -69,14 +72,14 @@ configure_sso_user = <<EOT
 
   To use this profile, specify the profile name using --profile, as shown:
 
-  aws eks --region us-west-2 update-kubeconfig --name iam-identity-center --profile EKSClusterUser-123456789012
+  aws eks --region us-west-2 update-kubeconfig --name iam-identity-center --profile EKSClusterUser
 
 EOT
 ```
 
 With the `kubeconfig` configured, you'll be able to run `kubectl` commands in your Amazon EKS Cluster with the impersonated user. The read-only user has a `cluster-viewer` Kubernetes role bound to it's group, whereas the admin user, has the `admin` Kubernetes role bound to it's group.
 
-```
+```sh
 kubectl get pods -A
 NAMESPACE          NAME                        READY   STATUS    RESTARTS   AGE
 amazon-guardduty   aws-guardduty-agent-bl2v2   1/1     Running   0          3h54m
@@ -92,14 +95,18 @@ kube-system        kube-proxy-p4f5g            1/1     Running   0          3h54
 kube-system        kube-proxy-q1fmc            1/1     Running   0          3h54m
 ```
 
-You can also use the `configure_kubectl` output to assume the *Cluster creator* role with `cluster-admin` access.
+If not revoked after the cluster creation, it's possible to use the `configure_kubectl` output to assume the *Cluster creator* role with `cluster-admin` access.
 
-```
+```sh
 configure_kubectl = "aws eks --region us-west-2 update-kubeconfig --name iam-identity-center"
 ```
 
 ## Destroy
 
-{%
-   include-markdown "../../docs/_partials/destroy.md"
-%}
+If you revoked the *Cluster creator* `cluster-admin` permission, you may need to re-associate the `AmazonEKSClusterAdminPolicy` access entry to run `terraform destroy`.
+
+```sh
+terraform destroy -target module.developers_team -auto-approve
+terraform destroy -target module.eks -auto-approve
+terraform destroy -auto-approve
+```
