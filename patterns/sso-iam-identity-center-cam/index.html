@@ -10,10 +10,10 @@
         <meta name="author" content="AWS">
       
       
-        <link rel="canonical" href="https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/sso-iam-identity-center/">
+        <link rel="canonical" href="https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/sso-iam-identity-center-cam/">
       
       
-        <link rel="prev" href="../privatelink-access/">
+        <link rel="prev" href="../sso-iam-identity-center-aws-auth/">
       
       
         <link rel="next" href="../sso-okta/">
@@ -116,7 +116,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#iam-identity-center-single-sign-on-for-amazon-eks-cluster" class="md-skip">
+        <a href="#iam-identity-center-single-sign-on-for-amazon-eks-cluster-with-cluster-access-manager" class="md-skip">
           Skip to content
         </a>
       
@@ -681,6 +681,26 @@
                 
   
   
+  
+    <li class="md-nav__item">
+      <a href="../sso-iam-identity-center-aws-auth/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SSO - IAM Identity Center
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -739,6 +759,26 @@
   <a href="#validate" class="md-nav__link">
     Validate
   </a>
+  
+    <nav class="md-nav" aria-label="Validate">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#admin-user-example" class="md-nav__link">
+    Admin user example
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#read-only-user-example" class="md-nav__link">
+    Read-only user example
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -872,9 +912,9 @@
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_24" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_25" >
         
-          <label class="md-nav__link" for="__nav_3_24" id="__nav_3_24_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_25" id="__nav_3_25_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -885,8 +925,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_24_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_24">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_25_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_25">
             <span class="md-nav__icon md-icon"></span>
             Vpc lattice
           </label>
@@ -1186,6 +1226,26 @@
     Validate
   </a>
   
+    <nav class="md-nav" aria-label="Validate">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#admin-user-example" class="md-nav__link">
+    Admin user example
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#read-only-user-example" class="md-nav__link">
+    Read-only user example
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
@@ -1214,102 +1274,95 @@
 
 
 <!-- BEGIN INCLUDE ../../patterns/sso-iam-identity-center/README.md -->
-<h1 id="iam-identity-center-single-sign-on-for-amazon-eks-cluster">IAM Identity Center Single Sign-On for Amazon EKS Cluster<a class="headerlink" href="#iam-identity-center-single-sign-on-for-amazon-eks-cluster" title="Permanent link">&para;</a></h1>
-<p>This example demonstrates how to deploy an Amazon EKS cluster that is deployed on the AWS Cloud, integrated with IAM Identity Center (former AWS SSO) as an the Identity Provider (IdP) for Single Sign-On (SSO) authentication. The configuration for authorization is done using Kubernetes Role-based access control (RBAC).</p>
+<h1 id="iam-identity-center-single-sign-on-for-amazon-eks-cluster-with-cluster-access-manager">IAM Identity Center Single Sign-On for Amazon EKS Cluster with Cluster Access Manager<a class="headerlink" href="#iam-identity-center-single-sign-on-for-amazon-eks-cluster-with-cluster-access-manager" title="Permanent link">&para;</a></h1>
+<p>This example demonstrates how to deploy an Amazon EKS cluster that is deployed on the AWS Cloud, integrated with IAM Identity Center (former AWS SSO) as an the Identity Provider (IdP) for Single Sign-On (SSO) authentication having <a href="https://aws.amazon.com/about-aws/whats-new/2023/12/amazon-eks-controls-iam-cluster-access-management/">Cluster Access Manager</a> as the entry point API. The configuration to provide authorization for users is simplified using a combination of <a href="https://docs.aws.amazon.com/eks/latest/userguide/access-entries.html">Access Entries</a> and Kubernetes Role-based access control (RBAC).</p>
 <h2 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h2>
 <p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#prerequisites">here</a> for the prerequisites and steps to deploy this pattern.</p>
 <h2 id="validate">Validate<a class="headerlink" href="#validate" title="Permanent link">&para;</a></h2>
 <p>After the <code>terraform</code> commands are executed successfully, check if the newly created users are active.</p>
 <p>To do that use the link provided in the email invite - <em>if you added a valid email address for your users either in your Terraform code or IAM Identity Center Console</em> - or go to the <a href="https://console.aws.amazon.com/singlesignon/home/">IAM Identity Center Console</a>, in the <em>Users</em> dashboard on the left hand side menu, then select the user, and click on <em>Reset password</em> button on the upper right corner. Choose the option to <em>Generate a one-time password and share the password with the user</em>.</p>
 <p>With the active users, use one of the <code>terraform output</code> examples to configure your AWS credentials for SSO, as shown in the examples below. After you choose the <em>SSO registration scopes</em>, your browser windows will appear and request to login using your IAM Identity Center username and password.</p>
-<p><strong>Admin user example</strong>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>configure_sso_admin = &lt;&lt;EOT
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>  # aws configure sso
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>  SSO session name (Recommended): &lt;SESSION_NAME&gt;
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>  SSO start URL [None]: https://d-1234567890.awsapps.com/start
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>  SSO region [None]: us-west-2
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>  SSO registration scopes [sso:account:access]:
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>  Attempting to automatically open the SSO authorization page in your default browser.
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>  If the browser does not open or you wish to use a different device to authorize this request, open the following URL:
+<h3 id="admin-user-example">Admin user example<a class="headerlink" href="#admin-user-example" title="Permanent link">&para;</a></h3>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nv">configure_sso_admin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&lt;&lt;EOT</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="s">  # aws configure sso --profile EKSClusterAdmin</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="s">  SSO session name (Recommended): &lt;SESSION_NAME&gt;</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="s">  SSO start URL [None]: https://d-1234567890.awsapps.com/start</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="s">  SSO region [None]: us-west-2</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="s">  SSO registration scopes [sso:account:access]:</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="s">  Attempting to automatically open the SSO authorization page in your default browser.</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="s">  If the browser does not open or you wish to use a different device to authorize this request, open the following URL:</span>
 </span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>  https://device.sso.us-west-2.amazonaws.com/
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="s">  https://device.sso.us-west-2.amazonaws.com/</span>
 </span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>  Then enter the code:
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="s">  Then enter the code:</span>
 </span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>  The only AWS account available to you is: 123456789012
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>  Using the account ID 123456789012
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>  The only role available to you is: EKSClusterAdmin
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>  Using the role name EKSClusterAdmin
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>  CLI default client Region [us-west-2]: us-west-2
-</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>  CLI default output format [json]: json
-</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>  CLI profile name [EKSClusterAdmin-123456789012]:
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="s">  The only AWS account available to you is: 123456789012</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="s">  Using the account ID 123456789012</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="s">  The only role available to you is: EKSClusterAdmin</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="s">  Using the role name EKSClusterAdmin</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="s">  CLI default client Region [us-west-2]: us-west-2</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="s">  CLI default output format [json]: json</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="s">  CLI profile name [EKSClusterAdmin-123456789012]:</span>
 </span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>
-</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>  To use this profile, specify the profile name using --profile, as shown:
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="s">  To use this profile, specify the profile name using --profile, as shown:</span>
 </span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>
-</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>  aws eks --region us-west-2 update-kubeconfig --name iam-identity-center --profile EKSClusterAdmin-123456789012
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="s">  aws eks --region us-west-2 update-kubeconfig --name iam-identity-center --profile EKSClusterAdmin</span>
 </span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>
-</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>EOT
-</span></code></pre></div></p>
-<p><strong>Read-only user example</strong>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>configure_sso_user = &lt;&lt;EOT
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>  # aws configure sso
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>  SSO session name (Recommended): &lt;SESSION_NAME&gt;
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>  SSO start URL [None]: https://d-1234567890.awsapps.com/start
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>  SSO region [None]: us-west-2
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>  SSO registration scopes [sso:account:access]:
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>  Attempting to automatically open the SSO authorization page in your default browser.
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>  If the browser does not open or you wish to use a different device to authorize this request, open the following URL:
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>  https://device.sso.us-west-2.amazonaws.com/
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>
-</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>  Then enter the code:
-</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
-</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>  The only AWS account available to you is: 123456789012
-</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>  Using the account ID 123456789012
-</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>  The only role available to you is: EKSClusterUser
-</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>  Using the role name EKSClusterUser
-</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>  CLI default client Region [us-west-2]: us-west-2
-</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>  CLI default output format [json]: json
-</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>  CLI profile name [EKSClusterUser-123456789012]:
-</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>
-</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>  To use this profile, specify the profile name using --profile, as shown:
-</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>
-</span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>  aws eks --region us-west-2 update-kubeconfig --name iam-identity-center --profile EKSClusterUser-123456789012
-</span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>
-</span><span id="__span-1-26"><a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a>EOT
-</span></code></pre></div></p>
-<p>With the <code>kubeconfig</code> configured, you'll be able to run <code>kubectl</code> commands in your Amazon EKS Cluster with the impersonated user. The read-only user has a <code>cluster-viewer</code> Kubernetes role bound to it's group, whereas the admin user, has the <code>admin</code> Kubernetes role bound to it's group.</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl get pods -A
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>NAMESPACE          NAME                        READY   STATUS    RESTARTS   AGE
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>amazon-guardduty   aws-guardduty-agent-bl2v2   1/1     Running   0          3h54m
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>amazon-guardduty   aws-guardduty-agent-s2vcx   1/1     Running   0          3h54m
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>amazon-guardduty   aws-guardduty-agent-w8gfc   1/1     Running   0          3h54m
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>kube-system        aws-node-m9hmd              1/1     Running   0          3h53m
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>kube-system        aws-node-w42b8              1/1     Running   0          3h53m
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>kube-system        aws-node-wm6rm              1/1     Running   0          3h53m
-</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>kube-system        coredns-6ff9c46cd8-94jlr    1/1     Running   0          3h59m
-</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>kube-system        coredns-6ff9c46cd8-n2mrb    1/1     Running   0          3h59m
-</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>kube-system        kube-proxy-7fb86            1/1     Running   0          3h54m
-</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>kube-system        kube-proxy-p4f5g            1/1     Running   0          3h54m
-</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>kube-system        kube-proxy-q1fmc            1/1     Running   0          3h54m
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="s">EOT</span>
 </span></code></pre></div>
-<p>You can also use the <code>configure_kubectl</code> output to assume the <em>Cluster creator</em> role with <code>cluster-admin</code> access.</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>configure_kubectl = &quot;aws eks --region us-west-2 update-kubeconfig --name iam-identity-center&quot;
+<h3 id="read-only-user-example">Read-only user example<a class="headerlink" href="#read-only-user-example" title="Permanent link">&para;</a></h3>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nv">configure_sso_user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&lt;&lt;EOT</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="s">  # aws configure sso --profile EKSClusterUser</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="s">  SSO session name (Recommended): &lt;SESSION_NAME&gt;</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="s">  SSO start URL [None]: https://d-1234567890.awsapps.com/start</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="s">  SSO region [None]: us-west-2</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="s">  SSO registration scopes [sso:account:access]:</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="s">  Attempting to automatically open the SSO authorization page in your default browser.</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="s">  If the browser does not open or you wish to use a different device to authorize this request, open the following URL:</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="s">  https://device.sso.us-west-2.amazonaws.com/</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="s">  Then enter the code:</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="s">  The only AWS account available to you is: 123456789012</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="s">  Using the account ID 123456789012</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="s">  The only role available to you is: EKSClusterUser</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="s">  Using the role name EKSClusterUser</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="s">  CLI default client Region [us-west-2]: us-west-2</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="s">  CLI default output format [json]: json</span>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="s">  CLI profile name [EKSClusterUser-123456789012]:</span>
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="s">  To use this profile, specify the profile name using --profile, as shown:</span>
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>
+</span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="s">  aws eks --region us-west-2 update-kubeconfig --name iam-identity-center --profile EKSClusterUser</span>
+</span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>
+</span><span id="__span-1-26"><a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="s">EOT</span>
+</span></code></pre></div>
+<p>With the <code>kubeconfig</code> configured, you'll be able to run <code>kubectl</code> commands in your Amazon EKS Cluster with the impersonated user. The read-only user has a <code>cluster-viewer</code> Kubernetes role bound to it's group, whereas the admin user, has the <code>admin</code> Kubernetes role bound to it's group.</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-A
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>NAMESPACE<span class="w">          </span>NAME<span class="w">                        </span>READY<span class="w">   </span>STATUS<span class="w">    </span>RESTARTS<span class="w">   </span>AGE
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>amazon-guardduty<span class="w">   </span>aws-guardduty-agent-bl2v2<span class="w">   </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>3h54m
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>amazon-guardduty<span class="w">   </span>aws-guardduty-agent-s2vcx<span class="w">   </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>3h54m
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>amazon-guardduty<span class="w">   </span>aws-guardduty-agent-w8gfc<span class="w">   </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>3h54m
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>kube-system<span class="w">        </span>aws-node-m9hmd<span class="w">              </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>3h53m
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>kube-system<span class="w">        </span>aws-node-w42b8<span class="w">              </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>3h53m
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>kube-system<span class="w">        </span>aws-node-wm6rm<span class="w">              </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>3h53m
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>kube-system<span class="w">        </span>coredns-6ff9c46cd8-94jlr<span class="w">    </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>3h59m
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>kube-system<span class="w">        </span>coredns-6ff9c46cd8-n2mrb<span class="w">    </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>3h59m
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>kube-system<span class="w">        </span>kube-proxy-7fb86<span class="w">            </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>3h54m
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>kube-system<span class="w">        </span>kube-proxy-p4f5g<span class="w">            </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>3h54m
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>kube-system<span class="w">        </span>kube-proxy-q1fmc<span class="w">            </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>3h54m
+</span></code></pre></div>
+<p>If not revoked after the cluster creation, it's possible to use the <code>configure_kubectl</code> output to assume the <em>Cluster creator</em> role with <code>cluster-admin</code> access.</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nv">configure_kubectl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;aws eks --region us-west-2 update-kubeconfig --name iam-identity-center&quot;</span>
 </span></code></pre></div>
 <h2 id="destroy">Destroy<a class="headerlink" href="#destroy" title="Permanent link">&para;</a></h2>
-<!-- BEGIN INCLUDE ../../docs/_partials/destroy.md -->
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Necessary to avoid removing Terraform&#39;s permissions too soon before its finished</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="c1"># cleaning up the resources it deployed inside the cluster</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>terraform<span class="w"> </span>state<span class="w"> </span>rm<span class="w"> </span><span class="s1">&#39;module.eks.aws_eks_access_entry.this[&quot;cluster_creator&quot;]&#39;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>terraform<span class="w"> </span>state<span class="w"> </span>rm<span class="w"> </span><span class="s1">&#39;module.eks.aws_eks_access_policy_association.this[&quot;cluster_creator_admin&quot;]&#39;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints_addons&quot;</span><span class="w"> </span>-auto-approve
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks&quot;</span><span class="w"> </span>-auto-approve
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
+<p>If you revoked the <em>Cluster creator</em> <code>cluster-admin</code> permission, you may need to re-associate the <code>AmazonEKSClusterAdminPolicy</code> access entry to run <code>terraform destroy</code>.</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="w"> </span>module.developers_team<span class="w"> </span>-auto-approve
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="w"> </span>module.eks<span class="w"> </span>-auto-approve
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
 </span></code></pre></div>
-<p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#destroy">here</a> for more details on cleaning up the resources created.</p>
-<!-- END INCLUDE -->
-
 <!-- END INCLUDE -->
 
 
