@@ -11,7 +11,7 @@ variable "region" {
 variable "kubernetes_version" {
   description = "Kubernetes version"
   type        = string
-  default     = "1.28"
+  default     = "1.29"
 }
 variable "addons" {
   description = "Kubernetes addons"
@@ -19,12 +19,15 @@ variable "addons" {
   default = {
     enable_aws_load_balancer_controller = true
     enable_metrics_server               = true
-    # Enable argocd with IRSA
-    enable_aws_argocd = true
-    # Disable argocd without IRSA
-    enable_argocd = false
+    enable_argocd = true
   }
 }
+
+output "argocd_iam_role_arn" {
+  description = "IAM Role for ArgoCD Cluster Hub, use to connect to spoke clusters"
+  value       = aws_iam_role.argocd_hub.arn
+}
+
 # Addons Git
 variable "gitops_addons_org" {
   description = "Git repository org/user contains for addons"
