@@ -114,6 +114,8 @@ echo "ArgoCD URL: https://$(kubectl --context hub get svc -n argocd argo-cd-argo
 
 Use the `deploy.sh` script to create terraform workspace, initialize Terraform, and deploy the EKS clusters:
 
+***You may want to create few spoke environments to validate multi-cluster hub spoke to avoid quota limits***
+
 ```shell
 cd ../spokes
 ./deploy.sh dev
