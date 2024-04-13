@@ -67,3 +67,8 @@ variable "gitops_workload_path" {
   type        = string
   default     = "helm-guestbook"
 }
+
+variable "authentication_mode" {
+  description = "The authentication mode for the cluster. Valid values are CONFIG_MAP, API or API_AND_CONFIG_MAP"
+  type        = string
+}

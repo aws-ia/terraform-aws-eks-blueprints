@@ -8,3 +8,4 @@ addons = {
   enable_aws_argocd = false
   enable_argocd     = false
 }
+authentication_mode = "API"

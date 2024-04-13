@@ -45,6 +45,8 @@ locals {
   gitops_addons_path     = var.gitops_addons_path
   gitops_addons_revision = var.gitops_addons_revision
 
+  authentication_mode = var.authentication_mode
+  
   argocd_namespace = "argocd"
 
   aws_addons = {
@@ -107,8 +109,6 @@ locals {
       aws_vpc_id       = module.vpc.vpc_id
     },
     {
-      #Satish
-      #argocd_iam_role_arn = module.argocd_irsa.iam_role_arn
       argocd_namespace    = local.argocd_namespace
     },
     {
@@ -190,44 +190,7 @@ resource "aws_eks_pod_identity_association" "argocd_api_server" {
   role_arn        = aws_iam_role.argocd_hub.arn
 }
 
-################################################################################
-# ArgoCD EKS Access
-################################################################################
-#Satish
-# module "argocd_irsa" {
-#   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-#   version = "~> 5.20"
 
-#   role_name_prefix           = "argocd-hub-"
-#   assume_role_condition_test = "StringLike"
-#   role_policy_arns = {
-#     ArgoCD_EKS_Policy = aws_iam_policy.irsa_policy.arn
-#   }
-#   oidc_providers = {
-#     main = {
-#       provider_arn               = module.eks.oidc_provider_arn
-#       namespace_service_accounts = ["${local.argocd_namespace}:argocd-*"]
-#     }
-#   }
-
-#   tags = local.tags
-# }
-
-
-# resource "aws_iam_policy" "irsa_policy" {
-#   name        = "${module.eks.cluster_name}-argocd-irsa"
-#   description = "IAM Policy for ArgoCD Hub"
-#   policy      = data.aws_iam_policy_document.irsa_policy.json
-#   tags        = local.tags
-# }
-
-# data "aws_iam_policy_document" "irsa_policy" {
-#   statement {
-#     effect    = "Allow"
-#     resources = ["*"]
-#     actions   = ["sts:AssumeRole"]
-#   }
-# }
 
 ################################################################################
 # EKS Blueprints Addons
@@ -270,7 +233,7 @@ module "eks_blueprints_addons" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 20.8.4"
+  version = "~> 20.8"
 
   cluster_name                   = local.name
   cluster_version                = local.cluster_version
@@ -280,7 +243,7 @@ module "eks" {
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
-  authentication_mode = "API"
+  authentication_mode = local.authentication_mode
   
   enable_cluster_creator_admin_permissions = true
   

@@ -70,6 +70,8 @@ locals {
   gitops_workload_revision = var.gitops_workload_revision
   gitops_workload_url      = "${local.gitops_workload_org}/${local.gitops_workload_repo}"
 
+  authentication_mode = var.authentication_mode  
+  
   aws_addons = {
     enable_cert_manager                          = try(var.addons.enable_cert_manager, false)
     enable_aws_efs_csi_driver                    = try(var.addons.enable_aws_efs_csi_driver, false)
