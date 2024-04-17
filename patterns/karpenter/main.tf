@@ -59,7 +59,7 @@ locals {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.21"
+  version = "~> 20.0"
 
   cluster_name                   = local.name
   cluster_version                = "1.29"
@@ -72,18 +72,7 @@ module "eks" {
   create_cluster_security_group = false
   create_node_security_group    = false
 
-  manage_aws_auth_configmap = true
-  aws_auth_roles = [
-    # We need to add in the Karpenter node IAM role for nodes launched by Karpenter
-    {
-      rolearn  = module.eks_blueprints_addons.karpenter.node_iam_role_arn
-      username = "system:node:{{EC2PrivateDNSName}}"
-      groups = [
-        "system:bootstrappers",
-        "system:nodes",
-      ]
-    },
-  ]
+  enable_cluster_creator_admin_permissions = true
 
   fargate_profiles = {
     karpenter = {
@@ -154,16 +143,25 @@ module "eks_blueprints_addons" {
   }
 
   enable_karpenter = true
+
   karpenter = {
     repository_username = data.aws_ecrpublic_authorization_token.token.user_name
     repository_password = data.aws_ecrpublic_authorization_token.token.password
   }
+
   karpenter_node = {
     # Use static name so that it matches what is defined in `karpenter.yaml` example manifest
     iam_role_use_name_prefix = false
   }
 
   tags = local.tags
+}
+
+resource "aws_eks_access_entry" "karpenter_node_access_entry" {
+  cluster_name      = module.eks.cluster_name
+  principal_arn     = module.eks_blueprints_addons.karpenter.node_iam_role_arn
+  kubernetes_groups = []
+  type              = "EC2_LINUX"
 }
 
 ################################################################################
