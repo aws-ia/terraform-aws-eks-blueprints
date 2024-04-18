@@ -10,11 +10,13 @@
         <meta name="author" content="AWS">
       
       
-        <link rel="canonical" href="https://aws-ia.github.io/terraform-aws-eks-blueprints/v4-to-v5/example/">
+        <link rel="canonical" href="https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/targeted-odcr/">
       
       
-        <link rel="prev" href="../teams/">
+        <link rel="prev" href="../stateful/">
       
+      
+        <link rel="next" href="../tls-with-aws-pca-issuer/">
       
       
       <link rel="icon" href="../../images/colored-logo.png">
@@ -22,7 +24,7 @@
     
     
       
-        <title>Migration - v4 to v5 - Amazon EKS Blueprints for Terraform</title>
+        <title>Targeted On-Demand Capacity Reservation (ODCR) - Amazon EKS Blueprints for Terraform</title>
       
     
     
@@ -114,7 +116,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#migration-v4-to-v5" class="md-skip">
+        <a href="#eks-cluster-with-on-demand-capacity-reservations-odcr" class="md-skip">
           Skip to content
         </a>
       
@@ -153,7 +155,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Migration - v4 to v5
+              Targeted On-Demand Capacity Reservation (ODCR)
             
           </span>
         </div>
@@ -303,17 +305,19 @@
       
   
   
+    
+  
   
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
             
@@ -326,7 +330,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             Patterns
@@ -339,7 +343,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/agones-game-controller/" class="md-nav__link">
+      <a href="../agones-game-controller/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -359,7 +363,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/appmesh-mtls/" class="md-nav__link">
+      <a href="../appmesh-mtls/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -379,7 +383,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/aws-vpc-cni-network-policy/" class="md-nav__link">
+      <a href="../aws-vpc-cni-network-policy/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -399,7 +403,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/blue-green-upgrade/" class="md-nav__link">
+      <a href="../blue-green-upgrade/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -419,7 +423,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/elastic-fabric-adapter/" class="md-nav__link">
+      <a href="../elastic-fabric-adapter/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -439,7 +443,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/external-secrets/" class="md-nav__link">
+      <a href="../external-secrets/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -459,7 +463,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/fargate-serverless/" class="md-nav__link">
+      <a href="../fargate-serverless/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -479,7 +483,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/fully-private-cluster/" class="md-nav__link">
+      <a href="../fully-private-cluster/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -499,7 +503,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/gitops-getting-started-argocd/" class="md-nav__link">
+      <a href="../gitops-getting-started-argocd/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -519,7 +523,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/gitops-multi-cluster-hub-spoke-argocd/" class="md-nav__link">
+      <a href="../gitops-multi-cluster-hub-spoke-argocd/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -539,7 +543,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/ipv6-eks-cluster/" class="md-nav__link">
+      <a href="../ipv6-eks-cluster/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -559,7 +563,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/istio/" class="md-nav__link">
+      <a href="../istio/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -579,7 +583,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/karpenter/" class="md-nav__link">
+      <a href="../karpenter/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -599,7 +603,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/kubecost/" class="md-nav__link">
+      <a href="../kubecost/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -619,7 +623,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/multi-tenancy-with-teams/" class="md-nav__link">
+      <a href="../multi-tenancy-with-teams/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -639,7 +643,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/private-public-ingress/" class="md-nav__link">
+      <a href="../private-public-ingress/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -659,7 +663,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/privatelink-access/" class="md-nav__link">
+      <a href="../privatelink-access/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -679,7 +683,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/sso-iam-identity-center-aws-auth/" class="md-nav__link">
+      <a href="../sso-iam-identity-center-aws-auth/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -699,7 +703,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/sso-iam-identity-center-cam/" class="md-nav__link">
+      <a href="../sso-iam-identity-center-cam/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -719,7 +723,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/sso-okta/" class="md-nav__link">
+      <a href="../sso-okta/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -739,7 +743,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/stateful/" class="md-nav__link">
+      <a href="../stateful/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -757,9 +761,29 @@
                 
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../../patterns/targeted-odcr/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Targeted On-Demand Capacity Reservation (ODCR)
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -768,6 +792,47 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#deploy" class="md-nav__link">
+    Deploy
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validate" class="md-nav__link">
+    Validate
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#destroy" class="md-nav__link">
+    Destroy
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -779,7 +844,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/tls-with-aws-pca-issuer/" class="md-nav__link">
+      <a href="../tls-with-aws-pca-issuer/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -799,7 +864,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/vpc-lattice/" class="md-nav__link">
+      <a href="../vpc-lattice/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -819,7 +884,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/wireguard-with-cilium/" class="md-nav__link">
+      <a href="../wireguard-with-cilium/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -873,7 +938,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../patterns/vpc-lattice/client-server-communication/" class="md-nav__link">
+      <a href="../vpc-lattice/client-server-communication/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -987,19 +1052,17 @@
       
   
   
-    
-  
   
     
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
         
           <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
             
@@ -1012,7 +1075,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             v4 to v5 Migration
@@ -1025,7 +1088,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../motivation/" class="md-nav__link">
+      <a href="../../v4-to-v5/motivation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1045,7 +1108,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../cluster/" class="md-nav__link">
+      <a href="../../v4-to-v5/cluster/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1065,7 +1128,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../addons/" class="md-nav__link">
+      <a href="../../v4-to-v5/addons/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1085,7 +1148,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../teams/" class="md-nav__link">
+      <a href="../../v4-to-v5/teams/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1145,6 +1208,35 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#deploy" class="md-nav__link">
+    Deploy
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validate" class="md-nav__link">
+    Validate
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#destroy" class="md-nav__link">
+    Destroy
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1161,7 +1253,72 @@
   
 
 
-<h1 id="migration-v4-to-v5">Migration - v4 to v5<a class="headerlink" href="#migration-v4-to-v5" title="Permanent link">&para;</a></h1>
+<!-- BEGIN INCLUDE ./README.md -->
+<h1 id="eks-cluster-with-on-demand-capacity-reservations-odcr">EKS Cluster with On-demand Capacity Reservations (ODCR)<a class="headerlink" href="#eks-cluster-with-on-demand-capacity-reservations-odcr" title="Permanent link">&para;</a></h1>
+<p>This pattern demonstrates how to consume/utilize on-demand capacity reservations (ODCRs) with Amazon EKS. The solution is comprised of primarily 3 components:</p>
+<ol>
+<li>
+<p>The node group that will utilize the ODCRs should have the subnets provided to it restricted to the availability zone where the ODCR(s) capacity is allocated. For example - if the ODCR(s) are allocated to <code>us-west-2b</code>, the node group should only have subnet IDs provided to it that reside in <code>us-west-2b</code>. If the subnets that reside in other AZs are provided, its possible to encounter an error such as <code>InvalidParameterException: The following supplied instance types do not exist ...</code>. It is not guaranteed that this error will always be shown, and may appear random since the underlying autoscaling group(s) will provision nodes into different AZs at random. It will only occur when the underlying autoscaling group tries to provision instances into an AZ where capacity is not allocated and there is insufficient on-demand capacity for the desired instance type.</p>
+</li>
+<li>
+<p>A custom launch template is required in order to specify the <code>capacity_reservation_specification</code> arguments. This is how the ODCRs are integrated into the node group (i.e. - tells the autoscaling group to utilize the provided capacity reservation(s)).</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>By default, the <code>terraform-aws-eks</code> module creates and utilizes a custom launch template with EKS managed node groups which means users just need to supply the <code>capacity_reservation_specification</code> in their node group definition.</p>
+</div>
+</li>
+<li>
+<p>A resource group will need to be created for the capacity reservations. The resource group acts like a container, allowing for ODCRs to be added or removed as needed to adjust the available capacity. Utilizing the resource group allows for this additional capacity to be adjusted without any modification or disruption to the existing node group or launch template. As soon as the ODCR has been associated to the resource group, the node group can scale up to start utilizing that capacity.</p>
+</li>
+</ol>
+<p>Links:</p>
+<ul>
+<li><a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-fleet-launch-on-demand-instances-using-targeted-capacity-reservations-walkthrough.html">Tutorial: Launch On-Demand Instances using targeted Capacity Reservations</a></li>
+<li><a href="https://aws.amazon.com/blogs/mt/target-a-group-of-amazon-ec2-on-demand-capacity-reservations/">Target a group of Amazon EC2 On-Demand Capacity Reservations</a></li>
+</ul>
+<h2 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h2>
+<p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#prerequisites">here</a> for the prerequisites and steps to deploy this pattern.</p>
+<h2 id="validate">Validate<a class="headerlink" href="#validate" title="Permanent link">&para;</a></h2>
+<ol>
+<li>
+<p>Navigate to the EC2 console page - on the left hand side, click on <code>Capacity Reservations</code>under the <code>Instances</code> section. You should see the capacity reservation(s) that have been created similar to the screenshot below. For this example, you can see that <code>Available capacity</code> column is empty, which means that the capacity reservations have been fully utilized by the example (as expected).</p>
+<hr />
+<p><div align="center">
+     <img
+        src="./assets/odcr-screenshot1.png"
+        alt="Capacity reservation console"
+     />
+  </div></p>
+<hr />
+</li>
+<li>
+<p>Click on one of the capacity reservation IDs to view the details of the capacity reservation. You should see the details of the capacity reservation similar to the screenshot below. For this example, you can see that <code>Available capacity</code> is <code>0 instances</code>, which means that the capacity reservation has been fully utilized by the example (as expected).</p>
+<hr />
+<p><div align="center">
+     <img
+        src="./assets/odcr-screenshot2.png"
+        width="70%"
+        alt="Capacity reservation details"
+     />
+  </div></p>
+<hr />
+</li>
+</ol>
+<h2 id="destroy">Destroy<a class="headerlink" href="#destroy" title="Permanent link">&para;</a></h2>
+<!-- BEGIN INCLUDE ../../docs/_partials/destroy.md -->
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Necessary to avoid removing Terraform&#39;s permissions too soon before its finished</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="c1"># cleaning up the resources it deployed inside the cluster</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>terraform<span class="w"> </span>state<span class="w"> </span>rm<span class="w"> </span><span class="s1">&#39;module.eks.aws_eks_access_entry.this[&quot;cluster_creator&quot;]&#39;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>terraform<span class="w"> </span>state<span class="w"> </span>rm<span class="w"> </span><span class="s1">&#39;module.eks.aws_eks_access_policy_association.this[&quot;cluster_creator_admin&quot;]&#39;</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints_addons&quot;</span><span class="w"> </span>-auto-approve
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks&quot;</span><span class="w"> </span>-auto-approve
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
+</span></code></pre></div>
+<p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#destroy">here</a> for more details on cleaning up the resources created.</p>
+<!-- END INCLUDE -->
+
+<!-- END INCLUDE -->
 
 
 
