@@ -42,7 +42,6 @@ configure_sso_admin = <<EOT
 
   aws eks --region us-west-2 update-kubeconfig --name iam-identity-center --profile EKSClusterAdmin
 
-
 EOT
 ```
 

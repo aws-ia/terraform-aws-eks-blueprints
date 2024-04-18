@@ -7,7 +7,6 @@ The terraform code was created following the official Kubecost documentation for
 
 You need a valid Kubecost token. To generate one, follow the instructions [here](https://www.kubecost.com/install#show-instructions).
 
-
 ## Deploy
 
 ```sh
