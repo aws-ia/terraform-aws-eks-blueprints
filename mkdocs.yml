@@ -44,14 +44,19 @@ plugins:
         - en
   - awesome-pages
 
+hooks:
+  - .github/scripts/mkdocs-hooks.py
+
 extra:
   version:
     provider: mike
 
 markdown_extensions:
+  - attr_list
   - admonition
   - codehilite
   - footnotes
+  - md_in_html
   - pymdownx.critic
   - pymdownx.details
   - pymdownx.highlight:
