@@ -71,4 +71,5 @@ variable "gitops_workload_path" {
 variable "authentication_mode" {
   description = "The authentication mode for the cluster. Valid values are CONFIG_MAP, API or API_AND_CONFIG_MAP"
   type        = string
+  default     = "API"
 }

@@ -255,7 +255,7 @@ module "eks" {
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
   
-  authentication_mode = "API"
+  authentication_mode = local.authentication_mode
 
   # Cluster access entry
   # To add the current caller identity as an administrator
