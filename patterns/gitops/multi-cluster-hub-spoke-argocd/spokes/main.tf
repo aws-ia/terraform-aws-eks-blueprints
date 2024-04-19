@@ -70,6 +70,8 @@ locals {
   gitops_workload_revision = var.gitops_workload_revision
   gitops_workload_url      = "${local.gitops_workload_org}/${local.gitops_workload_repo}"
 
+  authentication_mode = var.authentication_mode  
+  
   aws_addons = {
     enable_cert_manager                          = try(var.addons.enable_cert_manager, false)
     enable_aws_efs_csi_driver                    = try(var.addons.enable_aws_efs_csi_driver, false)
@@ -186,13 +188,13 @@ module "gitops_bridge_bootstrap_hub" {
 # ArgoCD EKS Access
 ################################################################################
 resource "aws_iam_role" "spoke" {
-  name               = "${module.eks.cluster_name}-argocd-spoke"
+  name               = "${local.name}-argocd-spoke"
   assume_role_policy = data.aws_iam_policy_document.assume_role_policy.json
 }
 
 data "aws_iam_policy_document" "assume_role_policy" {
   statement {
-    actions = ["sts:AssumeRole"]
+    actions = ["sts:AssumeRole","sts:TagSession"]
     principals {
       type        = "AWS"
       identifiers = [data.terraform_remote_state.cluster_hub.outputs.argocd_iam_role_arn]
@@ -243,7 +245,7 @@ module "eks_blueprints_addons" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.13"
+  version = "~> 20.8.4"
 
   cluster_name                   = local.name
   cluster_version                = local.cluster_version
@@ -252,18 +254,28 @@ module "eks" {
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
+  
+  authentication_mode = local.authentication_mode
 
-  manage_aws_auth_configmap = true
-  aws_auth_roles = [
-    # Granting access to ArgoCD from hub cluster
-    {
-      rolearn  = aws_iam_role.spoke.arn
-      username = "gitops-role"
-      groups = [
-        "system:masters"
-      ]
-    },
-  ]
+  # Cluster access entry
+  # To add the current caller identity as an administrator
+  enable_cluster_creator_admin_permissions = true
+
+  access_entries = {
+    # One access entry with a policy associated
+    example = {
+      principal_arn     = aws_iam_role.spoke.arn
+
+      policy_associations = {
+        argocd = {
+          policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+          access_scope = {
+            type       = "cluster"
+          }
+        }
+      }
+    }
+  }
 
   eks_managed_node_groups = {
     initial = {
@@ -276,6 +288,9 @@ module "eks" {
   }
   # EKS Addons
   cluster_addons = {
+    eks-pod-identity-agent = {
+      most_recent = true
+    }  
     vpc-cni = {
       # Specify the VPC CNI addon should be deployed before compute to ensure
       # the addon is configured before data plane compute resources are created

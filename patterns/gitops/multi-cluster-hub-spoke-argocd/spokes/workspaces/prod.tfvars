@@ -1,6 +1,6 @@
 vpc_cidr           = "10.3.0.0/16"
 region             = "us-west-2"
-kubernetes_version = "1.28"
+kubernetes_version = "1.29"
 addons = {
   enable_aws_load_balancer_controller = true
   enable_metrics_server               = true
@@ -8,3 +8,4 @@ addons = {
   enable_aws_argocd = false
   enable_argocd     = false
 }
+authentication_mode = "API"

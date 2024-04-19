@@ -110,23 +110,11 @@ echo "ArgoCD Password: $(kubectl --context hub get secrets argocd-initial-admin-
 echo "ArgoCD URL: https://$(kubectl --context hub get svc -n argocd argo-cd-argocd-server -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
 ```
 
-## Verify that ArgoCD Service Accounts has the annotation for IRSA
-
-```shell
-kubectl --context hub get sa -n argocd argocd-application-controller -o json | jq '.metadata.annotations."eks.amazonaws.com/role-arn"'
-kubectl --context hub get sa -n argocd argocd-server  -o json | jq '.metadata.annotations."eks.amazonaws.com/role-arn"'
-```
-
-The output should match the `arn` for the IAM Role that will assume the IAM Role in spoke/remote clusters
-
-```text
-arn:aws:iam::0123456789:role/argocd-hub-0123abc..
-arn:aws:iam::0123456789:role/argocd-hub-0123abc..
-```
-
 ## Deploy the Spoke EKS Cluster
 
 Use the `deploy.sh` script to create terraform workspace, initialize Terraform, and deploy the EKS clusters:
+
+***You may want to create few spoke environments to validate multi-cluster hub spoke to avoid quota limits***
 
 ```shell
 cd ../spokes

@@ -1,7 +1,7 @@
 output "configure_kubectl" {
   description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
   value       = <<-EOT
-    export KUBECONFIG="/tmp/hup-spoke"
+    export KUBECONFIG="/tmp/hub-spoke"
     aws eks --region ${local.region} update-kubeconfig --name ${module.eks.cluster_name} --alias hub
   EOT
 }
@@ -10,7 +10,7 @@ output "configure_kubectl" {
 output "configure_argocd" {
   description = "Terminal Setup"
   value       = <<-EOT
-    export KUBECONFIG="/tmp/hup-spoke"
+    export KUBECONFIG="/tmp/hub-spoke"
     aws eks --region ${local.region} update-kubeconfig --name ${module.eks.cluster_name} --alias hub
     export ARGOCD_OPTS="--port-forward --port-forward-namespace argocd --grpc-web"
     kubectl --context hub config set-context --current --namespace argocd
@@ -25,7 +25,7 @@ output "configure_argocd" {
 output "access_argocd" {
   description = "ArgoCD Access"
   value       = <<-EOT
-    export KUBECONFIG="/tmp/hup-spoke"
+    export KUBECONFIG="/tmp/hub-spoke"
     aws eks --region ${local.region} update-kubeconfig --name ${module.eks.cluster_name} --alias hub
     echo "ArgoCD Username: admin"
     echo "ArgoCD Password: $(kubectl --context hub get secrets argocd-initial-admin-secret -n argocd --template="{{index .data.password | base64decode}}")"
@@ -33,11 +33,6 @@ output "access_argocd" {
     EOT
 }
 
-
-output "argocd_iam_role_arn" {
-  description = "IAM Role for ArgoCD Cluster Hub, use to connect to spoke clusters"
-  value       = module.argocd_irsa.iam_role_arn
-}
 
 output "cluster_name" {
   description = "Cluster Hub name"
