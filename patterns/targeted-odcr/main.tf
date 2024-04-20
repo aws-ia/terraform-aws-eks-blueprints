@@ -6,10 +6,6 @@ terraform {
       source  = "hashicorp/aws"
       version = ">= 5.34"
     }
-    helm = {
-      source  = "hashicorp/helm"
-      version = ">= 2.9"
-    }
   }
 
   # ##  Used for end-to-end testing on project; update to suit your needs

@@ -33,34 +33,12 @@ locals {
 }
 
 ################################################################################
-# EBS CSI Driver Role
-################################################################################
-
-module "ebs_csi_driver_irsa" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.14"
-
-  role_name = "${local.name}-ebs-csi-driver"
-
-  attach_ebs_csi_policy = true
-
-  oidc_providers = {
-    main = {
-      provider_arn               = module.eks.oidc_provider_arn
-      namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
-    }
-  }
-
-  tags = local.tags
-}
-
-################################################################################
 # Cluster
 ################################################################################
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 20.0"
+  version = "~> 20.8"
 
   cluster_name                   = local.name
   cluster_version                = "1.29"
@@ -102,7 +80,7 @@ module "eks" {
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "~> 1.14"
+  version = "~> 1.16"
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
@@ -112,6 +90,28 @@ module "eks_blueprints_addons" {
   enable_metrics_server = true
 
   depends_on = [module.eks.eks_managed_node_groups]
+}
+
+################################################################################
+# EBS CSI Driver Role
+################################################################################
+
+module "ebs_csi_driver_irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.20"
+
+  role_name = "${local.name}-ebs-csi-driver"
+
+  attach_ebs_csi_policy = true
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
+    }
+  }
+
+  tags = local.tags
 }
 
 ################################################################################
@@ -195,7 +195,6 @@ resource "aws_cur_report_definition" "cur" {
   additional_artifacts       = ["ATHENA"]
   report_versioning          = "OVERWRITE_REPORT"
 }
-
 
 ################################################################################
 # Athena
@@ -371,7 +370,6 @@ module "eks_blueprints_addon" {
   ]
 
   tags = local.tags
-
 }
 
 ################################################################################
