@@ -46,7 +46,7 @@ locals {
   gitops_addons_revision = var.gitops_addons_revision
 
   authentication_mode = var.authentication_mode
-  
+
   argocd_namespace = "argocd"
 
   aws_addons = {
@@ -109,7 +109,7 @@ locals {
       aws_vpc_id       = module.vpc.vpc_id
     },
     {
-      argocd_namespace    = local.argocd_namespace
+      argocd_namespace = local.argocd_namespace
     },
     {
       addons_repo_url      = local.gitops_addons_url
@@ -153,7 +153,7 @@ data "aws_iam_policy_document" "eks_assume" {
       type        = "Service"
       identifiers = ["pods.eks.amazonaws.com"]
     }
-    actions = ["sts:AssumeRole","sts:TagSession"]
+    actions = ["sts:AssumeRole", "sts:TagSession"]
   }
 }
 resource "aws_iam_role" "argocd_hub" {
@@ -164,7 +164,7 @@ data "aws_iam_policy_document" "aws_assume_policy" {
   statement {
     effect    = "Allow"
     resources = ["*"]
-    actions   = ["sts:AssumeRole","sts:TagSession"]
+    actions   = ["sts:AssumeRole", "sts:TagSession"]
   }
 }
 resource "aws_iam_policy" "aws_assume_policy" {
@@ -244,9 +244,9 @@ module "eks" {
   subnet_ids = module.vpc.private_subnets
 
   authentication_mode = local.authentication_mode
-  
+
   enable_cluster_creator_admin_permissions = true
-  
+
   eks_managed_node_groups = {
     initial = {
       instance_types = ["t3.medium"]

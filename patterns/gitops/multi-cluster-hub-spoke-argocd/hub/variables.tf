@@ -19,7 +19,7 @@ variable "addons" {
   default = {
     enable_aws_load_balancer_controller = true
     enable_metrics_server               = true
-    enable_argocd = true
+    enable_argocd                       = true
   }
 }
 

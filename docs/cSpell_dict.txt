@@ -113,6 +113,7 @@ nics
 nodegroup
 nodeport
 nvme
+odcr
 oidc
 persistentvolume
 pkce
@@ -125,6 +126,7 @@ readyz
 reclaimpolicy
 redop
 replicaset
+resourcegroups
 rdmap
 rolearn
 rollouts
@@ -144,6 +146,7 @@ tcpdump
 templatefile
 tfstate
 tfvars
+timeadd
 tolerations
 tolist
 toset
