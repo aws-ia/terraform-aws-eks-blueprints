@@ -6,6 +6,16 @@ This example demonstrates how to deploy an Amazon EKS cluster that is deployed o
 
 See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#prerequisites) for the prerequisites and steps to deploy this pattern.
 
+This patterns uses aws Identity datasource `data "aws_ssoadmin_instances" "this" {}` to retrieve your identity center configuration.
+You can check that the datasource can works by using the aws cli:
+
+```bash
+aws identitystore list-instances
+```
+
+You may need to specify the appropriate AWS region in either the previous command and terraform (in main.tf) for the pattern to succeed.
+If the previous command is empty, you may want to properly configure AWS identity center within your account.
+
 ## Validate
 
 After the `terraform` commands are executed successfully, check if the newly created users are active.
@@ -19,28 +29,28 @@ With the active users, use one of the `terraform output` examples to configure y
 ```sh
 configure_sso_admin = <<EOT
   # aws configure sso --profile EKSClusterAdmin
-  SSO session name (Recommended): <SESSION_NAME>
-  SSO start URL [None]: https://d-1234567890.awsapps.com/start
-  SSO region [None]: us-west-2
-  SSO registration scopes [sso:account:access]:
-  Attempting to automatically open the SSO authorization page in your default browser.
-  If the browser does not open or you wish to use a different device to authorize this request, open the following URL:
+      SSO session name (Recommended): <SESSION_NAME>
+      SSO start URL [None]: https://d-1234567890.awsapps.com/start
+      SSO region [None]: us-west-2
+      SSO registration scopes [sso:account:access]:
+      Attempting to automatically open the SSO authorization page in your default browser.
+      If the browser does not open or you wish to use a different device to authorize this request, open the following URL:
 
-  https://device.sso.us-west-2.amazonaws.com/
+      https://device.sso.us-west-2.amazonaws.com/
 
-  Then enter the code:
+      Then enter the code:
 
-  The only AWS account available to you is: 123456789012
-  Using the account ID 123456789012
-  The only role available to you is: EKSClusterAdmin
-  Using the role name EKSClusterAdmin
-  CLI default client Region [us-west-2]: us-west-2
-  CLI default output format [json]: json
-  CLI profile name [EKSClusterAdmin-123456789012]:
+      The only AWS account available to you is: 123456789012
+      Using the account ID 123456789012
+      The only role available to you is: EKSClusterAdmin
+      Using the role name EKSClusterAdmin
+      CLI default client Region [us-west-2]: us-west-2
+      CLI default output format [json]: json
+      CLI profile name [EKSClusterAdmin-123456789012]:
 
-  To use this profile, specify the profile name using --profile, as shown:
+      To use this profile, specify the profile name using --profile, as shown:
 
-  aws eks --region us-west-2 update-kubeconfig --name iam-identity-center --profile EKSClusterAdmin
+  # aws eks --region us-west-2 update-kubeconfig --name iam-identity-center --profile EKSClusterAdmin
 
 
 EOT
@@ -51,28 +61,28 @@ EOT
 ```sh
 configure_sso_user = <<EOT
   # aws configure sso --profile EKSClusterUser
-  SSO session name (Recommended): <SESSION_NAME>
-  SSO start URL [None]: https://d-1234567890.awsapps.com/start
-  SSO region [None]: us-west-2
-  SSO registration scopes [sso:account:access]:
-  Attempting to automatically open the SSO authorization page in your default browser.
-  If the browser does not open or you wish to use a different device to authorize this request, open the following URL:
+      SSO session name (Recommended): <SESSION_NAME>
+      SSO start URL [None]: https://d-1234567890.awsapps.com/start
+      SSO region [None]: us-west-2
+      SSO registration scopes [sso:account:access]:
+      Attempting to automatically open the SSO authorization page in your default browser.
+      If the browser does not open or you wish to use a different device to authorize this request, open the following URL:
 
-  https://device.sso.us-west-2.amazonaws.com/
+      https://device.sso.us-west-2.amazonaws.com/
 
-  Then enter the code:
+      Then enter the code:
 
-  The only AWS account available to you is: 123456789012
-  Using the account ID 123456789012
-  The only role available to you is: EKSClusterUser
-  Using the role name EKSClusterUser
-  CLI default client Region [us-west-2]: us-west-2
-  CLI default output format [json]: json
-  CLI profile name [EKSClusterUser-123456789012]:
+      The only AWS account available to you is: 123456789012
+      Using the account ID 123456789012
+      The only role available to you is: EKSClusterUser
+      Using the role name EKSClusterUser
+      CLI default client Region [us-west-2]: us-west-2
+      CLI default output format [json]: json
+      CLI profile name [EKSClusterUser-123456789012]:
 
-  To use this profile, specify the profile name using --profile, as shown:
+      To use this profile, specify the profile name using --profile, as shown:
 
-  aws eks --region us-west-2 update-kubeconfig --name iam-identity-center --profile EKSClusterUser
+  # aws eks --region us-west-2 update-kubeconfig --name iam-identity-center --profile EKSClusterUser
 
 EOT
 ```
