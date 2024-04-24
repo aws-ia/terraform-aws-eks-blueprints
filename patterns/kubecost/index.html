@@ -635,6 +635,27 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#deploy" class="md-nav__link">
+    Deploy
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kubecost-ui" class="md-nav__link">
+    Kubecost UI
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#destroy" class="md-nav__link">
+    Destroy
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -710,27 +731,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../sso-iam-identity-center-aws-auth/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    SSO - IAM Identity Center
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../sso-iam-identity-center-cam/" class="md-nav__link">
+      <a href="../sso-iam-identity-center/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -878,9 +879,9 @@
         
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_25" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_24" >
         
-          <label class="md-nav__link" for="__nav_3_25" id="__nav_3_25_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_24" id="__nav_3_24_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -891,8 +892,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_25_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_25">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_24_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_24">
             <span class="md-nav__icon md-icon"></span>
             Vpc lattice
           </label>
@@ -1187,6 +1188,27 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#deploy" class="md-nav__link">
+    Deploy
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#kubecost-ui" class="md-nav__link">
+    Kubecost UI
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#destroy" class="md-nav__link">
+    Destroy
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1211,44 +1233,53 @@
 The terraform code was created following the official Kubecost documentation for <a href="https://docs.kubecost.com/install-and-configure/install/cloud-integration/aws-cloud-integrations">aws cloud billing integration</a>.</p>
 <h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h2>
 <p>You need a valid Kubecost token. To generate one, follow the instructions <a href="https://www.kubecost.com/install#show-instructions">here</a>.</p>
-<h1 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h1>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>terraform init
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>terraform apply -target=&quot;module.vpc&quot; -auto-approve
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>terraform apply -target=&quot;module.eks&quot; -auto-approve
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>terraform apply -auto-approve --var=&quot;kubecost_token=&lt;your-kubecost-token&gt;&quot;
+<h2 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h2>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>terraform<span class="w"> </span>init
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>terraform<span class="w"> </span>apply<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.vpc&quot;</span><span class="w"> </span>-auto-approve
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>terraform<span class="w"> </span>apply<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks&quot;</span><span class="w"> </span>-auto-approve
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>terraform<span class="w"> </span>apply<span class="w"> </span>-auto-approve<span class="w"> </span>--var<span class="o">=</span><span class="s2">&quot;kubecost_token=&lt;your-kubecost-token&gt;&quot;</span>
 </span></code></pre></div>
 <p>Once all of the resources have successfully been provisioned, the following command can be used to update the <code>kubeconfig</code> on your local machine and allow you to interact with your EKS Cluster using <code>kubectl</code>.</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a> aws eks --region &lt;REGION&gt; update-kubeconfig --name &lt;CLUSTER_NAME&gt;
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>aws<span class="w"> </span>eks<span class="w"> </span>--region<span class="w"> </span>&lt;REGION&gt;<span class="w"> </span>update-kubeconfig<span class="w"> </span>--name<span class="w"> </span>&lt;CLUSTER_NAME&gt;
 </span></code></pre></div>
 <p>This command will create a S3 bucket with prefix <code>kubecost-</code> and a Cost and Usage Report (CUR). Within 24h The CUR will generate a CloudFormation template file called <code>crawler-cfn.yml</code> in the S3 bucket. Once that file is generated, navigate to:</p>
-<p><div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>cd run-me-in-24h/
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">cd</span><span class="w"> </span>run-me-in-24h/
 </span></code></pre></div>
-To download and apply the CloudFormation template, run:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>terraform init
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>terraform apply --auto-approve
-</span></code></pre></div></p>
+<p>To download and apply the CloudFormation template, run:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>terraform<span class="w"> </span>init
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>terraform<span class="w"> </span>apply<span class="w"> </span>--auto-approve
+</span></code></pre></div>
 <h2 id="kubecost-ui">Kubecost UI<a class="headerlink" href="#kubecost-ui" title="Permanent link">&para;</a></h2>
-<p>To access the Kubecost UI run:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>echo http://$(kubectl -n kubecost get svc cost-analyzer-cost-analyzer -o jsonpath=&#39;{.status.loadBalancer.ingress[0].hostname}&#39;):9090/
+<p>To access the Kubecost UI run:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nb">echo</span><span class="w"> </span>http://<span class="k">$(</span>kubectl<span class="w"> </span>-n<span class="w"> </span>kubecost<span class="w"> </span>get<span class="w"> </span>svc<span class="w"> </span>cost-analyzer-cost-analyzer<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span>-o<span class="w"> </span><span class="nv">jsonpath</span><span class="o">=</span><span class="s1">&#39;{.status.loadBalancer.ingress[0].hostname}&#39;</span><span class="k">)</span>:9090/
 </span></code></pre></div>
-and navigate to the output URL.</p>
+<p>and then navigate to the output URL.</p>
 <p>Navigate to Settings -&gt; Diagnostics -&gt; View Full Diagnostics</p>
-<p>Expected result:
-<img alt="screenshot" src="../../patterns/kubecost/static/screenshot.png" /></p>
-<blockquote>
-<p>[!NOTE]
-Spot Data Feed is included in Savings Plan, Reserved Instance, and Out-Of-Cluster.</p>
-</blockquote>
+<p>Expected result:</p>
+<hr />
+<div align="center">
+    <img
+    src="./assets/screenshot.png"
+    width="70%"
+    alt="Kubecost diagnostics screenshot"
+    />
+</div>
+
+<hr />
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Spot Data Feed is included in Savings Plan, Reserved Instance, and Out-Of-Cluster.</p>
+</div>
 <h2 id="destroy">Destroy<a class="headerlink" href="#destroy" title="Permanent link">&para;</a></h2>
-<p>First destroy the CloudFormation template:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>cd run-me-in-24h/
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>terraform destroy --auto-approve
-</span></code></pre></div></p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>cd ..
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>terraform destroy -target=&quot;module.eks_blueprints_addon&quot; --var=&quot;kubecost_token=&lt;your-kubecost-token&gt;&quot; -auto-approve
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>terraform destroy -target=&quot;module.eks_blueprints_addons&quot;
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>terraform destroy -target=&quot;module.eks&quot; -auto-approve
-</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>terraform destroy -auto-approve
+<p>First destroy the CloudFormation template:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">cd</span><span class="w"> </span>run-me-in-24h/
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>--auto-approve
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="nb">cd</span><span class="w"> </span>..
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints_addon&quot;</span><span class="w"> </span>--var<span class="o">=</span><span class="s2">&quot;kubecost_token=&lt;your-kubecost-token&gt;&quot;</span><span class="w"> </span>-auto-approve
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints_addons&quot;</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks&quot;</span><span class="w"> </span>-auto-approve
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
 </span></code></pre></div>
 <!-- END INCLUDE -->
 

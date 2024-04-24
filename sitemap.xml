@@ -106,12 +106,7 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/sso-iam-identity-center-aws-auth/</loc>
-         <lastmod>2024-04-24</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/sso-iam-identity-center-cam/</loc>
+         <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/sso-iam-identity-center/</loc>
          <lastmod>2024-04-24</lastmod>
          <changefreq>daily</changefreq>
     </url>
