@@ -15,13 +15,14 @@ In this example, the `vpc-cni` addon is configured using `before_compute = true`
 
 If you find that your nodes are not being created with the correct number of max pods (i.e. - for `m5.large`, if you are seeing a max pods of 29 instead of 110), most likely the `vpc-cni` was not configured *before* the EC2 instances.
 
+To be able to do this configuration you need access to your cluster from where you are deploying the terraform code. In case it is a private cluster access the VPC through a VPN, Direct Connect or Bastion, and ensure you have enough permissions. 
 ## Components
 
 To enable VPC CNI custom networking, you must configuring the following components:
 
 1. Create a VPC with additional CIDR block associations. These additional CIDR blocks will be used to create subnets for the VPC CNI custom networking:
 
-      ```json
+      ```
       module "vpc" {
       source  = "terraform-aws-modules/vpc/aws"
 
@@ -42,24 +43,25 @@ To enable VPC CNI custom networking, you must configuring the following componen
 
 2. Specify the VPC CNI custom networking configuration in the `vpc-cni` addon configuration:
 
-      ```json
+      ```
       module "eks" {
-      source  = "terraform-aws-modules/eks/aws"
+         source  = "terraform-aws-modules/eks/aws"
 
-      # Truncated for brevity
-      ...
+         # Truncated for brevity
+         ...
 
-      cluster_addons = {
-         vpc-cni = {
-            before_compute = true
-            most_recent    = true # To ensure access to the latest settings provided
-            configuration_values = jsonencode({
-            env = {
-               AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG = "true"
-               ENI_CONFIG_LABEL_DEF               = "topology.kubernetes.io/zone"
-            })
+         cluster_addons = {
+            vpc-cni = {
+               before_compute = true
+               most_recent    = true # To ensure access to the latest settings provided
+               configuration_values = jsonencode({
+                  env = {
+                     AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG = "true"
+                     ENI_CONFIG_LABEL_DEF               = "topology.kubernetes.io/zone"
+                  }
+               })
+            }
          }
-      }
 
       ...
       }
@@ -67,25 +69,59 @@ To enable VPC CNI custom networking, you must configuring the following componen
 
 3. Create the `ENIConfig` custom resource for each subnet that you want to deploy pods into:
 
-      ```json
+      ```
       resource "kubectl_manifest" "eni_config" {
-      for_each = zipmap(local.azs, slice(module.vpc.private_subnets, 3, 6))
+         for_each = zipmap(local.azs, slice(module.vpc.private_subnets, 3, 6))
 
-      yaml_body = yamlencode({
-         apiVersion = "crd.k8s.amazonaws.com/v1alpha1"
-         kind       = "ENIConfig"
-         metadata = {
-            name = each.key
-         }
-         spec = {
-            securityGroups = [
-            module.eks.node_security_group_id,
-            ]
-            subnet = each.value
-         }
-      })
+         yaml_body = yamlencode({
+            apiVersion = "crd.k8s.amazonaws.com/v1alpha1"
+            kind       = "ENIConfig"
+            metadata = {
+               name = each.key
+            }
+            spec = {
+               securityGroups = [
+               module.eks.node_security_group_id,
+               ]
+               subnet = each.value
+            }
+         })
       }
       ```
+   This custom resource can be found in the alekc/kubectl provider. Add it to where the providers are defined:
+   ````
+      required_providers {
+
+         # Truncated for brevity
+         ...
+
+         kubectl = {
+            source  = "alekc/kubectl"
+            version = ">= 2.0" # or your prefered version
+         }
+
+      }  
+   ```
+
+4. Give permissions to the vpc-cni using IPv4 to be used inside the cluster with an irsa role:
+   ```
+   module "vpc_cni_ipv4_irsa_role" {
+      source = "github.com/terraform-aws-modules/terraform-aws-iam.git//modules/iam-role-for-service-accounts-eks"
+
+      role_name             = "vpc-cni-ipv4" # Or the role name you desire to use
+      attach_vpc_cni_policy = true
+      vpc_cni_enable_ipv4   = true
+
+      oidc_providers = {
+         ex = {
+            provider_arn               = module.eks.oidc_provider_arn
+            namespace_service_accounts = ["kube-system:aws-node"]
+         }
+      }
+
+      tags = var.tags
+   }
+   ````
 
 Once those settings have been successfully applied, you can verify if custom networking is enabled correctly by inspecting one of the `aws-node-*` (AWS VPC CNI) pods:
 
