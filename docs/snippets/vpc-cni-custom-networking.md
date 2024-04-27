@@ -15,7 +15,7 @@ In this example, the `vpc-cni` addon is configured using `before_compute = true`
 
 If you find that your nodes are not being created with the correct number of max pods (i.e. - for `m5.large`, if you are seeing a max pods of 29 instead of 110), most likely the `vpc-cni` was not configured *before* the EC2 instances.
 
-To be able to do this configuration you need access to your cluster from where you are deploying the terraform code. In case it is a private cluster access the VPC through a VPN, Direct Connect or Bastion, and ensure you have enough permissions. 
+To be able to do this configuration you need access to your cluster from where you are deploying the terraform code. In case it is a private cluster access the VPC through a VPN, Direct Connect or Bastion, and ensure the entity used has enough permissions in the cluster. 
 ## Components
 
 To enable VPC CNI custom networking, you must configuring the following components:
