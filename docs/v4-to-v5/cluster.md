@@ -4,7 +4,7 @@ title: Cluster
 
 # Migrate to EKS Module v19.x
 
-Please consult the [docs/v4-to-v5/example](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/docs/v4-to-v5/example) directory for reference configurations. If you find a bug, please open an issue with supporting configuration to reproduce.
+Please consult the [docs/v4-to-v5/example](https://github.com/aws-ia/terraform-aws-eks-blueprints/tree/main/docs/v4-to-v5/example) directory for reference configurations. If you find a bug, please open an issue with supporting configuration to reproduce.
 
 ## Backwards incompatible changes
 
