@@ -24,20 +24,20 @@ To enable VPC CNI custom networking, you must configuring the following componen
 
       ```
       module "vpc" {
-      source  = "terraform-aws-modules/vpc/aws"
+         source  = "terraform-aws-modules/vpc/aws"
 
-      # Truncated for brevity
-      ...
+         # Truncated for brevity
+         ...
 
-      secondary_cidr_blocks = [local.secondary_vpc_cidr] # can add up to 5 total CIDR blocks
+         secondary_cidr_blocks = [local.secondary_vpc_cidr] # can add up to 5 total CIDR blocks
 
-      azs = local.azs
-      private_subnets = concat(
-         [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 4, k)],
-         [for k, v in local.azs : cidrsubnet(local.secondary_vpc_cidr, 2, k)]
-      )
+         azs = local.azs
+         private_subnets = concat(
+            [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 4, k)],
+            [for k, v in local.azs : cidrsubnet(local.secondary_vpc_cidr, 2, k)]
+         )
 
-      ...
+         ...
       }
       ```
 
