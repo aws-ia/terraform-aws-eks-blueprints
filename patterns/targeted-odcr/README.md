@@ -11,10 +11,16 @@ This pattern demonstrates how to consume/utilize on-demand capacity reservations
 
 3. A resource group will need to be created for the capacity reservations. The resource group acts like a container, allowing for ODCRs to be added or removed as needed to adjust the available capacity. Utilizing the resource group allows for this additional capacity to be adjusted without any modification or disruption to the existing node group or launch template. As soon as the ODCR has been associated to the resource group, the node group can scale up to start utilizing that capacity.
 
-Links:
+<b>Links:</b>
 
 - [Tutorial: Launch On-Demand Instances using targeted Capacity Reservations](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-fleet-launch-on-demand-instances-using-targeted-capacity-reservations-walkthrough.html)
 - [Target a group of Amazon EC2 On-Demand Capacity Reservations](https://aws.amazon.com/blogs/mt/target-a-group-of-amazon-ec2-on-demand-capacity-reservations/)
+
+## Code
+
+```terraform hl_lines="34-51"
+{% include  "../../patterns/targeted-odcr/eks.tf" %}
+```
 
 ## Deploy
 
