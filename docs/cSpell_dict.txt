@@ -52,6 +52,7 @@ crds
 curlimages
 cwlogs
 daemonset
+datasource
 dcgm
 distro
 ecrpublic
