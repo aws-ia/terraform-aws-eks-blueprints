@@ -1,4 +1,4 @@
-# Karpenter
+# Karpenter on EKS Fargate
 
 This pattern demonstrates how to provision Karpenter on a serverless cluster (serverless data plane) using Fargate Profiles.
 
