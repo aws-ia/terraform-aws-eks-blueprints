@@ -16,7 +16,7 @@ terraform {
   # backend "s3" {
   #   bucket = "terraform-ssp-github-actions-state"
   #   region = "us-west-2"
-  #   key    = "e2e/nvidia-gpu-efa/terraform.tfstate"
+  #   key    = "e2e/ml-capacity-block/terraform.tfstate"
   # }
 }
 
