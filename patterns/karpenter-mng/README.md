@@ -11,7 +11,9 @@ This pattern demonstrates how to provision Karpenter on an EKS managed node grou
 
 ## Code
 
-```terraform hl_lines="30-36 40 58-72 75-80 98-100 106-109 117-141"
+The areas of significance related to this pattern are highlighted in the code provided below:
+
+```terraform hl_lines="20-28 31 49-62 67-70 89-91 97-100 108-132"
 {% include  "../../patterns/karpenter-mng/eks.tf" %}
 ```
 
@@ -38,9 +40,9 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
     ```sh
     kubectl get nodes
 
-    NAME                                       STATUS   ROLES    AGE     VERSION
-    ip-10-0-18-71.us-west-2.compute.internal   Ready    <none>   3h44m   v1.29.3-eks-ae9a62a
-    ip-10-0-46-81.us-west-2.compute.internal   Ready    <none>   3h44m   v1.29.3-eks-ae9a62a
+    NAME                                      STATUS   ROLES    AGE     VERSION
+    ip-10-0-38-5.us-west-2.compute.internal   Ready    <none>   2m40s   v1.29.3-eks-ae9a62a
+    ip-10-0-9-38.us-west-2.compute.internal   Ready    <none>   2m35s   v1.29.3-eks-ae9a62a
     ```
 
 2. Provision the Karpenter `EC2NodeClass` and `NodePool` resources which provide Karpenter the necessary configurations to provision EC2 resources:
@@ -67,9 +69,9 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
     kubectl get nodes
 
     NAME                                        STATUS   ROLES    AGE     VERSION
-    ip-10-0-18-71.us-west-2.compute.internal    Ready    <none>   3h53m   v1.29.3-eks-ae9a62a
-    ip-10-0-37-213.us-west-2.compute.internal   Ready    <none>   17s     v1.29.3-eks-ae9a62a # <== EC2 created by Karpenter
-    ip-10-0-46-81.us-west-2.compute.internal    Ready    <none>   3h53m   v1.29.3-eks-ae9a62a
+    ip-10-0-38-109.us-west-2.compute.internal   Ready    <none>   11s     v1.29.3-eks-ae9a62a # <== EC2 created by Karpenter
+    ip-10-0-38-5.us-west-2.compute.internal     Ready    <none>   3m54s   v1.29.3-eks-ae9a62a
+    ip-10-0-9-38.us-west-2.compute.internal     Ready    <none>   3m49s   v1.29.3-eks-ae9a62a
     ```
 
 ## Destroy

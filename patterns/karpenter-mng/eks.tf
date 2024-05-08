@@ -18,15 +18,6 @@ module "eks" {
     coredns = {
       configuration_values = jsonencode({
         tolerations = [
-          # Carry-over the default values from the addon
-          {
-            key      = "CriticalAddonsOnly"
-            operator = "Exists"
-          },
-          {
-            key    = "node-role.kubernetes.io/control-plane"
-            effect = "NoSchedule"
-          },
           # Allow CoreDNS to run on the same nodes as the Karpenter controller
           # for use during cluster creation when Karpenter nodes do not yet exist
           {
@@ -63,7 +54,7 @@ module "eks" {
       taints = {
         # The pods that do not tolerate this taint should run on nodes
         # created by Karpenter
-        gpu = {
+        karpenter = {
           key    = "karpenter.sh/controller"
           value  = "true"
           effect = "NO_SCHEDULE"
