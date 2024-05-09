@@ -4,7 +4,7 @@
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 20.9"
+  version = "~> 20.10"
 
   cluster_name    = local.name
   cluster_version = "1.29"
@@ -87,17 +87,11 @@ module "karpenter" {
   cluster_name = module.eks.cluster_name
 
   # Name needs to match role name passed to the EC2NodeClass
-  node_iam_role_use_name_prefix = false
-  node_iam_role_name            = local.name
+  node_iam_role_use_name_prefix   = false
+  node_iam_role_name              = local.name
+  create_pod_identity_association = true
 
   tags = local.tags
-}
-
-resource "aws_eks_pod_identity_association" "karpenter" {
-  cluster_name    = module.eks.cluster_name
-  namespace       = "kube-system"
-  service_account = "karpenter"
-  role_arn        = module.karpenter.iam_role_arn
 }
 
 ################################################################################
