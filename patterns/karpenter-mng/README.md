@@ -13,7 +13,7 @@ This pattern demonstrates how to provision Karpenter on an EKS managed node grou
 
 The areas of significance related to this pattern are highlighted in the code provided below:
 
-```terraform hl_lines="20-28 31 49-62 67-70 89-91 97-100 108-132"
+```terraform hl_lines="20-28 31 49-62 67-70 89-92 102-126"
 {% include  "../../patterns/karpenter-mng/eks.tf" %}
 ```
 
