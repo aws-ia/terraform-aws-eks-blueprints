@@ -1,4 +1,13 @@
 ################################################################################
+# Required Input
+################################################################################
+
+variable "capacity_reservation_arns" {
+  description = "List of on-demand capacity block reservation ARNs for the node group"
+  type        = list(string)
+}
+
+################################################################################
 # Cluster
 ################################################################################
 
@@ -9,35 +18,65 @@ module "eks" {
   cluster_name    = local.name
   cluster_version = "1.29"
 
-  # To facilitate easier interaction for demonstration purposes
-  cluster_endpoint_public_access = true
-
-  # Gives Terraform identity admin access to the cluster
+  # Give the Terraform identity admin access to the cluster
+  # which will allow it to deploy resources into the cluster
   enable_cluster_creator_admin_permissions = true
+  cluster_endpoint_public_access           = true
 
   cluster_addons = {
-    coredns    = {}
-    kube-proxy = {}
-    vpc-cni    = {}
+    coredns                = {}
+    eks-pod-identity-agent = {}
+    kube-proxy             = {}
+    vpc-cni                = {}
   }
+
+  # Add security group rules on the node group security group to
+  # allow EFA traffic
+  enable_efa_support = true
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
-  eks_managed_node_group_defaults = {
-    iam_role_additional_policies = {
-      # Not required, but used in the example to access the nodes to inspect drivers and devices
-      AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
-    }
-  }
-
   eks_managed_node_groups = {
     odcr = {
-      instance_types = ["t3.micro", "t3.small"]
+      # The EKS AL2 GPU AMI provides all of the necessary components
+      # for accelerated workloads w/ EFA
+      ami_type      = "AL2_x86_64_GPU"
+      instance_type = "p5.48xlarge"
+
+      pre_bootstrap_user_data = <<-EOT
+        # Mount instance store volumes in RAID-0 for kubelet and containerd
+        # https://github.com/awslabs/amazon-eks-ami/blob/master/doc/USER_GUIDE.md#raid-0-for-kubelet-and-containerd-raid0
+        /bin/setup-local-disks raid0
+      EOT
+
+      min_size     = 2
+      max_size     = 2
+      desired_size = 2
+
+      # This will:
+      # 1. Create a placement group to place the instances close to one another
+      # 2. Ignore subnets that reside in AZs that do not support the instance type
+      # 3. Expose all of the available EFA interfaces on the launch template
+      enable_efa_support = true
 
       min_size     = 4
       max_size     = 5
       desired_size = 2
+
+      labels = {
+        "vpc.amazonaws.com/efa.present" = "true"
+        "nvidia.com/gpu.present"        = "true"
+      }
+
+      taints = {
+        # Ensure only GPU workloads are scheduled on this node group
+        gpu = {
+          key    = "nvidia.com/gpu"
+          value  = "true"
+          effect = "NO_SCHEDULE"
+        }
+      }
 
       # First subnet is in the "${local.region}a" availability zone
       # where the capacity reservation is created
@@ -47,6 +86,15 @@ module "eks" {
           capacity_reservation_resource_group_arn = aws_resourcegroups_group.odcr.arn
         }
       }
+    }
+
+    # This node group is for core addons such as CoreDNS
+    default = {
+      instance_types = ["m5.large"]
+
+      min_size     = 1
+      max_size     = 2
+      desired_size = 2
     }
   }
 
@@ -75,55 +123,9 @@ resource "aws_resourcegroups_group" "odcr" {
   }
 }
 
-resource "aws_resourcegroups_resource" "odcr_1" {
-  group_arn = aws_resourcegroups_group.odcr.arn
-  # Replace the following with the ARN of the capacity reservation
-  # provided by AWS when supplied with a capacity reservation
-  resource_arn = aws_ec2_capacity_reservation.micro.arn
-}
+resource "aws_resourcegroups_resource" "odcr" {
+  count = length(var.capacity_reservation_arns)
 
-resource "aws_resourcegroups_resource" "odcr_2" {
-  group_arn = aws_resourcegroups_group.odcr.arn
-  # Replace the following with the ARN of the capacity reservation
-  # provided by AWS when supplied with a capacity reservation
-  resource_arn = aws_ec2_capacity_reservation.small.arn
-}
-
-################################################################################
-# Capacity Reservation
-# These are created for the example, but are not necessary when
-# AWS EC2 provides you with a capacity reservation ID
-################################################################################
-
-resource "aws_ec2_capacity_reservation" "micro" {
-  instance_type           = "t3.micro"
-  instance_platform       = "Linux/UNIX"
-  availability_zone       = "${local.region}a"
-  instance_count          = 2
-  instance_match_criteria = "targeted"
-
-  # Just for example - 30 minutes from time of creation
-  end_date      = timeadd(timestamp(), "30m")
-  end_date_type = "limited"
-}
-
-resource "aws_ec2_capacity_reservation" "small" {
-  instance_type           = "t3.small"
-  instance_platform       = "Linux/UNIX"
-  availability_zone       = "${local.region}a"
-  instance_count          = 2
-  instance_match_criteria = "targeted"
-
-  # Just for example - 30 minutes from time of creation
-  end_date      = timeadd(timestamp(), "30m")
-  end_date_type = "limited"
-}
-
-################################################################################
-# Kubectl Output
-################################################################################
-
-output "configure_kubectl" {
-  description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
-  value       = "aws eks --region ${local.region} update-kubeconfig --name ${module.eks.cluster_name}"
+  group_arn    = aws_resourcegroups_group.odcr.arn
+  resource_arn = element(var.capacity_reservation_arns, count.index)
 }
