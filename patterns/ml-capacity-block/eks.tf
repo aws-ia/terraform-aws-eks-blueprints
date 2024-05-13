@@ -6,7 +6,7 @@
 # on how to obtain a ML capacity block reservation. Once acquired, you can provide
 # the reservation ID through this input to deploy the pattern
 variable "capacity_reservation_id" {
-  description = "The ID of the ML capacity block reservation to use for the node group"
+  description = "The ID of the ML capacity block reservation for the node group"
   type        = string
 }
 
@@ -27,9 +27,10 @@ module "eks" {
   cluster_endpoint_public_access           = true
 
   cluster_addons = {
-    coredns    = {}
-    kube-proxy = {}
-    vpc-cni    = {}
+    coredns                = {}
+    eks-pod-identity-agent = {}
+    kube-proxy             = {}
+    vpc-cni                = {}
   }
 
   # Add security group rules on the node group security group to
@@ -53,7 +54,7 @@ module "eks" {
   # Note: ML capacity block reservations are only supported
   # on self-managed node groups at this time
   self_managed_node_groups = {
-    odcr = {
+    cbr = {
       # The EKS AL2 GPU AMI provides all of the necessary components
       # for accelerated workloads w/ EFA
       ami_type      = "AL2_x86_64_GPU"
@@ -93,52 +94,4 @@ module "eks" {
   }
 
   tags = local.tags
-}
-
-################################################################################
-# Helm charts
-################################################################################
-
-resource "helm_release" "nvidia_device_plugin" {
-  name             = "nvidia-device-plugin"
-  repository       = "https://nvidia.github.io/k8s-device-plugin"
-  chart            = "nvidia-device-plugin"
-  version          = "0.14.5"
-  namespace        = "nvidia-device-plugin"
-  create_namespace = true
-  wait             = false
-
-  values = [
-    <<-EOT
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: 'nvidia.com/gpu.present'
-                operator: In
-                values:
-                - 'true'
-    EOT
-  ]
-}
-
-resource "helm_release" "aws_efa_device_plugin" {
-  name       = "aws-efa-k8s-device-plugin"
-  repository = "https://aws.github.io/eks-charts"
-  chart      = "aws-efa-k8s-device-plugin"
-  version    = "v0.4.4"
-  namespace  = "kube-system"
-  wait       = false
-
-  values = [
-    <<-EOT
-      nodeSelector:
-        vpc.amazonaws.com/efa.present: 'true'
-      tolerations:
-        - key: nvidia.com/gpu
-          operator: Exists
-          effect: NoSchedule
-    EOT
-  ]
 }

@@ -15,9 +15,10 @@ module "eks" {
   cluster_endpoint_public_access           = true
 
   cluster_addons = {
-    coredns    = {}
-    kube-proxy = {}
-    vpc-cni    = {}
+    coredns                = {}
+    eks-pod-identity-agent = {}
+    kube-proxy             = {}
+    vpc-cni                = {}
   }
 
   # Add security group rules on the node group security group to
@@ -35,8 +36,6 @@ module "eks" {
       instance_types = ["p5.48xlarge"]
 
       pre_bootstrap_user_data = <<-EOT
-        #!/usr/bin/env bash
-
         # Mount instance store volumes in RAID-0 for kubelet and containerd
         # https://github.com/awslabs/amazon-eks-ami/blob/master/doc/USER_GUIDE.md#raid-0-for-kubelet-and-containerd-raid0
         /bin/setup-local-disks raid0
@@ -71,18 +70,6 @@ module "eks" {
     default = {
       instance_types = ["m5.large"]
 
-      # Default AMI has only 8GB of storage
-      block_device_mappings = {
-        xvda = {
-          device_name = "/dev/xvda"
-          ebs = {
-            volume_size           = 128
-            volume_type           = "gp3"
-            delete_on_termination = true
-          }
-        }
-      }
-
       min_size     = 1
       max_size     = 2
       desired_size = 2
@@ -90,52 +77,4 @@ module "eks" {
   }
 
   tags = local.tags
-}
-
-################################################################################
-# Helm charts
-################################################################################
-
-resource "helm_release" "nvidia_device_plugin" {
-  name             = "nvidia-device-plugin"
-  repository       = "https://nvidia.github.io/k8s-device-plugin"
-  chart            = "nvidia-device-plugin"
-  version          = "0.14.5"
-  namespace        = "nvidia-device-plugin"
-  create_namespace = true
-  wait             = false
-
-  values = [
-    <<-EOT
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: 'nvidia.com/gpu.present'
-                operator: In
-                values:
-                - 'true'
-    EOT
-  ]
-}
-
-resource "helm_release" "aws_efa_device_plugin" {
-  name       = "aws-efa-k8s-device-plugin"
-  repository = "https://aws.github.io/eks-charts"
-  chart      = "aws-efa-k8s-device-plugin"
-  version    = "v0.4.4"
-  namespace  = "kube-system"
-  wait       = false
-
-  values = [
-    <<-EOT
-      nodeSelector:
-        vpc.amazonaws.com/efa.present: 'true'
-      tolerations:
-        - key: nvidia.com/gpu
-          operator: Exists
-          effect: NoSchedule
-    EOT
-  ]
 }
