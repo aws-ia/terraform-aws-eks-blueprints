@@ -1,15 +1,14 @@
 name: plan-examples
 
 on:
-  # Review https://securitylab.github.com/research/github-actions-preventing-pwn-requests/ and better understand the risks of using pull_request_target before making major changes to this workflow.
-  pull_request_target:
-    branches:
-      - main
   workflow_dispatch:
 
 concurrency:
   group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
   cancel-in-progress: true
+
+permissions:
+  contents: read
 
 jobs:
   getExampleDirectories:
@@ -23,8 +22,13 @@ jobs:
       directories: ${{ steps.dirs.outputs.directories }}
     steps:
       # Be careful not to change this to explicit checkout from PR ref/code, as below we run a python code that may change from the PR code.
+      - name: Harden Runner
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@44c2b7a8a4ea60a981eaca3cf939b5f4305c123b
 
       - name: Get Terraform directories for evaluation
         id: dirs
@@ -49,20 +53,25 @@ jobs:
         directory: ${{ fromJson(needs.getExampleDirectories.outputs.directories) }}
 
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+
       - name: Remove default Terraform
         run: rm -rf $(which terraform)
 
       - name: checkout-merge
         if: "contains(github.event_name, 'pull_request')"
-        uses: actions/checkout@v3
+        uses: actions/checkout@44c2b7a8a4ea60a981eaca3cf939b5f4305c123b
         with:
           ref: refs/pull/${{github.event.pull_request.number}}/merge
 
       - name: checkout
         if: "!contains(github.event_name, 'pull_request')"
-        uses: actions/checkout@v3
+        uses: actions/checkout@44c2b7a8a4ea60a981eaca3cf939b5f4305c123b
 
-      - uses: dorny/paths-filter@v2
+      - uses: dorny/paths-filter@v3
         id: changes
         with:
           # Need to check not only the example directory
@@ -75,7 +84,7 @@ jobs:
               - '*.tf'
 
       - name: Configure AWS credentials from Test account
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v4.0.2
         if: steps.changes.outputs.src== 'true'
         with:
           role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
@@ -84,7 +93,7 @@ jobs:
           role-session-name: GithubActions-Session
 
       - name: Terraform Job
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@v3
         if: steps.changes.outputs.src== 'true'
         with:
           terraform_version: 1.0.0

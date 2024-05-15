@@ -1,6 +1,0 @@
-apiVersion: pkg.crossplane.io/v1alpha1
-kind: ControllerConfig
-metadata:
-  name: ${kubernetes-controller-config}
-spec:
-  serviceAccountName: ${kubernetes-serviceaccount-name}

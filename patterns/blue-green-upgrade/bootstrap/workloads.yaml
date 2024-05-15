@@ -1,0 +1,67 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: bootstrap-workloads
+  namespace: argocd
+spec:
+  goTemplate: true
+  syncPolicy:
+    preserveResourcesOnDeletion: true
+  generators:
+    - matrix:
+        generators:
+          - clusters:
+              selector:
+                matchExpressions:
+                  - key: akuity.io/argo-cd-cluster-name
+                    operator: NotIn
+                    values:
+                      - in-cluster
+          - git:
+              repoURL: '{{.metadata.annotations.gitops_workloads_url}}'
+              revision: '{{.metadata.annotations.gitops_workloads_revision}}'
+              directories:
+                - path: '{{.metadata.annotations.gitops_workloads_path}}/*'
+  template:
+    metadata:
+      name: 'bootstrap-workloads-{{.name}}'
+    spec:
+      project: default
+      sources:
+        - repoURL: '{{.metadata.annotations.gitops_workloads_url}}'
+          targetRevision: '{{.metadata.annotations.gitops_workloads_revision}}'
+          ref: values
+          path: '{{.metadata.annotations.gitops_workloads_path}}'
+          helm:
+            releaseName: 'bootstrap-workloads-{{.name}}'
+            ignoreMissingValueFiles: true
+            values: |
+              "account": "{{.metadata.annotations.aws_account_id}}"
+              "clusterName": "{{.metadata.annotations.cluster_name}}"
+              "labels":
+                "env": "{{.metadata.annotations.env}}"
+              "region": "{{.metadata.annotations.aws_region}}"
+              "repoUrl": "{{.metadata.annotations.gitops_workloads_url}}"
+              "spec":
+                "source":
+                  "repoURL": "{{.metadata.annotations.gitops_workloads_url}}"
+                  "targetRevision": "{{.metadata.annotations.gitops_workloads_revision}}"
+                "blueprint": "terraform"
+                "clusterName": "{{.metadata.annotations.cluster_name}}"
+                "env": "{{.metadata.annotations.env}}"
+                "ingress":
+                  "route53_weight": {{default "0" .metadata.annotations.route53_weight}}
+                  "argocd_route53_weight": {{default "0" .metadata.annotations.argocd_route53_weight}}
+                  "ecsfrontend_route53_weight": {{default "0" .metadata.annotations.ecsfrontend_route53_weight}}
+                  "host": {{ default "" .metadata.annotations.eks_cluster_domain }}
+                  "type": "{{.metadata.annotations.ingress_type}}"
+                "karpenterInstanceProfile": "{{.metadata.annotations.karpenter_node_instance_profile_name}}"
+                "target_group_arn": {{ default "" .metadata.annotations.target_group_arn }}
+                "external_lb_url": {{ if index .metadata.annotations "external_lb_dns" }} http://{{ .metadata.annotations.external_lb_dns }}{{ else }}{{ end }}
+      destination:
+        name: '{{.name}}'
+      syncPolicy:
+        automated: {}
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true # Big CRDs.

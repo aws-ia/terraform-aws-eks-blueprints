@@ -1,6 +1,0 @@
-apiVersion: v2
-name: cert-manager-ca
-description: A Helm chart to install a Cert Manager CA
-type: application
-version: 0.2.0
-appVersion: v0.1.0

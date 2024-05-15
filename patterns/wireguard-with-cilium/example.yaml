@@ -1,0 +1,54 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: server
+  labels:
+    blog: wireguard
+    name: server
+spec:
+  containers:
+    - name: server
+      image: nginx
+  topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: "kubernetes.io/hostname"
+      whenUnsatisfiable: DoNotSchedule
+      labelSelector:
+        matchLabels:
+          blog: wireguard
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: server
+spec:
+  selector:
+    name: server
+  ports:
+    - port: 80
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 600
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: client
+  labels:
+    blog: wireguard
+    name: client
+spec:
+  containers:
+    - name: client
+      image: busybox
+      command: ["watch", "wget", "server"]
+  topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: "kubernetes.io/hostname"
+      whenUnsatisfiable: DoNotSchedule
+      labelSelector:
+        matchLabels:
+          blog: wireguard
+---

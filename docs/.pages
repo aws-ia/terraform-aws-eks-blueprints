@@ -1,11 +1,7 @@
 nav:
-    - Overview: index.md
-    - Getting Started: getting-started.md
-    - Core Concepts: core-concepts.md
-    - IAM: iam
-    - Teams: teams.md
-    - Modules: modules
-    - Add-ons: add-ons
-    - Advanced: advanced
-    - Extensibility: extensibility.md
-    - ...
+  - Overview: index.md
+  - Getting Started: getting-started.md
+  - Patterns: patterns
+  - Snippets: snippets
+  - v4 to v5 Migration: v4-to-v5
+  - FAQ: faq.md

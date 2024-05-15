@@ -1,6 +1,7 @@
 .DS_Store
 .idea
 .build
+*.vscode
 
 # mkdocs documentation
 /site
@@ -38,3 +39,11 @@ terraform.rc
 
 # TFSec files
 .tfsec
+
+# local env
+*.envrc
+*kube-config.yaml
+
+# Generated files
+builds
+__pycache__

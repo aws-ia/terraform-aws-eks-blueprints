@@ -1,0 +1,32 @@
+agones:
+  featureGates: ""
+  crds:
+    cleanupOnDelete: true
+  ping:
+    http:
+      serviceType: LoadBalancer
+      annotations:
+        service.beta.kubernetes.io/aws-load-balancer-internal: "false"
+        service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+    udp:
+      expose: ${expose_udp}
+      serviceType: LoadBalancer
+      annotations:
+        service.beta.kubernetes.io/aws-load-balancer-internal: "false"
+        service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+  image:
+    registry: us-docker.pkg.dev/agones-images/release
+    controller:
+      pullPolicy: IfNotPresent
+    sdk:
+      alwaysPull: false
+  allocator:
+    service:
+      annotations:
+        service.beta.kubernetes.io/aws-load-balancer-internal: "false"
+        service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+gameservers:
+  namespaces: ["default"]
+  minPort: ${gameserver_minport}
+  maxPort: ${gameserver_maxport}
+  podPreserveUnknownFields: false

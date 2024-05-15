@@ -3,20 +3,23 @@ import glob
 import re
 
 
-def get_examples():
+def get_patterns():
     """
-    Get all Terraform example root directories using their respective `versions.tf`;
+    Get all pattern root directories using their respective `main.tf`;
     returning a string formatted json array of the example directories minus those that are excluded
     """
     exclude = {
-        'examples/appmesh-mtls',  # excluded until Rout53 is setup
-        'examples/blue-green-upgrade/core-infra',
-        'examples/blue-green-upgrade/modules/eks_cluster'
+        'patterns/appmesh-mtls',  # excluded until Rout53 is setup
+        'patterns/blue-green-upgrade/environment',
+        'patterns/blue-green-upgrade/modules/eks_cluster',
+        'patterns/istio-multi-cluster/1.cluster1', # relies on remote state
+        'patterns/istio-multi-cluster/2.cluster2', # relies on remote state
+        'patterns/privatelink-access',
     }
 
     projects = {
-        x.replace('/versions.tf', '')
-        for x in glob.glob('examples/**/versions.tf', recursive=True)
+        x.replace('/main.tf', '')
+        for x in glob.glob('patterns/**/main.tf', recursive=True)
         if not re.match(r'^.+/_', x)
     }
 
@@ -24,4 +27,4 @@ def get_examples():
 
 
 if __name__ == '__main__':
-    get_examples()
+    get_patterns()

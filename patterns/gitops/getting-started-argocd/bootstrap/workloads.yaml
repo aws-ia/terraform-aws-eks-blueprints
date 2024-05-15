@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: workloads
+  namespace: argocd
+spec:
+  syncPolicy:
+    preserveResourcesOnDeletion: true
+  generators:
+    - clusters: {}
+  template:
+    metadata:
+      name: workloads
+      finalizers:
+        # This finalizer is for demo purposes, in production remove apps using argocd CLI "argocd app delete workload --cascade"
+        # When you invoke argocd app delete with --cascade, the finalizer is added automatically.
+        - resources-finalizer.argocd.argoproj.io
+    spec:
+      project: default
+      source:
+        repoURL: '{{metadata.annotations.workload_repo_url}}'
+        path: '{{metadata.annotations.workload_repo_basepath}}{{metadata.annotations.workload_repo_path}}'
+        targetRevision: '{{metadata.annotations.workload_repo_revision}}'
+      destination:
+        name: '{{name}}'
+      syncPolicy:
+        automated:
+          allowEmpty: true
+        syncOptions:
+          - CreateNamespace=true
+        retry:
+          limit: 60

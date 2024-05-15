@@ -1,4 +1,4 @@
-name: pre-commit
+name: Pre-commit
 
 on:
   pull_request:
@@ -10,133 +10,54 @@ on:
       - '**.yaml'
 
 env:
+  TERRAFORM_VERSION: 1.3.10
   TERRAFORM_DOCS_VERSION: v0.16.0
-  TFSEC_VERSION: v1.22.0
   TF_PLUGIN_CACHE_DIR: ${{ github.workspace }}/.terraform.d/plugin-cache
-  TFLINT_VERSION: v0.42.1
+  TFLINT_VERSION: v0.50.2
 
 concurrency:
   group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
   cancel-in-progress: true
 
 jobs:
-  collectInputs:
-    name: Collect workflow inputs
-    runs-on: ubuntu-latest
-    outputs:
-      directories: ${{ steps.dirs.outputs.directories }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Get root directories
-        id: dirs
-        uses: clowdhaus/terraform-composite-actions/directories@v1.8.0
-
-  preCommitMinVersions:
+  pre-commit:
     name: Min TF pre-commit
-    needs: collectInputs
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        directory: ${{ fromJson(needs.collectInputs.outputs.directories) }}
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+
       - name: Remove default Terraform
         run: rm -rf $(which terraform)
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@44c2b7a8a4ea60a981eaca3cf939b5f4305c123b
 
-      - uses: dorny/paths-filter@v2
+      - uses: dorny/paths-filter@v3
         id: changes
         with:
-          # We only need to check Terraform files for the current directory
-          # because the `preCommitMaxVersion` job will run the full,
-          # exhaustive checks (always)
           filters: |
             src:
-              - '${{ matrix.directory }}/*.tf'
+              - '*.tf'
 
       - name: Config Terraform plugin cache
         if: steps.changes.outputs.src== 'true'
         run: mkdir --parents ${{ env.TERRAFORM_DOCS_VERSION }}
 
       - name: Cache Terraform
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         if: steps.changes.outputs.src== 'true'
         with:
           path: ${{ env.TERRAFORM_DOCS_VERSION }}
           key: ${{ runner.os }}-terraform-${{ hashFiles('**/.terraform.lock.hcl') }}
           restore-keys: ${{ runner.os }}-terraform-
 
-      - name: Terraform min/max versions
-        uses: clowdhaus/terraform-min-max@v1.2.0
-        if: steps.changes.outputs.src== 'true'
-        id: minMax
-        with:
-          directory: ${{ matrix.directory }}
-
       - name: Pre-commit Terraform ${{ steps.minMax.outputs.minVersion }}
-        uses: clowdhaus/terraform-composite-actions/pre-commit@v1.8.3
-        # Run only validate pre-commit check on min version supported
-        if: ${{ matrix.directory !=  '.' && steps.changes.outputs.src== 'true' }}
-        with:
-          terraform-version: ${{ steps.minMax.outputs.minVersion }}
-          tflint-version: ${{ env.TFLINT_VERSION }}
-          args: 'terraform_validate --color=always --show-diff-on-failure --files ${{ matrix.directory }}/*'
-
-      - name: Pre-commit Terraform ${{ steps.minMax.outputs.minVersion }}
-        uses: clowdhaus/terraform-composite-actions/pre-commit@v1.8.3
-        # Run only validate pre-commit check on min version supported
-        if: ${{ matrix.directory ==  '.' && steps.changes.outputs.src== 'true' }}
-        with:
-          terraform-version: ${{ steps.minMax.outputs.minVersion }}
-          tflint-version: ${{ env.TFLINT_VERSION }}
-          args: 'terraform_validate --color=always --show-diff-on-failure --files $(ls *.tf)'
-
-  preCommitMaxVersion:
-    name: Max TF pre-commit
-    runs-on: ubuntu-latest
-    needs: collectInputs
-    steps:
-      - name: Remove default Terraform
-        run: rm -rf $(which terraform)
-
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - uses: dorny/paths-filter@v2
-        id: changes
-        with:
-          filters: |
-            src:
-              - '**/*.tf'
-
-      - name: Config Terraform plugin cache
-        if: steps.changes.outputs.src== 'true'
-        run: mkdir --parents ${{ env.TERRAFORM_DOCS_VERSION }}
-
-      - name: Cache Terraform
-        uses: actions/cache@v3
+        uses: clowdhaus/terraform-composite-actions/pre-commit@v1.9.0
         if: steps.changes.outputs.src== 'true'
         with:
-          path: ${{ env.TF_PLUGIN_CACHE_DIR }}
-          key: ${{ runner.os }}-terraform-${{ hashFiles('**/.terraform.lock.hcl') }}
-          restore-keys: ${{ runner.os }}-terraform-
-
-      - name: Install tfsec
-        if: steps.changes.outputs.src== 'true'
-        run: curl -sSLo ./tfsec https://github.com/aquasecurity/tfsec/releases/download/${{ env.TFSEC_VERSION }}/tfsec-$(uname)-amd64 && chmod +x tfsec && sudo mv tfsec /usr/bin/
-
-      - name: Terraform min/max versions
-        id: minMax
-        uses: clowdhaus/terraform-min-max@v1.2.0
-        if: steps.changes.outputs.src== 'true'
-
-      - name: Pre-commit Terraform ${{ steps.minMax.outputs.maxVersion }}
-        uses: clowdhaus/terraform-composite-actions/pre-commit@v1.8.3
-        if: steps.changes.outputs.src== 'true'
-        with:
-          terraform-version: ${{ steps.minMax.outputs.maxVersion }}
+          terraform-version: ${{ env.TERRAFORM_VERSION }}
           terraform-docs-version: ${{ env.TERRAFORM_DOCS_VERSION }}
           tflint-version: ${{ env.TFLINT_VERSION }}
