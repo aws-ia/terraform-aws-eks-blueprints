@@ -89,7 +89,7 @@ To enable VPC CNI custom networking, you must configuring the following componen
       }
       ```
    This custom resource can be found in the alekc/kubectl provider. Add it to where the providers are defined:
-   ````
+   ```hcl
       required_providers {
 
          # Truncated for brevity
@@ -104,7 +104,7 @@ To enable VPC CNI custom networking, you must configuring the following componen
    ```
 
 4. Give permissions to the vpc-cni using IPv4 to be used inside the cluster with an irsa role:
-   ```
+   ```hcl
    module "vpc_cni_ipv4_irsa_role" {
       source = "github.com/terraform-aws-modules/terraform-aws-iam.git//modules/iam-role-for-service-accounts-eks"
 
@@ -121,7 +121,7 @@ To enable VPC CNI custom networking, you must configuring the following componen
 
       tags = var.tags
    }
-   ````
+   ```
 
 Once those settings have been successfully applied, you can verify if custom networking is enabled correctly by inspecting one of the `aws-node-*` (AWS VPC CNI) pods:
 
