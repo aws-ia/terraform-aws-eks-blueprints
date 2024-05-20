@@ -22,7 +22,7 @@ To enable VPC CNI custom networking, you must configuring the following componen
 
 1. Create a VPC with additional CIDR block associations. These additional CIDR blocks will be used to create subnets for the VPC CNI custom networking:
 
-      ```
+      ```hcl
       module "vpc" {
          source  = "terraform-aws-modules/vpc/aws"
 
