@@ -69,7 +69,7 @@ To enable VPC CNI custom networking, you must configuring the following componen
 
 3. Create the `ENIConfig` custom resource for each subnet that you want to deploy pods into:
 
-      ```
+      ```hcl
       resource "kubectl_manifest" "eni_config" {
          for_each = zipmap(local.azs, slice(module.vpc.private_subnets, 3, 6))
 
