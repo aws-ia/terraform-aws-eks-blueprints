@@ -43,7 +43,7 @@ To enable VPC CNI custom networking, you must configuring the following componen
 
 2. Specify the VPC CNI custom networking configuration in the `vpc-cni` addon configuration:
 
-      ```
+      ```hcl
       module "eks" {
          source  = "terraform-aws-modules/eks/aws"
 
