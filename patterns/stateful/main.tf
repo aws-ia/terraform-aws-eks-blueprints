@@ -55,10 +55,10 @@ locals {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 20.8"
+  version = "~> 20.11"
 
   cluster_name                   = local.name
-  cluster_version                = "1.29"
+  cluster_version                = "1.30"
   cluster_endpoint_public_access = true
 
   # Give the Terraform identity admin access to the cluster
@@ -112,42 +112,47 @@ module "eks" {
       # is dedicated to just containerd. You can read more about the practice and why
       # here https://aws.github.io/aws-eks-best-practices/scalability/docs/data-plane/#use-multiple-ebs-volumes-for-containers
       # and https://github.com/containerd/containerd/blob/main/docs/ops.md#base-configuration
-      pre_bootstrap_user_data = <<-EOT
-        # Wait for second volume to attach before trying to mount paths
-        TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
-        EC2_INSTANCE_ID=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" -v http://169.254.169.254/latest/meta-data/instance-id)
-        DATA_STATE="unknown"
-        until [ "$${DATA_STATE}" == "attached" ]; do
-          DATA_STATE=$(aws ec2 describe-volumes \
-            --region ${local.region} \
-            --filters \
-                Name=attachment.instance-id,Values=$${EC2_INSTANCE_ID} \
-                Name=attachment.device,Values=${local.second_volume_name} \
-            --query Volumes[].Attachments[].State \
-            --output text)
-          sleep 5
-        done
+      cloudinit_pre_nodeadm = [
+        {
+          content_type = "text/x-shellscript"
+          content      = <<-EOT
+            # Wait for second volume to attach before trying to mount paths
+            TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+            EC2_INSTANCE_ID=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" -v http://169.254.169.254/latest/meta-data/instance-id)
+            DATA_STATE="unknown"
+            until [ "$${DATA_STATE}" == "attached" ]; do
+              DATA_STATE=$(aws ec2 describe-volumes \
+                --region ${local.region} \
+                --filters \
+                    Name=attachment.instance-id,Values=$${EC2_INSTANCE_ID} \
+                    Name=attachment.device,Values=${local.second_volume_name} \
+                --query Volumes[].Attachments[].State \
+                --output text)
+              sleep 5
+            done
 
-        # Get the volume ID
-        VOLUME_ID=$(aws ec2 describe-volumes \
-          --region ${local.region} \
-          --filters \
-              Name=attachment.instance-id,Values=$${EC2_INSTANCE_ID} \
-              Name=attachment.device,Values=${local.second_volume_name} \
-          --query Volumes[].Attachments[].VolumeId \
-          --output text | sed 's/-//')
+            # Get the volume ID
+            VOLUME_ID=$(aws ec2 describe-volumes \
+              --region ${local.region} \
+              --filters \
+                  Name=attachment.instance-id,Values=$${EC2_INSTANCE_ID} \
+                  Name=attachment.device,Values=${local.second_volume_name} \
+              --query Volumes[].Attachments[].VolumeId \
+              --output text | sed 's/-//')
 
-        # Mount the containerd directories to the 2nd volume
-        SECOND_VOL=$(lsblk -o NAME,SERIAL -d |awk -v id="$${VOLUME_ID}" '$2 ~ id {print $1}')
-        systemctl stop containerd
-        mkfs -t ext4 /dev/$${SECOND_VOL}
-        rm -rf /var/lib/containerd/*
-        rm -rf /run/containerd/*
+            # Mount the containerd directories to the 2nd volume
+            SECOND_VOL=$(lsblk -o NAME,SERIAL -d |awk -v id="$${VOLUME_ID}" '$2 ~ id {print $1}')
+            systemctl stop containerd
+            mkfs -t ext4 /dev/$${SECOND_VOL}
+            rm -rf /var/lib/containerd/*
+            rm -rf /run/containerd/*
 
-        mount /dev/$${SECOND_VOL} /var/lib/containerd/
-        mount /dev/$${SECOND_VOL} /run/containerd/
-        systemctl start containerd
-      EOT
+            mount /dev/$${SECOND_VOL} /var/lib/containerd/
+            mount /dev/$${SECOND_VOL} /run/containerd/
+            systemctl start containerd
+          EOT
+        }
+      ]
     }
 
     instance-store = {
@@ -172,20 +177,20 @@ module "eks" {
         }
       }
 
-      # NVMe instance store volumes are automatically enumerated and assigned a device
-      pre_bootstrap_user_data = <<-EOT
-        cat <<-EOF > /etc/profile.d/bootstrap.sh
-        #!/bin/sh
-
-        # Configure NVMe volumes in RAID0 configuration
-        # https://github.com/awslabs/amazon-eks-ami/blob/056e31f8c7477e893424abce468cb32bbcd1f079/files/bootstrap.sh#L35C121-L35C126
-        # Mount will be: /mnt/k8s-disks
-        export LOCAL_DISKS='raid0'
-        EOF
-
-        # Source extra environment variables in bootstrap script
-        sed -i '/^set -o errexit/a\\nsource /etc/profile.d/bootstrap.sh' /etc/eks/bootstrap.sh
-      EOT
+      cloudinit_pre_nodeadm = [
+        {
+          content_type = "application/node.eks.aws"
+          content      = <<-EOT
+            ---
+            apiVersion: node.eks.aws/v1alpha1
+            kind: NodeConfig
+            spec:
+              instance:
+                localStorage:
+                  strategy: RAID0
+          EOT
+        }
+      ]
     }
   }
 

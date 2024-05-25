@@ -38,10 +38,10 @@ locals {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 20.8"
+  version = "~> 20.11"
 
   cluster_name                   = local.name
-  cluster_version                = "1.29"
+  cluster_version                = "1.30"
   cluster_endpoint_public_access = true
 
   # Give the Terraform identity admin access to the cluster

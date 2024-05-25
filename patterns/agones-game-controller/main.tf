@@ -22,8 +22,6 @@ locals {
   name   = basename(path.cwd)
   region = "us-west-2"
 
-  cluster_version = "1.29"
-
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
@@ -42,10 +40,10 @@ locals {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 20.8"
+  version = "~> 20.11"
 
   cluster_name                   = local.name
-  cluster_version                = local.cluster_version
+  cluster_version                = "1.30"
   cluster_endpoint_public_access = true
 
   # Give the Terraform identity admin access to the cluster
