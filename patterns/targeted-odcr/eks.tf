@@ -13,10 +13,10 @@ variable "capacity_reservation_arns" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 20.9"
+  version = "~> 20.11"
 
   cluster_name    = local.name
-  cluster_version = "1.29"
+  cluster_version = "1.30"
 
   # Give the Terraform identity admin access to the cluster
   # which will allow it to deploy resources into the cluster

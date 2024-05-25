@@ -34,6 +34,7 @@ cainjector
 chdir
 cidrsubnet
 ciliumnetworkpolicy
+cloudinit
 clusterip
 clusterissuer
 clusterrole
@@ -111,6 +112,7 @@ mtls
 nccl
 netcat
 nics
+nodeadm
 nodegroup
 nodeport
 nvme

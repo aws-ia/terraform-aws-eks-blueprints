@@ -4,10 +4,10 @@
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 20.10"
+  version = "~> 20.11"
 
   cluster_name    = local.name
-  cluster_version = "1.29"
+  cluster_version = "1.30"
 
   # Give the Terraform identity admin access to the cluster
   # which will allow it to deploy resources into the cluster
@@ -82,7 +82,7 @@ output "configure_kubectl" {
 
 module "karpenter" {
   source  = "terraform-aws-modules/eks/aws//modules/karpenter"
-  version = "~> 20.9"
+  version = "~> 20.11"
 
   cluster_name = module.eks.cluster_name
 
@@ -105,7 +105,7 @@ resource "helm_release" "karpenter" {
   repository_username = data.aws_ecrpublic_authorization_token.token.user_name
   repository_password = data.aws_ecrpublic_authorization_token.token.password
   chart               = "karpenter"
-  version             = "0.36.1"
+  version             = "0.36.2"
   wait                = false
 
   values = [
