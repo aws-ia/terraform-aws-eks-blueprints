@@ -28,18 +28,17 @@ provider "helm" {
 
 locals {
   #TODO Change this
-  name = "eks-${terraform.workspace}"
+  name   = "eks-${terraform.workspace}"
   region = "eu-west-1"
 
   cluster_vpc_cidr = "10.0.0.0/16"
-  client_vpc_cidr  = "10.1.0.0/16"
   azs              = slice(data.aws_availability_zones.available.names, 0, 3)
-  
-  domain = data.terraform_remote_state.environment.outputs.custom_domain_name
-  certificateArn = data.terraform_remote_state.environment.outputs.aws_acm_cert_arn
-  customDomain = data.terraform_remote_state.environment.outputs.custom_domain_name
 
-  app-namespace = "apps"
+  domain          = data.terraform_remote_state.environment.outputs.custom_domain_name
+  certificate_arn = data.terraform_remote_state.environment.outputs.aws_acm_cert_arn
+  custom_domain   = data.terraform_remote_state.environment.outputs.custom_domain_name
+
+  app_namespace = "apps"
 
   tags = {
     Blueprint  = local.name

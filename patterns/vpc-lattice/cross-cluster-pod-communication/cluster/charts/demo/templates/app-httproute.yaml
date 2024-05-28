@@ -13,8 +13,8 @@ spec:
     sectionName: http-listener
   - kind: Gateway
     name: lattice-gateway
-    namespace: lattice-gateway  
-    sectionName: https-listener-with-custom-domain   
+    namespace: lattice-gateway
+    sectionName: https-listener-with-custom-domain
   rules:
   - backendRefs:
     - name: {{ .Release.Name }}-{{ .Values.version }}
@@ -23,7 +23,7 @@ spec:
     matches:
       - path:
           type: PathPrefix
-          value: /      
+          value: /
 ---
 apiVersion: application-networking.k8s.aws/v1alpha1
 kind: IAMAuthPolicy
@@ -52,7 +52,7 @@ spec:
                             "aws:PrincipalTag/eks-cluster-name": "{{ .Values.allowedCluster }}",
                             "aws:PrincipalTag/kubernetes-namespace": "{{ .Values.allowedNamespace }}"
                         }
-                    }                    
+                    }
                 }
             ]
         }

@@ -83,7 +83,7 @@ module "eks_blueprints_addons" {
       },
       {
         name  = "defaultServiceNetwork"
-        value = "lattice-gateway"        # Specify this parameter to create a default VPC lattice service
+        value = "lattice-gateway" # Specify this parameter to create a default VPC lattice service
       },
       # {
       #   name  = "latticeEndpoint"
@@ -140,7 +140,7 @@ module "eks_blueprints_addons" {
 }
 
 module "eks_blueprints_addon_kyverno" {
-  source = "aws-ia/eks-blueprints-addon/aws"
+  source  = "aws-ia/eks-blueprints-addon/aws"
   version = "~> 1.1" #ensure to update this to the latest/desired version
 
   chart            = "kyverno"
@@ -199,9 +199,9 @@ resource "helm_release" "platform_application" {
     vpc1ID: ${module.vpc.vpc_id}
     vpc2ID: to-replace
 
-    certificateArn: ${local.certificateArn}
+    certificateArn: ${local.certificate_arn}
 
-    customDomain: ${local.customDomain}
+    customDomain: ${local.custom_domain}
   EOF
   ]
 
@@ -216,7 +216,7 @@ resource "helm_release" "demo_application" {
   name             = "demo-${terraform.workspace}"
   chart            = "./charts/demo"
   create_namespace = true
-  namespace        = "${local.app-namespace}"
+  namespace        = local.app_namespace
   force_update     = true
 
   #replace = true # This will force a re-deployment
@@ -233,9 +233,9 @@ resource "helm_release" "demo_application" {
     vpc1ID: ${module.vpc.vpc_id}
     vpc2ID: to-replace
 
-    certificateArn: ${local.certificateArn}
+    certificateArn: ${local.certificate_arn}
 
-    customDomain: ${local.customDomain}
+    customDomain: ${local.custom_domain}
   EOF
   ]
 
@@ -264,7 +264,7 @@ resource "aws_vpc_security_group_ingress_rule" "cluster_sg_ingress" {
 
 resource "aws_eks_pod_identity_association" "apps" {
   cluster_name    = module.eks.cluster_name
-  namespace       = "${local.app-namespace}"
+  namespace       = local.app_namespace
   service_account = "default"
   role_arn        = data.terraform_remote_state.environment.outputs.vpc_lattice_client_role_arn
 }

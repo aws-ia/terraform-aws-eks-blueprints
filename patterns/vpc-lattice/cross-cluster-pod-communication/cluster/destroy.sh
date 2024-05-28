@@ -82,5 +82,3 @@ fi
 # else
 #     echo "Error: Failed to delete VPC $VPCID, you may need to do some manuals cleanups"
 # fi
-
-

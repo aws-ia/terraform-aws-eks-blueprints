@@ -2,16 +2,6 @@ provider "aws" {
   region = local.region
 }
 
-data "aws_caller_identity" "current" {}
-
-data "aws_availability_zones" "available" {
-  #Do not include local zones
-  filter {
-    name   = "opt-in-status"
-    values = ["opt-in-not-required"]
-  }
-}
-
 locals {
   name   = "vpc-lattice-ccpc"
   region = "eu-west-1"
@@ -19,7 +9,7 @@ locals {
   # cluster_vpc_cidr = "10.0.0.0/16"
   # client_vpc_cidr  = "10.1.0.0/16"
   # azs              = slice(data.aws_availability_zones.available.names, 0, 3)
-  
+
   domain = var.custom_domain_name
 
   tags = {
@@ -47,7 +37,7 @@ resource "aws_route53_zone" "private_zone" {
   }
 
   force_destroy = true
-  tags = local.tags
+  tags          = local.tags
 }
 
 #dummy VPC that will not be used, but needed to create private hosted zone

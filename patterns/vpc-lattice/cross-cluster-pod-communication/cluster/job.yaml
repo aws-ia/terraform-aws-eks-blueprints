@@ -16,9 +16,9 @@ spec:
       serviceAccountName: rollout-restart-sa
       restartPolicy: Never
       containers:
-      - name: rollout-restart
-        image: bitnami/kubectl:latest
-        command:
-        - /bin/sh
-        - -c
-        - kubectl rollout restart deployment/demo-cluster1-v1 -n apps
+        - name: rollout-restart
+          image: bitnami/kubectl:latest
+          command:
+            - /bin/sh
+            - -c
+            - kubectl rollout restart deployment/demo-cluster1-v1 -n apps

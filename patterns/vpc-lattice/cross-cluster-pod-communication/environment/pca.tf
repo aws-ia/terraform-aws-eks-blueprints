@@ -7,15 +7,15 @@
 # # https://docs.aws.amazon.com/acm-pca/latest/userguide/pca-rbp.html
 
 resource "aws_acmpca_certificate_authority" "this" {
-  enabled = true 
-  type = "ROOT"
+  enabled = true
+  type    = "ROOT"
 
   certificate_authority_configuration {
     key_algorithm     = "RSA_4096"
     signing_algorithm = "SHA512WITHRSA"
 
     subject {
-      common_name = var.custom_domain_name
+      common_name  = var.custom_domain_name
       organization = var.organization
     }
   }
@@ -50,7 +50,7 @@ resource "aws_acmpca_certificate_authority_certificate" "this" {
 #-------------------------------
 
 resource "aws_acm_certificate" "private_domain_cert" {
-  domain_name       = var.custom_domain_name
+  domain_name = var.custom_domain_name
   #validation_method = "DNS"
 
   subject_alternative_names = [
@@ -60,7 +60,7 @@ resource "aws_acm_certificate" "private_domain_cert" {
   options {
     certificate_transparency_logging_preference = "DISABLED"
   }
-  
+
   certificate_authority_arn = aws_acmpca_certificate_authority.this.arn
 
   tags = local.tags

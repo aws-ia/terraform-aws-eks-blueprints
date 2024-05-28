@@ -26,7 +26,7 @@ spec:
         lifecycle:
           preStop:
             exec:
-              command: ["/bin/sh", "-c", "sleep 15"]          
+              command: ["/bin/sh", "-c", "sleep 15"]
       terminationGracePeriodSeconds: 15
 ---
 apiVersion: v1

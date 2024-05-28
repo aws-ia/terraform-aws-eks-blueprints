@@ -31,7 +31,7 @@ module "vpc" {
 # Associate private_hosted_zone with VPC
 ################################################################################
 
-resource "aws_route53_zone_association" "private_zone_association" { 
-  zone_id = data.terraform_remote_state.environment.outputs.private_zone_id 
-  vpc_id = module.vpc.vpc_id 
+resource "aws_route53_zone_association" "private_zone_association" {
+  zone_id = data.terraform_remote_state.environment.outputs.private_zone_id
+  vpc_id  = module.vpc.vpc_id
 }

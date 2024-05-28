@@ -38,11 +38,11 @@ spec:
         from: Selector
         selector:
           matchLabels:
-            allow-attachment-to-infra-gw: "true"    
+            allow-attachment-to-infra-gw: "true"
     tls:
       mode: Terminate
       options:
-        application-networking.k8s.aws/certificate-arn: {{ .Values.certificateArn }}                 
+        application-networking.k8s.aws/certificate-arn: {{ .Values.certificateArn }}
 ---
 #https://github.com/aws/aws-application-networking-k8s/blob/main/docs/api-types/iam-auth-policy.md?plain=1
 apiVersion: application-networking.k8s.aws/v1alpha1
@@ -67,7 +67,7 @@ spec:
                     "Condition": {
                         "StringNotEqualsIgnoreCase": {
                             "aws:PrincipalType": "anonymous"
-                        }                        
+                        }
                     }
                 }
             ]
