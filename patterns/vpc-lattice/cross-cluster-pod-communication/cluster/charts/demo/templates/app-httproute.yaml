@@ -1,0 +1,58 @@
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: HTTPRoute
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  hostnames:
+  - {{ .Release.Name }}.{{ .Values.customDomain }}
+  parentRefs:
+  - kind: Gateway
+    name: lattice-gateway
+    namespace: lattice-gateway
+    sectionName: http-listener
+  - kind: Gateway
+    name: lattice-gateway
+    namespace: lattice-gateway  
+    sectionName: https-listener-with-custom-domain   
+  rules:
+  - backendRefs:
+    - name: {{ .Release.Name }}-{{ .Values.version }}
+      kind: Service
+      port: 80
+    matches:
+      - path:
+          type: PathPrefix
+          value: /      
+---
+apiVersion: application-networking.k8s.aws/v1alpha1
+kind: IAMAuthPolicy
+metadata:
+    name: {{ .Release.Name }}-iam-auth-policy
+    namespace: {{ .Release.Namespace }}
+spec:
+    targetRef:
+        group: "gateway.networking.k8s.io"
+        kind: HTTPRoute
+        namespace: {{ .Release.Namespace }}
+        name: {{ .Release.Name }}
+    policy: |
+        {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Principal": {
+                      "AWS": "arn:aws:iam::{{ .Values.awsAccountID }}:root"
+                    },
+                    "Action": "vpc-lattice-svcs:Invoke",
+                    "Resource": "*",
+                    "Condition": {
+                        "StringEquals": {
+                            "aws:PrincipalTag/eks-cluster-name": "{{ .Values.allowedCluster }}",
+                            "aws:PrincipalTag/kubernetes-namespace": "{{ .Values.allowedNamespace }}"
+                        }
+                    }                    
+                }
+            ]
+        }

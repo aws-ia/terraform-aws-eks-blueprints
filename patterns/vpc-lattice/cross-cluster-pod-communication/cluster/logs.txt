@@ -1,0 +1,761 @@
+[0m[1mmodule.eks.module.eks_managed_node_group["initial"].data.aws_iam_policy_document.assume_role_policy[0]: Reading...[0m[0m
+[0m[1mmodule.eks.module.kms.data.aws_partition.current[0]: Reading...[0m[0m
+[0m[1mmodule.eks.data.aws_partition.current: Reading...[0m[0m
+[0m[1mmodule.eks.module.kms.data.aws_caller_identity.current[0]: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks_managed_node_group["initial"].data.aws_partition.current: Reading...[0m[0m
+[0m[1mmodule.eks.module.eks_managed_node_group["initial"].data.aws_caller_identity.current: Reading...[0m[0m
+[0m[1mmodule.eks.data.aws_iam_policy_document.assume_role_policy[0]: Reading...[0m[0m
+[0m[1mdata.aws_availability_zones.available: Reading...[0m[0m
+[0m[1mmodule.eks.data.aws_caller_identity.current: Reading...[0m[0m
+[0m[1mmodule.vpc.aws_vpc.this[0]: Refreshing state... [id=vpc-0c911698ba2a5559f][0m
+[0m[1mmodule.eks.module.eks_managed_node_group["initial"].data.aws_partition.current: Read complete after 0s [id=aws][0m
+[0m[1mmodule.eks.module.kms.data.aws_partition.current[0]: Read complete after 0s [id=aws][0m
+[0m[1mmodule.eks.data.aws_partition.current: Read complete after 0s [id=aws][0m
+[0m[1mmodule.eks.data.aws_iam_policy_document.assume_role_policy[0]: Read complete after 0s [id=2764486067][0m
+[0m[1mmodule.eks.module.eks_managed_node_group["initial"].data.aws_iam_policy_document.assume_role_policy[0]: Read complete after 0s [id=2560088296][0m
+[0m[1mmodule.eks.aws_cloudwatch_log_group.this[0]: Refreshing state... [id=/aws/eks/eks-cluster1/cluster][0m
+[0m[1mmodule.eks.aws_iam_role.this[0]: Refreshing state... [id=eks-cluster1-cluster-20240517125209493300000002][0m
+[0m[1mmodule.eks.data.aws_caller_identity.current: Read complete after 0s [id=382076407153][0m
+[0m[1mmodule.eks.data.aws_iam_session_context.current: Reading...[0m[0m
+[0m[1mmodule.eks.data.aws_iam_session_context.current: Read complete after 0s [id=arn:aws:iam::382076407153:user/cdkmb3][0m
+[0m[1mmodule.eks.module.eks_managed_node_group["initial"].data.aws_caller_identity.current: Read complete after 0s [id=382076407153][0m
+[0m[1mmodule.eks.module.kms.data.aws_caller_identity.current[0]: Read complete after 0s [id=382076407153][0m
+[0m[1mdata.aws_availability_zones.available: Read complete after 0s [id=eu-west-1][0m
+[0m[1mmodule.vpc.aws_subnet.private[1]: Refreshing state... [id=subnet-014e5c930009cc297][0m
+[0m[1mmodule.vpc.aws_subnet.private[2]: Refreshing state... [id=subnet-04a1b9b5e4358d9e1][0m
+[0m[1mmodule.vpc.aws_subnet.private[0]: Refreshing state... [id=subnet-038ef633bf26210ec][0m
+[0m[1mmodule.eks.aws_security_group.cluster[0]: Refreshing state... [id=sg-029db93427b086b13][0m
+[0m[1mmodule.eks.aws_security_group.node[0]: Refreshing state... [id=sg-07ec9983f65648877][0m
+[0m[1mmodule.eks.aws_iam_role_policy_attachment.this["AmazonEKSClusterPolicy"]: Refreshing state... [id=eks-cluster1-cluster-20240517125209493300000002-20240517125210751700000006][0m
+[0m[1mmodule.eks.aws_iam_role_policy_attachment.this["AmazonEKSVPCResourceController"]: Refreshing state... [id=eks-cluster1-cluster-20240517125209493300000002-20240517125210758800000007][0m
+[0m[1mmodule.eks.module.kms.data.aws_iam_policy_document.this[0]: Reading...[0m[0m
+[0m[1mmodule.eks.module.kms.data.aws_iam_policy_document.this[0]: Read complete after 0s [id=1494010237][0m
+[0m[1mmodule.eks.module.kms.aws_kms_key.this[0]: Refreshing state... [id=09de31f1-9135-4513-a337-b755865f3ffa][0m
+[0m[1mmodule.eks.aws_security_group_rule.node["egress_all"]: Refreshing state... [id=sgrule-2059379445][0m
+[0m[1mmodule.eks.aws_security_group_rule.node["ingress_cluster_4443_webhook"]: Refreshing state... [id=sgrule-605764999][0m
+[0m[1mmodule.eks.aws_security_group_rule.node["ingress_cluster_8443_webhook"]: Refreshing state... [id=sgrule-4261766704][0m
+[0m[1mmodule.eks.aws_security_group_rule.node["ingress_cluster_kubelet"]: Refreshing state... [id=sgrule-3868233057][0m
+[0m[1mmodule.eks.aws_security_group_rule.node["ingress_cluster_6443_webhook"]: Refreshing state... [id=sgrule-3982055953][0m
+[0m[1mmodule.eks.aws_security_group_rule.node["ingress_cluster_443"]: Refreshing state... [id=sgrule-2505693993][0m
+[0m[1mmodule.eks.aws_security_group_rule.node["ingress_cluster_9443_webhook"]: Refreshing state... [id=sgrule-2594461179][0m
+[0m[1mmodule.eks.aws_security_group_rule.node["ingress_self_coredns_tcp"]: Refreshing state... [id=sgrule-896131424][0m
+[0m[1mmodule.eks.aws_security_group_rule.node["ingress_self_coredns_udp"]: Refreshing state... [id=sgrule-2436252303][0m
+[0m[1mmodule.eks.aws_security_group_rule.node["ingress_nodes_ephemeral"]: Refreshing state... [id=sgrule-2052778006][0m
+[0m[1mmodule.eks.aws_security_group_rule.cluster["ingress_nodes_443"]: Refreshing state... [id=sgrule-350613962][0m
+[0m[1mmodule.eks.aws_eks_cluster.this[0]: Refreshing state... [id=eks-cluster1][0m
+[0m[1mmodule.eks.aws_eks_access_entry.this["cluster_creator"]: Refreshing state... [id=eks-cluster1:arn:aws:iam::382076407153:user/cdkmb3][0m
+[0m[1mmodule.eks.data.tls_certificate.this[0]: Reading...[0m[0m
+[0m[1mmodule.eks.data.tls_certificate.this[0]: Read complete after 0s [id=585e5ff420479566f6257ba376c39b1343ba13d5][0m
+[0m[1mmodule.eks.aws_eks_access_policy_association.this["cluster_creator_admin"]: Refreshing state... [id=eks-cluster1#arn:aws:iam::382076407153:user/cdkmb3#arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy][0m
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  [31m-[0m destroy[0m
+
+Terraform will perform the following actions:
+
+[1m  # module.eks.aws_cloudwatch_log_group.this[0][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_cloudwatch_log_group" "this" {
+      [31m-[0m[0m arn               = "arn:aws:logs:eu-west-1:382076407153:log-group:/aws/eks/eks-cluster1/cluster" [90m-> null[0m[0m
+      [31m-[0m[0m id                = "/aws/eks/eks-cluster1/cluster" [90m-> null[0m[0m
+      [31m-[0m[0m log_group_class   = "STANDARD" [90m-> null[0m[0m
+      [31m-[0m[0m name              = "/aws/eks/eks-cluster1/cluster" [90m-> null[0m[0m
+      [31m-[0m[0m retention_in_days = 90 [90m-> null[0m[0m
+      [31m-[0m[0m skip_destroy      = false [90m-> null[0m[0m
+      [31m-[0m[0m tags              = {
+          [31m-[0m[0m "Blueprint"  = "eks-cluster1"
+          [31m-[0m[0m "GithubRepo" = "github.com/aws-ia/terraform-aws-eks-blueprints"
+          [31m-[0m[0m "Name"       = "/aws/eks/eks-cluster1/cluster"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m tags_all          = {
+          [31m-[0m[0m "Blueprint"  = "eks-cluster1"
+          [31m-[0m[0m "GithubRepo" = "github.com/aws-ia/terraform-aws-eks-blueprints"
+          [31m-[0m[0m "Name"       = "/aws/eks/eks-cluster1/cluster"
+        } [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.aws_eks_access_entry.this["cluster_creator"][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_eks_access_entry" "this" {
+      [31m-[0m[0m access_entry_arn  = "arn:aws:eks:eu-west-1:382076407153:access-entry/eks-cluster1/user/382076407153/cdkmb3/12c7c352-b1e4-f3e7-f9ca-e068088f13da" [90m-> null[0m[0m
+      [31m-[0m[0m cluster_name      = "eks-cluster1" [90m-> null[0m[0m
+      [31m-[0m[0m created_at        = "2024-05-17T13:02:17Z" [90m-> null[0m[0m
+      [31m-[0m[0m id                = "eks-cluster1:arn:aws:iam::382076407153:user/cdkmb3" [90m-> null[0m[0m
+      [31m-[0m[0m kubernetes_groups = [] [90m-> null[0m[0m
+      [31m-[0m[0m modified_at       = "2024-05-17T13:02:17Z" [90m-> null[0m[0m
+      [31m-[0m[0m principal_arn     = "arn:aws:iam::382076407153:user/cdkmb3" [90m-> null[0m[0m
+      [31m-[0m[0m tags              = {
+          [31m-[0m[0m "Blueprint"  = "eks-cluster1"
+          [31m-[0m[0m "GithubRepo" = "github.com/aws-ia/terraform-aws-eks-blueprints"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m tags_all          = {
+          [31m-[0m[0m "Blueprint"  = "eks-cluster1"
+          [31m-[0m[0m "GithubRepo" = "github.com/aws-ia/terraform-aws-eks-blueprints"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m type              = "STANDARD" [90m-> null[0m[0m
+      [31m-[0m[0m user_name         = "arn:aws:iam::382076407153:user/cdkmb3" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.aws_eks_access_policy_association.this["cluster_creator_admin"][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_eks_access_policy_association" "this" {
+      [31m-[0m[0m associated_at = "2024-05-17 13:02:18.021 +0000 UTC" [90m-> null[0m[0m
+      [31m-[0m[0m cluster_name  = "eks-cluster1" [90m-> null[0m[0m
+      [31m-[0m[0m id            = "eks-cluster1#arn:aws:iam::382076407153:user/cdkmb3#arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy" [90m-> null[0m[0m
+      [31m-[0m[0m modified_at   = "2024-05-17 13:02:18.021 +0000 UTC" [90m-> null[0m[0m
+      [31m-[0m[0m policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy" [90m-> null[0m[0m
+      [31m-[0m[0m principal_arn = "arn:aws:iam::382076407153:user/cdkmb3" [90m-> null[0m[0m
+
+      [31m-[0m[0m access_scope {
+          [31m-[0m[0m namespaces = [] [90m-> null[0m[0m
+          [31m-[0m[0m type       = "cluster" [90m-> null[0m[0m
+        }
+    }
+
+[1m  # module.eks.aws_eks_cluster.this[0][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_eks_cluster" "this" {
+      [31m-[0m[0m arn                       = "arn:aws:eks:eu-west-1:382076407153:cluster/eks-cluster1" [90m-> null[0m[0m
+      [31m-[0m[0m certificate_authority     = [
+          [31m-[0m[0m {
+              [31m-[0m[0m data = "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURCVENDQWUyZ0F3SUJBZ0lJR1NmU3pDMVZrd3N3RFFZSktvWklodmNOQVFFTEJRQXdGVEVUTUJFR0ExVUUKQXhNS2EzVmlaWEp1WlhSbGN6QWVGdzB5TkRBMU1UY3hNalV5TXpSYUZ3MHpOREExTVRVeE1qVTNNelJhTUJVeApFekFSQmdOVkJBTVRDbXQxWW1WeWJtVjBaWE13Z2dFaU1BMEdDU3FHU0liM0RRRUJBUVVBQTRJQkR3QXdnZ0VLCkFvSUJBUUM1S3h0S3FlaUtCN1hwQTNURUNsRmhEbGxBc3hYbnRuU3gyRmIvR1U4RHIwWWFTbjVJRnNybS8vN1QKNU5nQUpmTDNIVlJ4V2E5TFd1UUFVaXBEK2NXK3QzOFVOOE1jNVRnNGlpUE5BR3R1OXRPUDBZYlhySW56b05UOQpWSTNYS2hHaGJHK0R2a0JyWmhpYTZ2ZXphVnFGRTRwaFpCc09wTklBeDlRN3FFZUFMVVlYZThJZUJvQjJSQVptCnJ5S0JJeHVzaTg0Y00wcWtMV3ViclRmUjdVdU05UUFTWTlpQnZpZ09KU3FuRU1uQVFZd2VXalp0cmltK3VjU1EKZklRbTJDRlhHeEJFRjkvZGhORVUyNU9pbjdlcTExdTh1S2VKNXYvY09aT0c0OWR5Tm5nRHVPV043aEh3cnNHcApyZ3Q3ZThpNUF3TmtnSG51K2M1Qm1UanNUM0g5QWdNQkFBR2pXVEJYTUE0R0ExVWREd0VCL3dRRUF3SUNwREFQCkJnTlZIUk1CQWY4RUJUQURBUUgvTUIwR0ExVWREZ1FXQkJSUkVoaVo2aG93U1U0RDlKMnR1VzgraHNQaDVqQVYKQmdOVkhSRUVEakFNZ2dwcmRXSmxjbTVsZEdWek1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQkRPT2tUOHZ5bgpObjdzSFNDdmxCMWpsZzZnL2RkSEw1NFl1K005Qm9TYVVQSVYxYlFjcUhYVEEzREphbTJMbHo2bUdmbGF4UXRUCjBLYTBnQTZJWUpMdHQ2WkJJY1ZLWFV5SVY2SzJGLzJMa3AwNk9XbDA4K1pWZ0tNTkFWUXFMZEJwRXp0WFV5MDcKeTBBUUc0dkdjeERsd0ErU3EyeURrWTY3Z1NEZ3RTQjNFNTVkU0JDcDUzdWZlNCtJWUs1ekFPWGIvVjM0MzFuZAp3MHR0QUVYTUl3U0Vvb2JQaHAwWXhnZ04xNytGUUZ2ZGJZMDVxY0E1U0ZRNmlwMlUxNmJScG5CMkxLOXhzeTFmCmpNTXNsVVRCSkFNajRyMytjV1NqYkM4T0xYWG10bVptNGxmMW9rMkFabWN2bGtXRkM1b0tpSVAwbFA1WExMUHAKRHRtdmlReFI4b1VGCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K"
+            },
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m created_at                = "2024-05-17 12:52:33.152 +0000 UTC" [90m-> null[0m[0m
+      [31m-[0m[0m enabled_cluster_log_types = [
+          [31m-[0m[0m "api",
+          [31m-[0m[0m "audit",
+          [31m-[0m[0m "authenticator",
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m endpoint                  = "https://6301C74309623FF1B4C03FB5A7F26DD8.yl4.eu-west-1.eks.amazonaws.com" [90m-> null[0m[0m
+      [31m-[0m[0m id                        = "eks-cluster1" [90m-> null[0m[0m
+      [31m-[0m[0m identity                  = [
+          [31m-[0m[0m {
+              [31m-[0m[0m oidc = [
+                  [31m-[0m[0m {
+                      [31m-[0m[0m issuer = "https://oidc.eks.eu-west-1.amazonaws.com/id/6301C74309623FF1B4C03FB5A7F26DD8"
+                    },
+                ]
+            },
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m name                      = "eks-cluster1" [90m-> null[0m[0m
+      [31m-[0m[0m platform_version          = "eks.7" [90m-> null[0m[0m
+      [31m-[0m[0m role_arn                  = "arn:aws:iam::382076407153:role/eks-cluster1-cluster-20240517125209493300000002" [90m-> null[0m[0m
+      [31m-[0m[0m status                    = "ACTIVE" [90m-> null[0m[0m
+      [31m-[0m[0m tags                      = {
+          [31m-[0m[0m "Blueprint"             = "eks-cluster1"
+          [31m-[0m[0m "GithubRepo"            = "github.com/aws-ia/terraform-aws-eks-blueprints"
+          [31m-[0m[0m "terraform-aws-modules" = "eks"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m tags_all                  = {
+          [31m-[0m[0m "Blueprint"             = "eks-cluster1"
+          [31m-[0m[0m "GithubRepo"            = "github.com/aws-ia/terraform-aws-eks-blueprints"
+          [31m-[0m[0m "terraform-aws-modules" = "eks"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m version                   = "1.29" [90m-> null[0m[0m
+
+      [31m-[0m[0m access_config {
+          [31m-[0m[0m authentication_mode                         = "API_AND_CONFIG_MAP" [90m-> null[0m[0m
+          [31m-[0m[0m bootstrap_cluster_creator_admin_permissions = false [90m-> null[0m[0m
+        }
+
+      [31m-[0m[0m encryption_config {
+          [31m-[0m[0m resources = [
+              [31m-[0m[0m "secrets",
+            ] [90m-> null[0m[0m
+
+          [31m-[0m[0m provider {
+              [31m-[0m[0m key_arn = "arn:aws:kms:eu-west-1:382076407153:key/09de31f1-9135-4513-a337-b755865f3ffa" [90m-> null[0m[0m
+            }
+        }
+
+      [31m-[0m[0m kubernetes_network_config {
+          [31m-[0m[0m ip_family         = "ipv4" [90m-> null[0m[0m
+          [31m-[0m[0m service_ipv4_cidr = "172.20.0.0/16" [90m-> null[0m[0m
+        }
+
+      [31m-[0m[0m timeouts {}
+
+      [31m-[0m[0m vpc_config {
+          [31m-[0m[0m cluster_security_group_id = "sg-027b3010034a7ad35" [90m-> null[0m[0m
+          [31m-[0m[0m endpoint_private_access   = true [90m-> null[0m[0m
+          [31m-[0m[0m endpoint_public_access    = true [90m-> null[0m[0m
+          [31m-[0m[0m public_access_cidrs       = [
+              [31m-[0m[0m "0.0.0.0/0",
+            ] [90m-> null[0m[0m
+          [31m-[0m[0m security_group_ids        = [
+              [31m-[0m[0m "sg-029db93427b086b13",
+            ] [90m-> null[0m[0m
+          [31m-[0m[0m subnet_ids                = [
+              [31m-[0m[0m "subnet-014e5c930009cc297",
+              [31m-[0m[0m "subnet-038ef633bf26210ec",
+              [31m-[0m[0m "subnet-04a1b9b5e4358d9e1",
+            ] [90m-> null[0m[0m
+          [31m-[0m[0m vpc_id                    = "vpc-0c911698ba2a5559f" [90m-> null[0m[0m
+        }
+    }
+
+[1m  # module.eks.aws_iam_role.this[0][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_iam_role" "this" {
+      [31m-[0m[0m arn                   = "arn:aws:iam::382076407153:role/eks-cluster1-cluster-20240517125209493300000002" [90m-> null[0m[0m
+      [31m-[0m[0m assume_role_policy    = jsonencode(
+            {
+              [31m-[0m[0m Statement = [
+                  [31m-[0m[0m {
+                      [31m-[0m[0m Action    = "sts:AssumeRole"
+                      [31m-[0m[0m Effect    = "Allow"
+                      [31m-[0m[0m Principal = {
+                          [31m-[0m[0m Service = "eks.amazonaws.com"
+                        }
+                      [31m-[0m[0m Sid       = "EKSClusterAssumeRole"
+                    },
+                ]
+              [31m-[0m[0m Version   = "2012-10-17"
+            }
+        ) [90m-> null[0m[0m
+      [31m-[0m[0m create_date           = "2024-05-17T12:52:09Z" [90m-> null[0m[0m
+      [31m-[0m[0m force_detach_policies = true [90m-> null[0m[0m
+      [31m-[0m[0m id                    = "eks-cluster1-cluster-20240517125209493300000002" [90m-> null[0m[0m
+      [31m-[0m[0m managed_policy_arns   = [
+          [31m-[0m[0m "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy",
+          [31m-[0m[0m "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController",
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m max_session_duration  = 3600 [90m-> null[0m[0m
+      [31m-[0m[0m name                  = "eks-cluster1-cluster-20240517125209493300000002" [90m-> null[0m[0m
+      [31m-[0m[0m name_prefix           = "eks-cluster1-cluster-" [90m-> null[0m[0m
+      [31m-[0m[0m path                  = "/" [90m-> null[0m[0m
+      [31m-[0m[0m tags                  = {
+          [31m-[0m[0m "Blueprint"  = "eks-cluster1"
+          [31m-[0m[0m "GithubRepo" = "github.com/aws-ia/terraform-aws-eks-blueprints"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m tags_all              = {
+          [31m-[0m[0m "Blueprint"  = "eks-cluster1"
+          [31m-[0m[0m "GithubRepo" = "github.com/aws-ia/terraform-aws-eks-blueprints"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m unique_id             = "AROAVR5MHJVYVJYL4A2YX" [90m-> null[0m[0m
+
+      [31m-[0m[0m inline_policy {
+          [31m-[0m[0m name   = "eks-cluster1-cluster" [90m-> null[0m[0m
+          [31m-[0m[0m policy = jsonencode(
+                {
+                  [31m-[0m[0m Statement = [
+                      [31m-[0m[0m {
+                          [31m-[0m[0m Action   = [
+                              [31m-[0m[0m "logs:CreateLogGroup",
+                            ]
+                          [31m-[0m[0m Effect   = "Deny"
+                          [31m-[0m[0m Resource = "*"
+                        },
+                    ]
+                  [31m-[0m[0m Version   = "2012-10-17"
+                }
+            ) [90m-> null[0m[0m
+        }
+    }
+
+[1m  # module.eks.aws_iam_role_policy_attachment.this["AmazonEKSClusterPolicy"][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_iam_role_policy_attachment" "this" {
+      [31m-[0m[0m id         = "eks-cluster1-cluster-20240517125209493300000002-20240517125210751700000006" [90m-> null[0m[0m
+      [31m-[0m[0m policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy" [90m-> null[0m[0m
+      [31m-[0m[0m role       = "eks-cluster1-cluster-20240517125209493300000002" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.aws_iam_role_policy_attachment.this["AmazonEKSVPCResourceController"][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_iam_role_policy_attachment" "this" {
+      [31m-[0m[0m id         = "eks-cluster1-cluster-20240517125209493300000002-20240517125210758800000007" [90m-> null[0m[0m
+      [31m-[0m[0m policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController" [90m-> null[0m[0m
+      [31m-[0m[0m role       = "eks-cluster1-cluster-20240517125209493300000002" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.aws_security_group.cluster[0][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_security_group" "cluster" {
+      [31m-[0m[0m arn                    = "arn:aws:ec2:eu-west-1:382076407153:security-group/sg-029db93427b086b13" [90m-> null[0m[0m
+      [31m-[0m[0m description            = "EKS cluster security group" [90m-> null[0m[0m
+      [31m-[0m[0m egress                 = [] [90m-> null[0m[0m
+      [31m-[0m[0m id                     = "sg-029db93427b086b13" [90m-> null[0m[0m
+      [31m-[0m[0m ingress                = [
+          [31m-[0m[0m {
+              [31m-[0m[0m cidr_blocks      = []
+              [31m-[0m[0m description      = "Node groups to cluster API"
+              [31m-[0m[0m from_port        = 443
+              [31m-[0m[0m ipv6_cidr_blocks = []
+              [31m-[0m[0m prefix_list_ids  = []
+              [31m-[0m[0m protocol         = "tcp"
+              [31m-[0m[0m security_groups  = [
+                  [31m-[0m[0m "sg-07ec9983f65648877",
+                ]
+              [31m-[0m[0m self             = false
+              [31m-[0m[0m to_port          = 443
+            },
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m name                   = "eks-cluster1-cluster-2024051712522153990000000b" [90m-> null[0m[0m
+      [31m-[0m[0m name_prefix            = "eks-cluster1-cluster-" [90m-> null[0m[0m
+      [31m-[0m[0m owner_id               = "382076407153" [90m-> null[0m[0m
+      [31m-[0m[0m revoke_rules_on_delete = false [90m-> null[0m[0m
+      [31m-[0m[0m tags                   = {
+          [31m-[0m[0m "Blueprint"  = "eks-cluster1"
+          [31m-[0m[0m "GithubRepo" = "github.com/aws-ia/terraform-aws-eks-blueprints"
+          [31m-[0m[0m "Name"       = "eks-cluster1-cluster"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m tags_all               = {
+          [31m-[0m[0m "Blueprint"  = "eks-cluster1"
+          [31m-[0m[0m "GithubRepo" = "github.com/aws-ia/terraform-aws-eks-blueprints"
+          [31m-[0m[0m "Name"       = "eks-cluster1-cluster"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m vpc_id                 = "vpc-0c911698ba2a5559f" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.aws_security_group.node[0][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_security_group" "node" {
+      [31m-[0m[0m arn                    = "arn:aws:ec2:eu-west-1:382076407153:security-group/sg-07ec9983f65648877" [90m-> null[0m[0m
+      [31m-[0m[0m description            = "EKS node shared security group" [90m-> null[0m[0m
+      [31m-[0m[0m egress                 = [
+          [31m-[0m[0m {
+              [31m-[0m[0m cidr_blocks      = [
+                  [31m-[0m[0m "0.0.0.0/0",
+                ]
+              [31m-[0m[0m description      = "Allow all egress"
+              [31m-[0m[0m from_port        = 0
+              [31m-[0m[0m ipv6_cidr_blocks = []
+              [31m-[0m[0m prefix_list_ids  = []
+              [31m-[0m[0m protocol         = "-1"
+              [31m-[0m[0m security_groups  = []
+              [31m-[0m[0m self             = false
+              [31m-[0m[0m to_port          = 0
+            },
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m id                     = "sg-07ec9983f65648877" [90m-> null[0m[0m
+      [31m-[0m[0m ingress                = [
+          [31m-[0m[0m {
+              [31m-[0m[0m cidr_blocks      = []
+              [31m-[0m[0m description      = "Cluster API to node 4443/tcp webhook"
+              [31m-[0m[0m from_port        = 4443
+              [31m-[0m[0m ipv6_cidr_blocks = []
+              [31m-[0m[0m prefix_list_ids  = []
+              [31m-[0m[0m protocol         = "tcp"
+              [31m-[0m[0m security_groups  = [
+                  [31m-[0m[0m "sg-029db93427b086b13",
+                ]
+              [31m-[0m[0m self             = false
+              [31m-[0m[0m to_port          = 4443
+            },
+          [31m-[0m[0m {
+              [31m-[0m[0m cidr_blocks      = []
+              [31m-[0m[0m description      = "Cluster API to node 6443/tcp webhook"
+              [31m-[0m[0m from_port        = 6443
+              [31m-[0m[0m ipv6_cidr_blocks = []
+              [31m-[0m[0m prefix_list_ids  = []
+              [31m-[0m[0m protocol         = "tcp"
+              [31m-[0m[0m security_groups  = [
+                  [31m-[0m[0m "sg-029db93427b086b13",
+                ]
+              [31m-[0m[0m self             = false
+              [31m-[0m[0m to_port          = 6443
+            },
+          [31m-[0m[0m {
+              [31m-[0m[0m cidr_blocks      = []
+              [31m-[0m[0m description      = "Cluster API to node 8443/tcp webhook"
+              [31m-[0m[0m from_port        = 8443
+              [31m-[0m[0m ipv6_cidr_blocks = []
+              [31m-[0m[0m prefix_list_ids  = []
+              [31m-[0m[0m protocol         = "tcp"
+              [31m-[0m[0m security_groups  = [
+                  [31m-[0m[0m "sg-029db93427b086b13",
+                ]
+              [31m-[0m[0m self             = false
+              [31m-[0m[0m to_port          = 8443
+            },
+          [31m-[0m[0m {
+              [31m-[0m[0m cidr_blocks      = []
+              [31m-[0m[0m description      = "Cluster API to node 9443/tcp webhook"
+              [31m-[0m[0m from_port        = 9443
+              [31m-[0m[0m ipv6_cidr_blocks = []
+              [31m-[0m[0m prefix_list_ids  = []
+              [31m-[0m[0m protocol         = "tcp"
+              [31m-[0m[0m security_groups  = [
+                  [31m-[0m[0m "sg-029db93427b086b13",
+                ]
+              [31m-[0m[0m self             = false
+              [31m-[0m[0m to_port          = 9443
+            },
+          [31m-[0m[0m {
+              [31m-[0m[0m cidr_blocks      = []
+              [31m-[0m[0m description      = "Cluster API to node groups"
+              [31m-[0m[0m from_port        = 443
+              [31m-[0m[0m ipv6_cidr_blocks = []
+              [31m-[0m[0m prefix_list_ids  = []
+              [31m-[0m[0m protocol         = "tcp"
+              [31m-[0m[0m security_groups  = [
+                  [31m-[0m[0m "sg-029db93427b086b13",
+                ]
+              [31m-[0m[0m self             = false
+              [31m-[0m[0m to_port          = 443
+            },
+          [31m-[0m[0m {
+              [31m-[0m[0m cidr_blocks      = []
+              [31m-[0m[0m description      = "Cluster API to node kubelets"
+              [31m-[0m[0m from_port        = 10250
+              [31m-[0m[0m ipv6_cidr_blocks = []
+              [31m-[0m[0m prefix_list_ids  = []
+              [31m-[0m[0m protocol         = "tcp"
+              [31m-[0m[0m security_groups  = [
+                  [31m-[0m[0m "sg-029db93427b086b13",
+                ]
+              [31m-[0m[0m self             = false
+              [31m-[0m[0m to_port          = 10250
+            },
+          [31m-[0m[0m {
+              [31m-[0m[0m cidr_blocks      = []
+              [31m-[0m[0m description      = "Node to node CoreDNS UDP"
+              [31m-[0m[0m from_port        = 53
+              [31m-[0m[0m ipv6_cidr_blocks = []
+              [31m-[0m[0m prefix_list_ids  = []
+              [31m-[0m[0m protocol         = "udp"
+              [31m-[0m[0m security_groups  = []
+              [31m-[0m[0m self             = true
+              [31m-[0m[0m to_port          = 53
+            },
+          [31m-[0m[0m {
+              [31m-[0m[0m cidr_blocks      = []
+              [31m-[0m[0m description      = "Node to node CoreDNS"
+              [31m-[0m[0m from_port        = 53
+              [31m-[0m[0m ipv6_cidr_blocks = []
+              [31m-[0m[0m prefix_list_ids  = []
+              [31m-[0m[0m protocol         = "tcp"
+              [31m-[0m[0m security_groups  = []
+              [31m-[0m[0m self             = true
+              [31m-[0m[0m to_port          = 53
+            },
+          [31m-[0m[0m {
+              [31m-[0m[0m cidr_blocks      = []
+              [31m-[0m[0m description      = "Node to node ingress on ephemeral ports"
+              [31m-[0m[0m from_port        = 1025
+              [31m-[0m[0m ipv6_cidr_blocks = []
+              [31m-[0m[0m prefix_list_ids  = []
+              [31m-[0m[0m protocol         = "tcp"
+              [31m-[0m[0m security_groups  = []
+              [31m-[0m[0m self             = true
+              [31m-[0m[0m to_port          = 65535
+            },
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m name                   = "eks-cluster1-node-2024051712522149670000000a" [90m-> null[0m[0m
+      [31m-[0m[0m name_prefix            = "eks-cluster1-node-" [90m-> null[0m[0m
+      [31m-[0m[0m owner_id               = "382076407153" [90m-> null[0m[0m
+      [31m-[0m[0m revoke_rules_on_delete = false [90m-> null[0m[0m
+      [31m-[0m[0m tags                   = {
+          [31m-[0m[0m "Blueprint"                          = "eks-cluster1"
+          [31m-[0m[0m "GithubRepo"                         = "github.com/aws-ia/terraform-aws-eks-blueprints"
+          [31m-[0m[0m "Name"                               = "eks-cluster1-node"
+          [31m-[0m[0m "kubernetes.io/cluster/eks-cluster1" = "owned"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m tags_all               = {
+          [31m-[0m[0m "Blueprint"                          = "eks-cluster1"
+          [31m-[0m[0m "GithubRepo"                         = "github.com/aws-ia/terraform-aws-eks-blueprints"
+          [31m-[0m[0m "Name"                               = "eks-cluster1-node"
+          [31m-[0m[0m "kubernetes.io/cluster/eks-cluster1" = "owned"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m vpc_id                 = "vpc-0c911698ba2a5559f" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.aws_security_group_rule.cluster["ingress_nodes_443"][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_security_group_rule" "cluster" {
+      [31m-[0m[0m description              = "Node groups to cluster API" [90m-> null[0m[0m
+      [31m-[0m[0m from_port                = 443 [90m-> null[0m[0m
+      [31m-[0m[0m id                       = "sgrule-350613962" [90m-> null[0m[0m
+      [31m-[0m[0m protocol                 = "tcp" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_id        = "sg-029db93427b086b13" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_rule_id   = "sgr-02e3a483c10debeae" [90m-> null[0m[0m
+      [31m-[0m[0m self                     = false [90m-> null[0m[0m
+      [31m-[0m[0m source_security_group_id = "sg-07ec9983f65648877" [90m-> null[0m[0m
+      [31m-[0m[0m to_port                  = 443 [90m-> null[0m[0m
+      [31m-[0m[0m type                     = "ingress" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.aws_security_group_rule.node["egress_all"][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_security_group_rule" "node" {
+      [31m-[0m[0m cidr_blocks            = [
+          [31m-[0m[0m "0.0.0.0/0",
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m description            = "Allow all egress" [90m-> null[0m[0m
+      [31m-[0m[0m from_port              = 0 [90m-> null[0m[0m
+      [31m-[0m[0m id                     = "sgrule-2059379445" [90m-> null[0m[0m
+      [31m-[0m[0m prefix_list_ids        = [] [90m-> null[0m[0m
+      [31m-[0m[0m protocol               = "-1" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_id      = "sg-07ec9983f65648877" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_rule_id = "sgr-06afc200c2aef2b73" [90m-> null[0m[0m
+      [31m-[0m[0m self                   = false [90m-> null[0m[0m
+      [31m-[0m[0m to_port                = 0 [90m-> null[0m[0m
+      [31m-[0m[0m type                   = "egress" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.aws_security_group_rule.node["ingress_cluster_443"][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_security_group_rule" "node" {
+      [31m-[0m[0m description              = "Cluster API to node groups" [90m-> null[0m[0m
+      [31m-[0m[0m from_port                = 443 [90m-> null[0m[0m
+      [31m-[0m[0m id                       = "sgrule-2505693993" [90m-> null[0m[0m
+      [31m-[0m[0m prefix_list_ids          = [] [90m-> null[0m[0m
+      [31m-[0m[0m protocol                 = "tcp" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_id        = "sg-07ec9983f65648877" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_rule_id   = "sgr-002eea308b60bc97f" [90m-> null[0m[0m
+      [31m-[0m[0m self                     = false [90m-> null[0m[0m
+      [31m-[0m[0m source_security_group_id = "sg-029db93427b086b13" [90m-> null[0m[0m
+      [31m-[0m[0m to_port                  = 443 [90m-> null[0m[0m
+      [31m-[0m[0m type                     = "ingress" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.aws_security_group_rule.node["ingress_cluster_4443_webhook"][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_security_group_rule" "node" {
+      [31m-[0m[0m description              = "Cluster API to node 4443/tcp webhook" [90m-> null[0m[0m
+      [31m-[0m[0m from_port                = 4443 [90m-> null[0m[0m
+      [31m-[0m[0m id                       = "sgrule-605764999" [90m-> null[0m[0m
+      [31m-[0m[0m prefix_list_ids          = [] [90m-> null[0m[0m
+      [31m-[0m[0m protocol                 = "tcp" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_id        = "sg-07ec9983f65648877" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_rule_id   = "sgr-0fee0f6eeec24754d" [90m-> null[0m[0m
+      [31m-[0m[0m self                     = false [90m-> null[0m[0m
+      [31m-[0m[0m source_security_group_id = "sg-029db93427b086b13" [90m-> null[0m[0m
+      [31m-[0m[0m to_port                  = 4443 [90m-> null[0m[0m
+      [31m-[0m[0m type                     = "ingress" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.aws_security_group_rule.node["ingress_cluster_6443_webhook"][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_security_group_rule" "node" {
+      [31m-[0m[0m description              = "Cluster API to node 6443/tcp webhook" [90m-> null[0m[0m
+      [31m-[0m[0m from_port                = 6443 [90m-> null[0m[0m
+      [31m-[0m[0m id                       = "sgrule-3982055953" [90m-> null[0m[0m
+      [31m-[0m[0m prefix_list_ids          = [] [90m-> null[0m[0m
+      [31m-[0m[0m protocol                 = "tcp" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_id        = "sg-07ec9983f65648877" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_rule_id   = "sgr-0aefc918f00ee9fa6" [90m-> null[0m[0m
+      [31m-[0m[0m self                     = false [90m-> null[0m[0m
+      [31m-[0m[0m source_security_group_id = "sg-029db93427b086b13" [90m-> null[0m[0m
+      [31m-[0m[0m to_port                  = 6443 [90m-> null[0m[0m
+      [31m-[0m[0m type                     = "ingress" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.aws_security_group_rule.node["ingress_cluster_8443_webhook"][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_security_group_rule" "node" {
+      [31m-[0m[0m description              = "Cluster API to node 8443/tcp webhook" [90m-> null[0m[0m
+      [31m-[0m[0m from_port                = 8443 [90m-> null[0m[0m
+      [31m-[0m[0m id                       = "sgrule-4261766704" [90m-> null[0m[0m
+      [31m-[0m[0m prefix_list_ids          = [] [90m-> null[0m[0m
+      [31m-[0m[0m protocol                 = "tcp" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_id        = "sg-07ec9983f65648877" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_rule_id   = "sgr-0d48b6a16329f5126" [90m-> null[0m[0m
+      [31m-[0m[0m self                     = false [90m-> null[0m[0m
+      [31m-[0m[0m source_security_group_id = "sg-029db93427b086b13" [90m-> null[0m[0m
+      [31m-[0m[0m to_port                  = 8443 [90m-> null[0m[0m
+      [31m-[0m[0m type                     = "ingress" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.aws_security_group_rule.node["ingress_cluster_9443_webhook"][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_security_group_rule" "node" {
+      [31m-[0m[0m description              = "Cluster API to node 9443/tcp webhook" [90m-> null[0m[0m
+      [31m-[0m[0m from_port                = 9443 [90m-> null[0m[0m
+      [31m-[0m[0m id                       = "sgrule-2594461179" [90m-> null[0m[0m
+      [31m-[0m[0m prefix_list_ids          = [] [90m-> null[0m[0m
+      [31m-[0m[0m protocol                 = "tcp" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_id        = "sg-07ec9983f65648877" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_rule_id   = "sgr-0b7f899a488d3ce3b" [90m-> null[0m[0m
+      [31m-[0m[0m self                     = false [90m-> null[0m[0m
+      [31m-[0m[0m source_security_group_id = "sg-029db93427b086b13" [90m-> null[0m[0m
+      [31m-[0m[0m to_port                  = 9443 [90m-> null[0m[0m
+      [31m-[0m[0m type                     = "ingress" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.aws_security_group_rule.node["ingress_cluster_kubelet"][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_security_group_rule" "node" {
+      [31m-[0m[0m description              = "Cluster API to node kubelets" [90m-> null[0m[0m
+      [31m-[0m[0m from_port                = 10250 [90m-> null[0m[0m
+      [31m-[0m[0m id                       = "sgrule-3868233057" [90m-> null[0m[0m
+      [31m-[0m[0m prefix_list_ids          = [] [90m-> null[0m[0m
+      [31m-[0m[0m protocol                 = "tcp" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_id        = "sg-07ec9983f65648877" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_rule_id   = "sgr-0592da59cc6fc587c" [90m-> null[0m[0m
+      [31m-[0m[0m self                     = false [90m-> null[0m[0m
+      [31m-[0m[0m source_security_group_id = "sg-029db93427b086b13" [90m-> null[0m[0m
+      [31m-[0m[0m to_port                  = 10250 [90m-> null[0m[0m
+      [31m-[0m[0m type                     = "ingress" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.aws_security_group_rule.node["ingress_nodes_ephemeral"][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_security_group_rule" "node" {
+      [31m-[0m[0m description            = "Node to node ingress on ephemeral ports" [90m-> null[0m[0m
+      [31m-[0m[0m from_port              = 1025 [90m-> null[0m[0m
+      [31m-[0m[0m id                     = "sgrule-2052778006" [90m-> null[0m[0m
+      [31m-[0m[0m prefix_list_ids        = [] [90m-> null[0m[0m
+      [31m-[0m[0m protocol               = "tcp" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_id      = "sg-07ec9983f65648877" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_rule_id = "sgr-08478a5ff843f85dc" [90m-> null[0m[0m
+      [31m-[0m[0m self                   = true [90m-> null[0m[0m
+      [31m-[0m[0m to_port                = 65535 [90m-> null[0m[0m
+      [31m-[0m[0m type                   = "ingress" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.aws_security_group_rule.node["ingress_self_coredns_tcp"][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_security_group_rule" "node" {
+      [31m-[0m[0m description            = "Node to node CoreDNS" [90m-> null[0m[0m
+      [31m-[0m[0m from_port              = 53 [90m-> null[0m[0m
+      [31m-[0m[0m id                     = "sgrule-896131424" [90m-> null[0m[0m
+      [31m-[0m[0m prefix_list_ids        = [] [90m-> null[0m[0m
+      [31m-[0m[0m protocol               = "tcp" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_id      = "sg-07ec9983f65648877" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_rule_id = "sgr-0212bb9d1e77a648e" [90m-> null[0m[0m
+      [31m-[0m[0m self                   = true [90m-> null[0m[0m
+      [31m-[0m[0m to_port                = 53 [90m-> null[0m[0m
+      [31m-[0m[0m type                   = "ingress" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.aws_security_group_rule.node["ingress_self_coredns_udp"][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_security_group_rule" "node" {
+      [31m-[0m[0m description            = "Node to node CoreDNS UDP" [90m-> null[0m[0m
+      [31m-[0m[0m from_port              = 53 [90m-> null[0m[0m
+      [31m-[0m[0m id                     = "sgrule-2436252303" [90m-> null[0m[0m
+      [31m-[0m[0m prefix_list_ids        = [] [90m-> null[0m[0m
+      [31m-[0m[0m protocol               = "udp" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_id      = "sg-07ec9983f65648877" [90m-> null[0m[0m
+      [31m-[0m[0m security_group_rule_id = "sgr-02fff1c3f9c636460" [90m-> null[0m[0m
+      [31m-[0m[0m self                   = true [90m-> null[0m[0m
+      [31m-[0m[0m to_port                = 53 [90m-> null[0m[0m
+      [31m-[0m[0m type                   = "ingress" [90m-> null[0m[0m
+    }
+
+[1m  # module.eks_blueprints_addon_kyverno.helm_release.this[0][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "helm_release" "this" {
+      [31m-[0m[0m atomic                     = false [90m-> null[0m[0m
+      [31m-[0m[0m chart                      = "kyverno" [90m-> null[0m[0m
+      [31m-[0m[0m cleanup_on_fail            = false [90m-> null[0m[0m
+      [31m-[0m[0m create_namespace           = true [90m-> null[0m[0m
+      [31m-[0m[0m dependency_update          = false [90m-> null[0m[0m
+      [31m-[0m[0m description                = "Kyverno" [90m-> null[0m[0m
+      [31m-[0m[0m disable_crd_hooks          = false [90m-> null[0m[0m
+      [31m-[0m[0m disable_openapi_validation = false [90m-> null[0m[0m
+      [31m-[0m[0m disable_webhooks           = false [90m-> null[0m[0m
+      [31m-[0m[0m force_update               = false [90m-> null[0m[0m
+      [31m-[0m[0m id                         = "kyverno" [90m-> null[0m[0m
+      [31m-[0m[0m lint                       = false [90m-> null[0m[0m
+      [31m-[0m[0m max_history                = 0 [90m-> null[0m[0m
+      [31m-[0m[0m metadata                   = [
+          [31m-[0m[0m {
+              [31m-[0m[0m app_version = "v1.10.3"
+              [31m-[0m[0m chart       = "kyverno"
+              [31m-[0m[0m name        = "kyverno"
+              [31m-[0m[0m namespace   = "kyverno"
+              [31m-[0m[0m revision    = 1
+              [31m-[0m[0m values      = jsonencode({})
+              [31m-[0m[0m version     = "3.0.5"
+            },
+        ] [90m-> null[0m[0m
+      [31m-[0m[0m name                       = "kyverno" [90m-> null[0m[0m
+      [31m-[0m[0m namespace                  = "kyverno" [90m-> null[0m[0m
+      [31m-[0m[0m pass_credentials           = false [90m-> null[0m[0m
+      [31m-[0m[0m recreate_pods              = false [90m-> null[0m[0m
+      [31m-[0m[0m render_subchart_notes      = true [90m-> null[0m[0m
+      [31m-[0m[0m replace                    = false [90m-> null[0m[0m
+      [31m-[0m[0m repository                 = "https://kyverno.github.io/kyverno" [90m-> null[0m[0m
+      [31m-[0m[0m reset_values               = false [90m-> null[0m[0m
+      [31m-[0m[0m reuse_values               = false [90m-> null[0m[0m
+      [31m-[0m[0m skip_crds                  = false [90m-> null[0m[0m
+      [31m-[0m[0m status                     = "uninstalling" [90m-> null[0m[0m
+      [31m-[0m[0m timeout                    = 300 [90m-> null[0m[0m
+      [31m-[0m[0m verify                     = false [90m-> null[0m[0m
+      [31m-[0m[0m version                    = "3.0.5" [90m-> null[0m[0m
+      [31m-[0m[0m wait                       = false [90m-> null[0m[0m
+      [31m-[0m[0m wait_for_jobs              = false [90m-> null[0m[0m
+    }
+
+[1m  # module.eks.module.kms.aws_kms_key.this[0][0m will be [1m[31mdestroyed[0m
+[0m  [31m-[0m[0m resource "aws_kms_key" "this" {
+      [31m-[0m[0m arn                                = "arn:aws:kms:eu-west-1:382076407153:key/09de31f1-9135-4513-a337-b755865f3ffa" [90m-> null[0m[0m
+      [31m-[0m[0m bypass_policy_lockout_safety_check = false [90m-> null[0m[0m
+      [31m-[0m[0m customer_master_key_spec           = "SYMMETRIC_DEFAULT" [90m-> null[0m[0m
+      [31m-[0m[0m description                        = "eks-cluster1 cluster encryption key" [90m-> null[0m[0m
+      [31m-[0m[0m enable_key_rotation                = true [90m-> null[0m[0m
+      [31m-[0m[0m id                                 = "09de31f1-9135-4513-a337-b755865f3ffa" [90m-> null[0m[0m
+      [31m-[0m[0m is_enabled                         = true [90m-> null[0m[0m
+      [31m-[0m[0m key_id                             = "09de31f1-9135-4513-a337-b755865f3ffa" [90m-> null[0m[0m
+      [31m-[0m[0m key_usage                          = "ENCRYPT_DECRYPT" [90m-> null[0m[0m
+      [31m-[0m[0m multi_region                       = false [90m-> null[0m[0m
+      [31m-[0m[0m policy                             = jsonencode(
+            {
+              [31m-[0m[0m Statement = [
+                  [31m-[0m[0m {
+                      [31m-[0m[0m Action    = "kms:*"
+                      [31m-[0m[0m Effect    = "Allow"
+                      [31m-[0m[0m Principal = {
+                          [31m-[0m[0m AWS = "arn:aws:iam::382076407153:root"
+                        }
+                      [31m-[0m[0m Resource  = "*"
+                      [31m-[0m[0m Sid       = "Default"
+                    },
+                  [31m-[0m[0m {
+                      [31m-[0m[0m Action    = [
+                          [31m-[0m[0m "kms:Update*",
+                          [31m-[0m[0m "kms:UntagResource",
+                          [31m-[0m[0m "kms:TagResource",
+                          [31m-[0m[0m "kms:ScheduleKeyDeletion",
+                          [31m-[0m[0m "kms:Revoke*",
+                          [31m-[0m[0m "kms:ReplicateKey",
+                          [31m-[0m[0m "kms:Put*",
+                          [31m-[0m[0m "kms:List*",
+                          [31m-[0m[0m "kms:ImportKeyMaterial",
+                          [31m-[0m[0m "kms:Get*",
+                          [31m-[0m[0m "kms:Enable*",
+                          [31m-[0m[0m "kms:Disable*",
+                          [31m-[0m[0m "kms:Describe*",
+                          [31m-[0m[0m "kms:Delete*",
+                          [31m-[0m[0m "kms:Create*",
+                          [31m-[0m[0m "kms:CancelKeyDeletion",
+                        ]
+                      [31m-[0m[0m Effect    = "Allow"
+                      [31m-[0m[0m Principal = {
+                          [31m-[0m[0m AWS = "arn:aws:iam::382076407153:user/cdkmb3"
+                        }
+                      [31m-[0m[0m Resource  = "*"
+                      [31m-[0m[0m Sid       = "KeyAdministration"
+                    },
+                  [31m-[0m[0m {
+                      [31m-[0m[0m Action    = [
+                          [31m-[0m[0m "kms:ReEncrypt*",
+                          [31m-[0m[0m "kms:GenerateDataKey*",
+                          [31m-[0m[0m "kms:Encrypt",
+                          [31m-[0m[0m "kms:DescribeKey",
+                          [31m-[0m[0m "kms:Decrypt",
+                        ]
+                      [31m-[0m[0m Effect    = "Allow"
+                      [31m-[0m[0m Principal = {
+                          [31m-[0m[0m AWS = "arn:aws:iam::382076407153:role/eks-cluster1-cluster-20240517125209493300000002"
+                        }
+                      [31m-[0m[0m Resource  = "*"
+                      [31m-[0m[0m Sid       = "KeyUsage"
+                    },
+                ]
+              [31m-[0m[0m Version   = "2012-10-17"
+            }
+        ) [90m-> null[0m[0m
+      [31m-[0m[0m tags                               = {
+          [31m-[0m[0m "Blueprint"             = "eks-cluster1"
+          [31m-[0m[0m "GithubRepo"            = "github.com/aws-ia/terraform-aws-eks-blueprints"
+          [31m-[0m[0m "terraform-aws-modules" = "eks"
+        } [90m-> null[0m[0m
+      [31m-[0m[0m tags_all                           = {
+          [31m-[0m[0m "Blueprint"             = "eks-cluster1"
+          [31m-[0m[0m "GithubRepo"            = "github.com/aws-ia/terraform-aws-eks-blueprints"
+          [31m-[0m[0m "terraform-aws-modules" = "eks"
+        } [90m-> null[0m[0m
+    }
+
+[1mPlan:[0m 0 to add, 0 to change, 22 to destroy.
+[0m[0m[1mmodule.eks_blueprints_addon_kyverno.helm_release.this[0]: Destroying... [id=kyverno][0m[0m
+[33m╷[0m[0m
+[33m│[0m [0m[1m[33mWarning: [0m[0m[1mResource targeting is in effect[0m
+[33m│[0m [0m
+[33m│[0m [0m[0mYou are creating a plan with the -target option, which means that the result of this plan may not represent all of the changes requested by the current configuration.
+[33m│[0m [0m
+[33m│[0m [0mThe -target option is not for routine use, and is provided only for exceptional situations such as recovering from errors or mistakes, or when Terraform specifically suggests to use it as part of an error message.
+[33m╵[0m[0m
+[33m╷[0m[0m
+[33m│[0m [0m[1m[33mWarning: [0m[0m[1mApplied changes may be incomplete[0m
+[33m│[0m [0m
+[33m│[0m [0m[0mThe plan was created with the -target option in effect, so some changes requested in the configuration may have been ignored and the output values may not be fully updated. Run the following command to verify that no other changes are pending:
+[33m│[0m [0m    terraform plan
+[33m│[0m [0m	
+[33m│[0m [0mNote that the -target option is not suitable for routine use, and is provided only for exceptional situations such as recovering from errors or mistakes, or when Terraform specifically suggests to use it as part of an error message.
+[33m╵[0m[0m

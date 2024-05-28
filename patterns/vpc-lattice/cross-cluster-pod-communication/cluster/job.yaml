@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "demo-cluster1-rollout-restart"
+  namespace: apps
+  annotations:
+    "helm.sh/hook": post-upgrade
+    "helm.sh/hook-weight": "5"
+    #"helm.sh/hook-delete-policy": "before-hook-creation,hook-succeeded,hook-failed"
+    "helm.sh/hook-delete-policy": "before-hook-creation"
+spec:
+  template:
+    metadata:
+      name: "demo-cluster1-rollout-restart"
+    spec:
+      serviceAccountName: rollout-restart-sa
+      restartPolicy: Never
+      containers:
+      - name: rollout-restart
+        image: bitnami/kubectl:latest
+        command:
+        - /bin/sh
+        - -c
+        - kubectl rollout restart deployment/demo-cluster1-v1 -n apps
