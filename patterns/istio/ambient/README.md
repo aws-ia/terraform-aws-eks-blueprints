@@ -49,16 +49,16 @@ done
 
     ```text
     NAME                              READY   STATUS    RESTARTS   AGE
-    pod/grafana-657df88ffd-m9nxn      1/1     Running   0          16s
-    pod/istio-cni-node-ckmjk          1/1     Running   0          22m
-    pod/istio-cni-node-hsctm          1/1     Running   0          22m
-    pod/istiod-6768c599c5-mrwd9       1/1     Running   0          23m
-    pod/jaeger-697d898d6-kfgsr        1/1     Running   0          22s
-    pod/kiali-5899548ff7-fxx5h        1/1     Running   0          24s
-    pod/prometheus-777db476b6-bgvg7   2/2     Running   0          18s
-    pod/ztunnel-g6s7h                 1/1     Running   0          22m
-    pod/ztunnel-zwbr5                 1/1     Running   0          22m
-    
+    pod/grafana-657df88ffd-89nxn      1/1     Running   0          16s
+    pod/istio-cni-node-42mjk          1/1     Running   0          22m
+    pod/istio-cni-node-24ctm          1/1     Running   0          22m
+    pod/istiod-6768c599c5-6rwd9       1/1     Running   0          23m
+    pod/jaeger-697d898d6-32gsr        1/1     Running   0          22s
+    pod/kiali-5899548ff7-1xx5h        1/1     Running   0          24s
+    pod/prometheus-777db476b6-3gvg7   2/2     Running   0          18s
+    pod/ztunnel-56s7h                 1/1     Running   0          22m
+    pod/ztunnel-7wbr5                 1/1     Running   0          22m
+
     NAME                       TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                                          AGE
     service/grafana            ClusterIP   172.20.79.2      <none>        3000/TCP                                         16s
     service/istiod             ClusterIP   172.20.90.17     <none>        15010/TCP,15012/TCP,443/TCP,15014/TCP            23m
@@ -69,7 +69,7 @@ done
     service/zipkin             ClusterIP   172.20.92.216    <none>        9411/TCP                                         22s
     NAME                                READY   STATUS    RESTARTS   AGE
     pod/istio-ingress-94f46b75b-w5pch   1/1     Running   0          22m
-    
+
     NAME                    TYPE           CLUSTER-IP       EXTERNAL-IP                                                                     PORT(S)                                      AGE
     service/istio-ingress   LoadBalancer   172.20.249.189   k8s-istioing-istioing-21ba5f8e50-56515edc7fdae5d5.elb.us-west-2.amazonaws.com   15021:32477/TCP,80:32556/TCP,443:32006/TCP   23m
     ```
@@ -82,10 +82,10 @@ done
 
     ```text
     NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART               APP VERSION
-    istio-base      istio-system    1               2024-06-03 15:49:08.443242104 -0700 PDT deployed        base-1.22.0         1.22.0     
-    istio-cni       istio-system    1               2024-06-03 15:49:02.186964057 -0700 PDT deployed        cni-1.22.0          1.22.0     
-    istiod          istio-system    1               2024-06-03 15:49:07.609140674 -0700 PDT deployed        istiod-1.22.0       1.22.0     
-    ztunnel         istio-system    1               2024-06-03 15:49:11.624277009 -0700 PDT deployed        ztunnel-1.22.0      1.22.0    
+    istio-base      istio-system    1               2024-06-03 15:49:08.443242104 -0700 PDT deployed        base-1.22.0         1.22.0
+    istio-cni       istio-system    1               2024-06-03 15:49:02.186964057 -0700 PDT deployed        cni-1.22.0          1.22.0
+    istiod          istio-system    1               2024-06-03 15:49:07.609140674 -0700 PDT deployed        istiod-1.22.0       1.22.0
+    ztunnel         istio-system    1               2024-06-03 15:49:11.624277009 -0700 PDT deployed        ztunnel-1.22.0      1.22.0
     ```
 
     ```sh
@@ -94,7 +94,7 @@ done
 
     ```text
     NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART               APP VERSION
-    istio-ingress   istio-ingress   1               2024-06-03 15:49:14.784086208 -0700 PDT deployed        gateway-1.22.0      1.22.0    
+    istio-ingress   istio-ingress   1               2024-06-03 15:49:14.784086208 -0700 PDT deployed        gateway-1.22.0      1.22.0
     ```
 
 ### Observability Add-ons
@@ -255,8 +255,8 @@ kubectl port-forward svc/tracing 16686:80 -n istio-system
 
     ```text
     NAME                           READY   STATUS    RESTARTS   AGE
-    helloworld-v1-b6c45f55-bx2xk   2/2     Running   0          50s
-    sleep-9454cc476-p2zxr          2/2     Running   0          15s
+    helloworld-v1-b6c45f55-2x2xk   2/2     Running   0          50s
+    sleep-9454cc476-42zxr          2/2     Running   0          15s
     ```
 
 5. Connect to `helloworld` app from `sleep` app and verify if the connection uses envoy proxy
@@ -272,7 +272,7 @@ kubectl port-forward svc/tracing 16686:80 -n istio-system
     * Host helloworld.sample:5000 was resolved.
     ...
     * Connection #0 to host helloworld.sample left intact
-    Hello version: v1, instance: helloworld-v1-64674bb6c8-4jqfx
+    Hello version: v1, instance: helloworld-v1-64674bb6c8-43qfx
     ```
 
 ## Destroy

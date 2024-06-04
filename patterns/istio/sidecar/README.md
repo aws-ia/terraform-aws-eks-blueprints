@@ -50,10 +50,10 @@ done
     ```text
     NAME                             READY   STATUS    RESTARTS   AGE
     pod/grafana-7d4f5589fb-4xj9m     1/1     Running   0          4m14s
-    pod/istiod-ff577f8b8-c8ssk       1/1     Running   0          4m40s
-    pod/jaeger-58c79c85cd-n7bkx      1/1     Running   0          4m14s
+    pod/istiod-ff577f8b8-18ssk       1/1     Running   0          4m40s
+    pod/jaeger-58c79c85cd-37bkx      1/1     Running   0          4m14s
     pod/kiali-749d76d7bb-8kjg7       1/1     Running   0          4m14s
-    pod/prometheus-5d5d6d6fc-s1txl   2/2     Running   0          4m15s
+    pod/prometheus-5d5d6d6fc-11txl   2/2     Running   0          4m15s
 
     NAME                       TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                                 AGE
     service/grafana            ClusterIP   172.20.141.12    <none>        3000/TCP                                4m14s
@@ -65,7 +65,7 @@ done
     service/zipkin             ClusterIP   172.20.221.157   <none>        9411/TCP                                4m15s
 
     NAME                                 READY   STATUS    RESTARTS   AGE
-    pod/istio-ingress-6f7c5dffd8-g1szr   1/1     Running   0          4m28s
+    pod/istio-ingress-6f7c5dffd8-11szr   1/1     Running   0          4m28s
 
     NAME                    TYPE           CLUSTER-IP      EXTERNAL-IP                                                                     PORT(S)                                      AGE
     service/istio-ingress   LoadBalancer   172.20.104.27   k8s-istioing-istioing-844c89b6c2-875b8c9a4b4e9365.elb.us-west-2.amazonaws.com   15021:32760/TCP,80:31496/TCP,443:32534/TCP   4m28s
@@ -79,8 +79,8 @@ done
 
     ```text
     NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART               APP VERSION
-    istio-base      istio-system    1               2024-06-03 16:53:08.15008046 -0700 PDT  deployed        base-1.22.0         1.22.0     
-    istiod          istio-system    1               2024-06-03 16:56:50.331042567 -0700 PDT deployed        istiod-1.22.0       1.22.0  
+    istio-base      istio-system    1               2024-06-03 16:53:08.15008046 -0700 PDT  deployed        base-1.22.0         1.22.0
+    istiod          istio-system    1               2024-06-03 16:56:50.331042567 -0700 PDT deployed        istiod-1.22.0       1.22.0
     ```
 
     ```sh
@@ -89,7 +89,7 @@ done
 
     ```text
     NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART               APP VERSION
-    istio-ingress   istio-ingress   1               2024-06-03 16:52:57.609474723 -0700 PDT deployed        gateway-1.22.0      1.22.0    
+    istio-ingress   istio-ingress   1               2024-06-03 16:52:57.609474723 -0700 PDT deployed        gateway-1.22.0      1.22.0
     ```
 
 ### Observability Add-ons
@@ -250,8 +250,8 @@ kubectl port-forward svc/tracing 16686:80 -n istio-system
 
     ```text
     NAME                           READY   STATUS    RESTARTS   AGE
-    helloworld-v1-b6c45f55-bx2xk   2/2     Running   0          50s
-    sleep-9454cc476-p2zxr          2/2     Running   0          15s
+    helloworld-v1-b6c45f55-3x2xk   2/2     Running   0          50s
+    sleep-9454cc476-22zxr          2/2     Running   0          15s
     ```
 
 5. Connect to `helloworld` app from `sleep` app and verify if the connection uses envoy proxy
@@ -267,7 +267,7 @@ kubectl port-forward svc/tracing 16686:80 -n istio-system
     * Host helloworld.sample:5000 was resolved.
     ...
     * Connection #0 to host helloworld.sample left intact
-    Hello version: v1, instance: helloworld-v1-64674bb6c8-4jqfx
+    Hello version: v1, instance: helloworld-v1-64674bb6c8-43qfx
     ```
 
 ## Destroy
