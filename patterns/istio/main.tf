@@ -37,13 +37,95 @@ locals {
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
-  istio_chart_url     = "https://istio-release.storage.googleapis.com/charts"
-  istio_chart_version = "1.22.0"
-
   tags = {
     Blueprint  = local.name
     GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
   }
+
+  helm_releases = {
+    istio-base = {
+      chart         = "base"
+      chart_version = var.istio_chart_version
+      repository    = var.istio_chart_url
+      name          = "istio-base"
+      namespace     = kubernetes_namespace_v1.istio_system.metadata[0].name
+    }
+
+    istiod = {
+      chart         = "istiod"
+      chart_version = var.istio_chart_version
+      repository    = var.istio_chart_url
+      name          = "istiod"
+      namespace     = kubernetes_namespace_v1.istio_system.metadata[0].name
+
+      set = concat(
+        [
+          {
+            name  = "meshConfig.accessLogFile"
+            value = "/dev/stdout"
+          }
+        ],
+        var.enable_ambient_mode ? [
+          {
+            name  = "profile"
+            value = "ambient"
+          }
+        ] : []
+      )
+    }
+
+    istio-ingress = {
+      chart            = "gateway"
+      chart_version    = var.istio_chart_version
+      repository       = var.istio_chart_url
+      name             = "istio-ingress"
+      namespace        = "istio-ingress"
+      create_namespace = true
+
+      values = [
+        yamlencode(
+          {
+            labels = {
+              istio = "ingressgateway"
+            }
+            service = {
+              annotations = {
+                "service.beta.kubernetes.io/aws-load-balancer-type"            = "external"
+                "service.beta.kubernetes.io/aws-load-balancer-nlb-target-type" = "ip"
+                "service.beta.kubernetes.io/aws-load-balancer-scheme"          = "internet-facing"
+                "service.beta.kubernetes.io/aws-load-balancer-attributes"      = "load_balancing.cross_zone.enabled=true"
+              }
+            }
+          }
+        )
+      ]
+    }
+
+    istio-cni = var.enable_ambient_mode ? {
+      chart         = "cni"
+      chart_version = var.istio_chart_version
+      repository    = var.istio_chart_url
+      name          = "istio-cni"
+      namespace     = kubernetes_namespace_v1.istio_system.metadata[0].name
+
+      set = [
+        {
+          name  = "profile"
+          value = "ambient"
+        }
+      ]
+    } : null
+
+    ztunnel = var.enable_ambient_mode ? {
+      chart         = "ztunnel"
+      chart_version = var.istio_chart_version
+      repository    = var.istio_chart_url
+      name          = "ztunnel"
+      namespace     = kubernetes_namespace_v1.istio_system.metadata[0].name
+    } : null
+  }
+
+  filtered_helm_releases = { for k, v in local.helm_releases : k => v if v != null }
 }
 
 ################################################################################
@@ -124,60 +206,9 @@ module "eks_blueprints_addons" {
   cluster_version   = module.eks.cluster_version
   oidc_provider_arn = module.eks.oidc_provider_arn
 
-  # This is required to expose Istio Ingress Gateway
   enable_aws_load_balancer_controller = true
 
-  helm_releases = {
-    istio-base = {
-      chart         = "base"
-      chart_version = local.istio_chart_version
-      repository    = local.istio_chart_url
-      name          = "istio-base"
-      namespace     = kubernetes_namespace_v1.istio_system.metadata[0].name
-    }
-
-    istiod = {
-      chart         = "istiod"
-      chart_version = local.istio_chart_version
-      repository    = local.istio_chart_url
-      name          = "istiod"
-      namespace     = kubernetes_namespace_v1.istio_system.metadata[0].name
-
-      set = [
-        {
-          name  = "meshConfig.accessLogFile"
-          value = "/dev/stdout"
-        }
-      ]
-    }
-
-    istio-ingress = {
-      chart            = "gateway"
-      chart_version    = local.istio_chart_version
-      repository       = local.istio_chart_url
-      name             = "istio-ingress"
-      namespace        = "istio-ingress" # per https://github.com/istio/istio/blob/master/manifests/charts/gateways/istio-ingress/values.yaml#L2
-      create_namespace = true
-
-      values = [
-        yamlencode(
-          {
-            labels = {
-              istio = "ingressgateway"
-            }
-            service = {
-              annotations = {
-                "service.beta.kubernetes.io/aws-load-balancer-type"            = "external"
-                "service.beta.kubernetes.io/aws-load-balancer-nlb-target-type" = "ip"
-                "service.beta.kubernetes.io/aws-load-balancer-scheme"          = "internet-facing"
-                "service.beta.kubernetes.io/aws-load-balancer-attributes"      = "load_balancing.cross_zone.enabled=true"
-              }
-            }
-          }
-        )
-      ]
-    }
-  }
+  helm_releases = local.filtered_helm_releases
 
   tags = local.tags
 }

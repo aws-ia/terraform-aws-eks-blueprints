@@ -53,6 +53,7 @@ crds
 curlimages
 cwlogs
 daemonset
+dataplane
 datasource
 dcgm
 distro
