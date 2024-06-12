@@ -33,8 +33,6 @@ module "eks" {
     vpc-cni                = {}
   }
 
-  enable_efa_support = true
-
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
