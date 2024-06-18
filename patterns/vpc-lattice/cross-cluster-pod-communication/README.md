@@ -66,26 +66,26 @@ eval `terraform output -raw configure_kubectl`
 
 In order to validate the connectivity between our services, we can use the following commands:
 
-1. from cluster1 app1, call cluster2 app2 -> success
+1. From cluster1 app1, call cluster2 app2 -> success
 
 ```bash
-kubectl --context eks-cluster1 exec -ti -n apps deployments/demo-cluster1-v1 -c demo-cluster1-v1 -- curl demo-cluster2.vpc-lattice-octank.io
+kubectl --context eks-cluster1 exec -ti -n apps deployments/demo-cluster1-v1 -c demo-cluster1-v1 -- curl demo-cluster2.example.com
 ```
 
 ```
 Requsting to Pod(demo-cluster2-v1-c99c7bb69-2gm5f): Hello from demo-cluster2-v1
 ```
 
-2. from cluster1 app1, call cluster1 app1 -> forbidden
+2. From cluster1 app1, call cluster1 app1 -> forbidden
 
 We can see the response if we call the service but don't have the authorization from VPC lattice:
 
 ```bash
-kubectl --context eks-cluster1 exec -ti -n apps deployments/demo-cluster1-v1 -c demo-cluster1-v1 -- curl demo-cluster1.vpc-lattice-octank.io
+kubectl --context eks-cluster1 exec -ti -n apps deployments/demo-cluster1-v1 -c demo-cluster1-v1 -- curl demo-cluster1.example.com
 ```
 
 ```
-AccessDeniedException: User: arn:aws:sts::12345678910:assumed-role/vpc-lattice-ccpc-sigv4-client/eks-eks-cluste-demo-clust-1b575f8d-fb77-486a-8a13-af5a2a0f78ae is not authorized to perform: vpc-lattice-svcs:Invoke on resource: arn:aws:vpc-lattice:eu-west-1:12345678910:service/svc-002349360ddc5a463/ because no service-based policy allows the vpc-lattice-svcs:Invoke action
+AccessDeniedException: User: arn:aws:sts::12345678910:assumed-role/vpc-lattice-sigv4-client/eks-eks-cluste-demo-clust-1b575f8d-fb77-486a-8a13-af5a2a0f78ae is not authorized to perform: vpc-lattice-svcs:Invoke on resource: arn:aws:vpc-lattice:eu-west-1:12345678910:service/svc-002349360ddc5a463/ because no service-based policy allows the vpc-lattice-svcs:Invoke action
 ```
 
 This is because in the VPC lattice IAMAuth Policy of Application1 we only authorize call from namespace apps from cluster2:
@@ -116,26 +116,26 @@ kubectl --context eks-cluster1 get IAMAuthPolicy -n apps demo-cluster1-iam-auth-
 }
 ```
 
-2. from cluster2 app2, call cluster1 app1 -> success
+3. From cluster2 app2, call cluster1 app1 -> success
 
 We can also validate the reverse flow, from cluster2 to cluster1:
 
 ```bash
-kubectl --context eks-cluster2 exec -ti -n apps deployments/demo-cluster2-v1 -c demo-cluster2-v1 -- curl demo-cluster1.vpc-lattice-octank.io
+kubectl --context eks-cluster2 exec -ti -n apps deployments/demo-cluster2-v1 -c demo-cluster2-v1 -- curl demo-cluster1.example.com
 ```
 
 ```
 Requsting to Pod(demo-cluster1-v1-6d7558f5b4-zk5cg): Hello from demo-cluster1-v1
 ```
 
-And again, what happen if the flow is not authorized:
+4. From cluster1 app2, call cluster1 app2 -> forbidden
 
 ```bash
-kubectl --context eks-cluster2 exec -ti -n apps deployments/demo-cluster2-v1 -c demo-cluster2-v1 -- curl demo-cluster2.vpc-lattice-octank.io
+kubectl --context eks-cluster2 exec -ti -n apps deployments/demo-cluster2-v1 -c demo-cluster2-v1 -- curl demo-cluster2.example.com
 ```
 
 ```
-AccessDeniedException: User: arn:aws:sts::12345678910:assumed-role/vpc-lattice-ccpc-sigv4-client/eks-eks-cluste-demo-clust-a5c2432b-b84a-492f-8cbc-16f1fa5053eb is not authorized to perform: vpc-lattice-svcs:Invoke on resource: arn:aws:vpc-lattice:eu-west-1:12345678910:service/svc-00b57f32ed0a7b7c3/ because no service-based policy allows the vpc-lattice-svcs:Invoke action<>
+AccessDeniedException: User: arn:aws:sts::12345678910:assumed-role/vpc-lattice-sigv4-client/eks-eks-cluste-demo-clust-a5c2432b-b84a-492f-8cbc-16f1fa5053eb is not authorized to perform: vpc-lattice-svcs:Invoke on resource: arn:aws:vpc-lattice:eu-west-1:12345678910:service/svc-00b57f32ed0a7b7c3/ because no service-based policy allows the vpc-lattice-svcs:Invoke action
 ```
 
 # Cleanup

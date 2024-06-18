@@ -73,12 +73,3 @@ else
     echo "Error: Failed to delete VPC $VPCID, you may need to do some manuals cleanups"
 fi
 
-# #Clean VPC
-# aws ec2 delete-vpc --vpc-id $VPCID 2>&1 | tee /tmp/delete_vpc_log.txt
-
-# # Check if the deletion was successful
-# if [ ${PIPESTATUS[0]} -eq 0 ]; then
-#     echo "Success: VPC $VPCID deleted successfully."
-# else
-#     echo "Error: Failed to delete VPC $VPCID, you may need to do some manuals cleanups"
-# fi

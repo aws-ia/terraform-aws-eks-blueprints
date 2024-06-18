@@ -3,12 +3,8 @@ provider "aws" {
 }
 
 locals {
-  name   = "vpc-lattice-ccpc"
+  name   = "vpc-lattice"
   region = "eu-west-1"
-
-  # cluster_vpc_cidr = "10.0.0.0/16"
-  # client_vpc_cidr  = "10.1.0.0/16"
-  # azs              = slice(data.aws_availability_zones.available.names, 0, 3)
 
   domain = var.custom_domain_name
 
