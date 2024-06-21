@@ -35,6 +35,15 @@ module "eks" {
       ami_type       = "AL2_x86_64_GPU"
       instance_types = ["p5.48xlarge"]
 
+
+      # Uncomment this block and specify capacity_reservation_id
+      # to use an on-demand capacity reservation (ODCR) for your EFA instances
+      #capacity_reservation_specification = {
+      #  capacity_reservation_target = {
+      #    capacity_reservation_id = "cr-xxxxxxxxxxxxxxxxx"
+      #  }
+      #}
+
       pre_bootstrap_user_data = <<-EOT
         # Mount instance store volumes in RAID-0 for kubelet and containerd
         # https://github.com/awslabs/amazon-eks-ami/blob/master/doc/USER_GUIDE.md#raid-0-for-kubelet-and-containerd-raid0
