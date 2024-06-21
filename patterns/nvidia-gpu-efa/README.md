@@ -17,13 +17,13 @@ The following components are demonstrated in this pattern:
 
 ## Code
 
-```terraform hl_lines="24-26 32-67"
-{% include  "../../patterns/nvidia-gpu-efa/eks.tf" %}
-```
+The code consists of the following files:
 
-```terraform hl_lines="5-47"
-{% include  "../../patterns/nvidia-gpu-efa/helm.tf" %}
-```
+[eks.tf](eks.tf) - template of the EKS cluster, containing a default node group and nvidia-efa node group.
+
+[helm.tf](helm.tf) - helm charts to install [nvidia-device-plugin](https://github.com/NVIDIA/k8s-device-plugin) and [efa-device-plugin](https://github.com/aws-samples/aws-efa-eks)
+
+[main.tf](main.tf) - main project template, includes [`eks.tf`](eks.tf) and [`helm.tf`](helm.tf)
 
 ## Deploy
 
@@ -260,6 +260,6 @@ Note:
 
 ## Destroy
 
-{%
-   include-markdown "../../docs/_partials/destroy.md"
-%}
+```sh
+terraform destroy -auto-approve
+```
