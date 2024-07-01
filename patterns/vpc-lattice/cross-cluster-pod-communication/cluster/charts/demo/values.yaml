@@ -1,0 +1,14 @@
+
+awsAccountID: to-replace
+region: to-replace
+vpc1ID: to-replace
+vpc2ID: to-replace
+
+#Allow source to connexct to app
+allowedCluster:
+allowedNamespace:
+
+
+certificateArn: to-replace
+
+customDomain: to-replace
