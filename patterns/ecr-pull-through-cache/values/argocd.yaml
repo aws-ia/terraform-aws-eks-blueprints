@@ -2,20 +2,6 @@ global:
   image:
     repository: "${ecr_account_id}.dkr.ecr.${ecr_region}.amazonaws.com/quay/argoproj/argocd"
     pullPolicy: IfNotPresent
-  # Uncomment and set the values below if you need to configure proxy settings
-  # env:
-  #   - name: http_proxy
-  #     value: ""
-  #   - name: https_proxy
-  #     value: ""
-  #   - name: no_proxy
-  #     value: ""
-  #   - name: HTTP_PROXY
-  #     value: ""
-  #   - name: HTTPS_PROXY
-  #     value: ""
-  #   - name: NO_PROXY
-  #     value: ""
 
 dex:
   enabled: false # Disable dex since we are not using
