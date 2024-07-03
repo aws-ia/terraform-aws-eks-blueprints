@@ -16,6 +16,43 @@ Select "Any prefix in your ECR registry" and keep the defaults.
 Follow the instructions [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#prerequisites) for the prerequisites and steps to deploy this pattern.
 
 ## Validate
+Validate the pull trough cache rules connectivity:
+```
+for i in docker-hub ecr k8s quay ; do aws ecr validate-pull-through-cache-rule --ecr-repository-prefix $i --region us-east-1; done
+```
+Expected output:
+```
+{
+    "ecrRepositoryPrefix": "docker-hub",
+    "registryId": "111122223333",
+    "upstreamRegistryUrl": "registry-1.docker.io",
+    "credentialArn": "arn:aws:secretsmanager:us-east-1:111122223333:secret:ecr-pullthroughcache/docker-111XXX",
+    "isValid": true,
+    "failure": ""
+}
+{
+    "ecrRepositoryPrefix": "ecr",
+    "registryId": "111122223333",
+    "upstreamRegistryUrl": "public.ecr.aws",
+    "isValid": true,
+    "failure": ""
+}
+{
+    "ecrRepositoryPrefix": "k8s",
+    "registryId": "111122223333",
+    "upstreamRegistryUrl": "registry.k8s.io",
+    "isValid": true,
+    "failure": ""
+}
+{
+    "ecrRepositoryPrefix": "quay",
+    "registryId": "111122223333",
+    "upstreamRegistryUrl": "quay.io",
+    "isValid": true,
+    "failure": ""
+}
+```
+Validate pods are pulling the images and in Running state:
 ```
 kubectl get pods -A
 ```
@@ -63,7 +100,6 @@ kube-system             kube-proxy-ksz6w                                        
 kube-system             kube-proxy-w6x2s                                            1/1     Running     0          12m
 kube-system             metrics-server-5d6489d58d-pbrxv                             1/1     Running     0          10m
 ```
-All pods should be Running state.
 
 ## Destroy
 {%
