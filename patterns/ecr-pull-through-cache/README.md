@@ -11,6 +11,7 @@ aws --region "us-east-1" secretsmanager create-secret --name ecr-pullthroughcach
 Create an ecr creation template trough the AWS Console. Creation templates is in Preview and there is no aws cli command or api to create the template.
 Navigate to ECR -> Private registry -> Settings -> Creation templates -> Create template ->
 Select "Any prefix in your ECR registry" and keep the defaults.
+Official instructions for creating a repository creation template are [here](https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-creation-templates-create.html).
 ![ecr-createtemplate](../../docs/images/ecr-template.gif)
 
 Follow the instructions [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#prerequisites) for the prerequisites and steps to deploy this pattern.
