@@ -13,7 +13,7 @@ variable "capacity_reservation_arns" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 20.11"
+  version = "~> 20.17"
 
   cluster_name    = local.name
   cluster_version = "1.30"
@@ -80,7 +80,10 @@ module "eks" {
 
       # First subnet is in the "${local.region}a" availability zone
       # where the capacity reservation is created
+      # TODO - Update the subnet to match the availability zone of *YOUR capacity reservation
       subnet_ids = [element(module.vpc.private_subnets, 0)]
+
+      # Targeted on-demand capacity reservation
       capacity_reservation_specification = {
         capacity_reservation_target = {
           capacity_reservation_resource_group_arn = aws_resourcegroups_group.odcr.arn

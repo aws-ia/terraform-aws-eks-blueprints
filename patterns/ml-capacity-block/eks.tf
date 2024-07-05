@@ -16,7 +16,7 @@ variable "capacity_reservation_id" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 20.11"
+  version = "~> 20.17"
 
   cluster_name    = local.name
   cluster_version = "1.30"
@@ -41,19 +41,6 @@ module "eks" {
   subnet_ids = module.vpc.private_subnets
 
   eks_managed_node_groups = {
-    # This node group is for core addons such as CoreDNS
-    default = {
-      instance_types = ["m5.large"]
-
-      min_size     = 1
-      max_size     = 2
-      desired_size = 2
-    }
-  }
-
-  # Note: ML capacity block reservations are only supported
-  # on self-managed node groups at this time
-  self_managed_node_groups = {
     cbr = {
       # The EKS AL2 GPU AMI provides all of the necessary components
       # for accelerated workloads w/ EFA
@@ -64,11 +51,6 @@ module "eks" {
         # Mount instance store volumes in RAID-0 for kubelet and containerd
         # https://github.com/awslabs/amazon-eks-ami/blob/master/doc/USER_GUIDE.md#raid-0-for-kubelet-and-containerd-raid0
         /bin/setup-local-disks raid0
-
-        # Ensure only GPU workloads are scheduled on this node group
-        export KUBELET_EXTRA_ARGS='--node-labels=vpc.amazonaws.com/efa.present=true,nvidia.com/gpu.present=true \
-          --register-with-taints=nvidia.com/gpu=true:NoSchedule'
-
       EOT
 
       min_size     = 2
@@ -81,7 +63,27 @@ module "eks" {
       # 3. Expose all of the available EFA interfaces on the launch template
       enable_efa_support = true
 
+      labels = {
+        "vpc.amazonaws.com/efa.present" = "true"
+        "nvidia.com/gpu.present"        = "true"
+      }
+
+      taints = {
+        # Ensure only GPU workloads are scheduled on this node group
+        gpu = {
+          key    = "nvidia.com/gpu"
+          value  = "true"
+          effect = "NO_SCHEDULE"
+        }
+      }
+
+      # First subnet is in the "${local.region}a" availability zone
+      # where the capacity reservation is created
+      # TODO - Update the subnet to match the availability zone of *YOUR capacity reservation
+      subnet_ids = [element(module.vpc.private_subnets, 0)]
+
       # ML capacity block reservation
+      capacity_type = "CAPACITY_BLOCK"
       instance_market_options = {
         market_type = "capacity-block"
       }
@@ -90,6 +92,14 @@ module "eks" {
           capacity_reservation_id = var.capacity_reservation_id
         }
       }
+    }
+    # This node group is for core addons such as CoreDNS
+    default = {
+      instance_types = ["m5.large"]
+
+      min_size     = 1
+      max_size     = 2
+      desired_size = 2
     }
   }
 
