@@ -44,8 +44,8 @@ module "eks" {
     cbr = {
       # The EKS AL2 GPU AMI provides all of the necessary components
       # for accelerated workloads w/ EFA
-      ami_type      = "AL2_x86_64_GPU"
-      instance_type = "p5.48xlarge"
+      ami_type       = "AL2_x86_64_GPU"
+      instance_types = ["p5.48xlarge"]
 
       pre_bootstrap_user_data = <<-EOT
         # Mount instance store volumes in RAID-0 for kubelet and containerd
@@ -100,6 +100,55 @@ module "eks" {
       min_size     = 1
       max_size     = 2
       desired_size = 2
+    }
+  }
+
+  # Self-managed node group equivalent for ML capacity block reservation
+  # This is not required for ML CBR support with EKS managed node groups,
+  # its just showing use with both node group types. Users should select
+  # the one that works for their use case.
+  self_managed_node_groups = {
+    cbr2 = {
+      # The EKS AL2 GPU AMI provides all of the necessary components
+      # for accelerated workloads w/ EFA
+      ami_type      = "AL2_x86_64_GPU"
+      instance_type = "p5.48xlarge"
+
+      pre_bootstrap_user_data = <<-EOT
+        # Mount instance store volumes in RAID-0 for kubelet and containerd
+        # https://github.com/awslabs/amazon-eks-ami/blob/master/doc/USER_GUIDE.md#raid-0-for-kubelet-and-containerd-raid0
+        /bin/setup-local-disks raid0
+
+        # Ensure only GPU workloads are scheduled on this node group
+        export KUBELET_EXTRA_ARGS='--node-labels=vpc.amazonaws.com/efa.present=true,nvidia.com/gpu.present=true \
+          --register-with-taints=nvidia.com/gpu=true:NoSchedule'
+
+      EOT
+
+      min_size     = 2
+      max_size     = 2
+      desired_size = 2
+
+      # This will:
+      # 1. Create a placement group to place the instances close to one another
+      # 2. Ignore subnets that reside in AZs that do not support the instance type
+      # 3. Expose all of the available EFA interfaces on the launch template
+      enable_efa_support = true
+
+      # First subnet is in the "${local.region}a" availability zone
+      # where the capacity reservation is created
+      # TODO - Update the subnet to match the availability zone of *YOUR capacity reservation
+      subnet_ids = [element(module.vpc.private_subnets, 0)]
+
+      # ML capacity block reservation
+      instance_market_options = {
+        market_type = "capacity-block"
+      }
+      capacity_reservation_specification = {
+        capacity_reservation_target = {
+          capacity_reservation_id = var.capacity_reservation_id
+        }
+      }
     }
   }
 
