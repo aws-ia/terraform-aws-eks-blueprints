@@ -34,7 +34,7 @@ directory of your choice.
 on your local machine and allow you to interact with your EKS Cluster using `kubectl`.
 
     ```sh
-    aws eks --region <REGION> update-kubeconfig --name <CLUSTER_NAME>
+    aws eks --region <REGION> update-kubeconfig --name <CLUSTER_NAME> --alias <CLUSTER_NAME>
     ```
 
     !!! info "Pattern Terraform outputs"

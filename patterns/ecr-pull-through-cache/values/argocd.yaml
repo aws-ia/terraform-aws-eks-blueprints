@@ -1,0 +1,77 @@
+global:
+  image:
+    repository: "${ecr_account_id}.dkr.ecr.${ecr_region}.amazonaws.com/quay/argoproj/argocd"
+    pullPolicy: IfNotPresent
+
+dex:
+  enabled: false # Disable dex since we are not using
+  image:
+    repository: "${ecr_account_id}.dkr.ecr.${ecr_region}.amazonaws.com/docker-hub/dexidp/dex"
+    pullPolicy: IfNotPresent
+
+redis-ha:
+  enabled: true
+  image:
+    repository: "${ecr_account_id}.dkr.ecr.${ecr_region}.amazonaws.com/docker-hub/library/redis"
+    pullPolicy: IfNotPresent
+  haproxy:
+    image:
+      repository: "${ecr_account_id}.dkr.ecr.${ecr_region}.amazonaws.com/docker-hub/library/haproxy"
+      pullPolicy: IfNotPresent
+
+controller:
+  replicas: 1 # Additional replicas will cause sharding of managed clusters across number of replicas.
+  metrics:
+    enabled: true
+    service:
+      annotations:
+        prometheus.io/scrape: true
+  env:
+    - name: ARGOCD_K8S_CLIENT_QPS #required for Crossplane too many CRDs https://github.com/argoproj/argo-cd/pull/448
+      value: "300"
+
+repoServer:
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+  resources: # Adjust based on your specific use case (required for HPA)
+    requests:
+      cpu: "100m"
+      memory: "256Mi"
+    limits:
+      cpu: "200m"
+      memory: "512Mi"
+  metrics:
+    enabled: true
+    service:
+      annotations:
+        prometheus.io/scrape: true
+
+applicationSet:
+  replicaCount: 1 # The controller doesn't scale horizontally, is active-standby replicas
+  metrics:
+    enabled: true
+    service:
+      annotations:
+        prometheus.io/scrape: true
+
+server:
+  autoscaling:
+    enabled: true
+    minReplicas: 1
+  resources: # Adjust based on your specific use case (required for HPA)
+    requests:
+      cpu: "100m"
+      memory: "256Mi"
+    limits:
+      cpu: "200m"
+      memory: "512Mi"
+  metrics:
+    enabled: true
+    service:
+      annotations:
+        prometheus.io/scrape: true
+  service:
+    type: "LoadBalancer"
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"

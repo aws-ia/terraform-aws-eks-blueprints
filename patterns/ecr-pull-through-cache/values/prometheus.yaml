@@ -1,0 +1,104 @@
+global:
+  imageRegistry: "${ecr_account_id}.dkr.ecr.${ecr_region}.amazonaws.com"
+prometheusOperator:
+  image:
+    repository: quay/prometheus-operator/prometheus-operator
+  admissionWebhooks:
+    deployment:
+      image:
+        repository: quay/prometheus-operator/admission-webhook
+    patch:
+      image:
+        repository: k8s/ingress-nginx/kube-webhook-certgen
+  prometheusConfigReloader:
+    image:
+      repository: quay/prometheus-operator/prometheus-config-reloader
+alertmanager:
+  alertmanagerSpec:
+    image:
+      repository: quay/prometheus/alertmanager
+prometheus:
+  prometheusSpec:
+    image:
+      repository: quay/prometheus/prometheus
+  service:
+    type: "LoadBalancer"
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+  additionalServiceMonitors:
+    - name: "argocd"
+      namespaceSelector:
+        matchNames:
+          - "argocd"
+      endpoints:
+        - port: "metrics"
+      selector:
+        matchLabels:
+          prometheus.io/scrape: "true"
+prometheus-node-exporter:
+  image:
+    repository: quay/prometheus/node-exporter
+kube-state-metrics:
+  image:
+    repository: k8s/kube-state-metrics/kube-state-metrics
+grafana:
+  global:
+    imageRegistry: "${ecr_account_id}.dkr.ecr.${ecr_region}.amazonaws.com"
+  downloadDashboardsImage:
+    repository: ${ecr_account_id}.dkr.ecr.${ecr_region}.amazonaws.com/docker-hub/curlimages/curl
+  image:
+    repository: ${ecr_account_id}.dkr.ecr.${ecr_region}.amazonaws.com/docker-hub/grafana/grafana
+  imageRenderer:
+    image:
+      repository: ${ecr_account_id}.dkr.ecr.${ecr_region}.amazonaws.com/docker-hub/grafana/grafana-image-renderer
+  sidecar:
+    image:
+      repository: ${ecr_account_id}.dkr.ecr.${ecr_region}.amazonaws.com/quay/kiwigrid/k8s-sidecar
+  service:
+    type: "LoadBalancer"
+    annotations:
+      service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "1Gi"
+    limits:
+      cpu: "1"
+      memory: "2Gi"
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+        - name: Prometheus
+          type: prometheus
+          access: proxy
+          url: http://kube-prometheus-stack-prometheus.kube-prometheus-stack:9090/
+          isDefault: false
+          uid: prometheusdatasource
+      deleteDatasources:
+        - name: Prometheus
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+        - name: "default"
+          orgId: 1
+          type: file
+          disableDeletion: false
+          editable: true
+          options:
+            path: /var/lib/grafana/dashboards/default
+  dashboards:
+    default:
+      argocd:
+        gnetId: 14584
+        revision: 1
+        datasource: prometheusdatasource
+      eks:
+        gnetId: 14623
+        revision: 1
+        datasource: prometheusdatasource
+      ekscontrolplane:
+        gnetId: 21192
+        revision: 1
+        datasource: prometheusdatasource
