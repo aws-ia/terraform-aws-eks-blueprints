@@ -3,18 +3,12 @@
 This pattern demonstrates how to set up ECR cache pull-through for public images. The Terraform code creates four cache pull-through rules for public image repositories: Docker, Kubernetes, Quay, and ECR. It also configures basic scanning on push for all repositories and includes a creation template. Additionally, it configures the EC2 node role with permissions to pull through images. The setup then installs ALB Controller, Metrics Server, Gatekeeper, ArgoCD, and Prometheus Operator, with their respective Helm charts configured in the values files to pull images through the pull-through cache.
 
 ## Deploy
-
-Replace `your-docker-username` and `your-docker-password` with your actual Docker credentials and run the following command to create an aws secretmanager secret:
-```
-aws --region "us-east-1" secretsmanager create-secret --name ecr-pullthroughcache/docker --description "Docker credentials" --secret-string '{"username":"your-docker-username","accessToken":"your-docker-password"}'
-```
-Create an ecr creation template trough the AWS Console. Creation templates is in Preview and there is no aws cli command or api to create the template.
-Navigate to ECR -> Private registry -> Settings -> Creation templates -> Create template ->
-Select "Any prefix in your ECR registry" and keep the defaults.
-Official instructions for creating a repository creation template are [here](https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-creation-templates-create.html).
-![ecr-createtemplate](../../docs/images/ecr-template.gif)
-
 Follow the instructions [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#prerequisites) for the prerequisites and steps to deploy this pattern.
+
+```
+terraform init
+terraform apply -var='docker_secret={"username":"your-docker-username", "accessToken":"your-docker-password"}'
+```
 
 ## Validate
 Validate the pull trough cache rules connectivity:
@@ -103,6 +97,11 @@ kube-system             metrics-server-5d6489d58d-pbrxv                         
 ```
 
 ## Destroy
+ECR repositories are automatically created via pull through cache and can be deleted using the following command.
+NOTE: This commands deletes all the ecr repositories in a region.
+```
+for REPO in $(aws ecr describe-repositories --query 'repositories[].repositoryName' --output text); do aws ecr delete-repository --repository-name $REPO --force ; done
+```  
 {%
    include-markdown "../../docs/_partials/destroy.md"
 %}

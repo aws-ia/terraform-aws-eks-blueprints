@@ -40,3 +40,22 @@ variable "ecr_region" {
   default     = ""
 }
 
+variable "docker_secret" {
+  type = object({
+    username    = string
+    accessToken = string
+  })
+  default = {
+    username    = ""
+    accessToken = ""
+  }
+  sensitive = true
+  validation {
+    condition = !(var.docker_secret.username == "" || var.docker_secret.accessToken == "")
+    error_message = <<EOT
+Both username and accessToken must be provided.
+Use the following command to pass these variables:
+  terraform plan -var='docker_secret={"username":"your_username", "accessToken":"your_access_token"}'
+EOT
+  }
+}
