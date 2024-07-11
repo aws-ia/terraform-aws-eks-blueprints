@@ -1329,15 +1329,10 @@
 <h1 id="ecr-pull-through-cache">ECR Pull Through Cache<a class="headerlink" href="#ecr-pull-through-cache" title="Permanent link">&para;</a></h1>
 <p>This pattern demonstrates how to set up ECR cache pull-through for public images. The Terraform code creates four cache pull-through rules for public image repositories: Docker, Kubernetes, Quay, and ECR. It also configures basic scanning on push for all repositories and includes a creation template. Additionally, it configures the EC2 node role with permissions to pull through images. The setup then installs ALB Controller, Metrics Server, Gatekeeper, ArgoCD, and Prometheus Operator, with their respective Helm charts configured in the values files to pull images through the pull-through cache.</p>
 <h2 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h2>
-<p>Replace <code>your-docker-username</code> and <code>your-docker-password</code> with your actual Docker credentials and run the following command to create an aws secretmanager secret:
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>aws --region &quot;us-east-1&quot; secretsmanager create-secret --name ecr-pullthroughcache/docker --description &quot;Docker credentials&quot; --secret-string &#39;{&quot;username&quot;:&quot;your-docker-username&quot;,&quot;accessToken&quot;:&quot;your-docker-password&quot;}&#39;
-</span></code></pre></div>
-Create an ecr creation template trough the AWS Console. Creation templates is in Preview and there is no aws cli command or api to create the template.
-Navigate to ECR -&gt; Private registry -&gt; Settings -&gt; Creation templates -&gt; Create template -&gt;
-Select "Any prefix in your ECR registry" and keep the defaults.
-Official instructions for creating a repository creation template are <a href="https://docs.aws.amazon.com/AmazonECR/latest/userguide/repository-creation-templates-create.html">here</a>.
-<img alt="ecr-createtemplate" src="../../images/ecr-template.gif" /></p>
 <p>Follow the instructions <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#prerequisites">here</a> for the prerequisites and steps to deploy this pattern.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>terraform init
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>terraform apply -var=&#39;docker_secret={&quot;username&quot;:&quot;your-docker-username&quot;, &quot;accessToken&quot;:&quot;your-docker-password&quot;}&#39;
+</span></code></pre></div>
 <h2 id="validate">Validate<a class="headerlink" href="#validate" title="Permanent link">&para;</a></h2>
 <p>Validate the pull trough cache rules connectivity:
 <div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>for i in docker-hub ecr k8s quay ; do aws ecr validate-pull-through-cache-rule --ecr-repository-prefix $i --region us-east-1; done
@@ -1420,10 +1415,14 @@ Expected output:
 </span><span id="__span-4-41"><a id="__codelineno-4-41" name="__codelineno-4-41" href="#__codelineno-4-41"></a>kube-system             metrics-server-5d6489d58d-pbrxv                             1/1     Running     0          10m
 </span></code></pre></div></p>
 <h2 id="destroy">Destroy<a class="headerlink" href="#destroy" title="Permanent link">&para;</a></h2>
+<p>ECR repositories are automatically created via pull through cache and can be deleted using the following command.
+NOTE: This commands deletes all the ecr repositories in a region.
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>for REPO in $(aws ecr describe-repositories --query &#39;repositories[].repositoryName&#39; --output text); do aws ecr delete-repository --repository-name $REPO --force ; done
+</span></code></pre></div></p>
 <!-- BEGIN INCLUDE ../../docs/_partials/destroy.md -->
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints_addons&quot;</span><span class="w"> </span>-auto-approve
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks&quot;</span><span class="w"> </span>-auto-approve
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints_addons&quot;</span><span class="w"> </span>-auto-approve
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks&quot;</span><span class="w"> </span>-auto-approve
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
 </span></code></pre></div>
 <p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#destroy">here</a> for more details on cleaning up the resources created.</p>
 <!-- END INCLUDE -->
