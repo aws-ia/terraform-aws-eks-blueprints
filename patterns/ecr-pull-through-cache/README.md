@@ -97,6 +97,11 @@ kube-system             metrics-server-5d6489d58d-pbrxv                         
 ```
 
 ## Destroy
+ECR repositories are automatically created via pull through cache and can be deleted using the following command.
+NOTE: This commands deletes all the ecr repositories in a region.
+```
+for REPO in $(aws ecr describe-repositories --query 'repositories[].repositoryName' --output text); do aws ecr delete-repository --repository-name $REPO --force ; done
+```  
 {%
    include-markdown "../../docs/_partials/destroy.md"
 %}
