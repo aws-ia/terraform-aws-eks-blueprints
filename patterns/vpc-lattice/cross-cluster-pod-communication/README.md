@@ -15,7 +15,7 @@ The cross-cluster communication will be established through Amazon VPC Lattice, 
 
 ## Deploy
 
-This pattern is composed of 3 Terraform stack, that needs to be deployed in order.
+This pattern is composed of 3 Terraform stacks, that needs to be deployed in order.
 
 ### 1. Create shared Environment
 
