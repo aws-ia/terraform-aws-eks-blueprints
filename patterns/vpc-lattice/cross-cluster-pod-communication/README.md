@@ -1,7 +1,7 @@
 
 # Amazon VPC Lattice - Multi-cluster secure communication
 
-This pattern showcases secure multi-cluster communication between two EKS cluster in different VPCs using VPC Lattice with IAM authorization. It illustrates service discovery and highlights how VPC Lattice facilitates communication between services in EKS clusters with overlapping CIDRs, eliminating the need for networking constructs like private NAT Gateways and Transit Gateways.
+This pattern showcases secure multi-cluster communication between two EKS clusters in different VPCs using VPC Lattice with IAM authorization. It illustrates service discovery and highlights how VPC Lattice facilitates communication between services in EKS clusters with overlapping CIDRs, eliminating the need for networking constructs like private NAT Gateways and Transit Gateways.
 
 ## Scenario
 
