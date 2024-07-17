@@ -5,7 +5,7 @@ This pattern showcases secure multi-cluster communication between two EKS cluste
 
 ## Scenario
 
-With this solution we showcase how to configure Amazon VPC Lattice using the AWS Gateway API Controller in order to manage Amazon VPC Lattice resources through native K8S Gateway API objects. This pattern deploys two distinct VPCs each having it's own EKS cluster, which contain an application that will be used to demonstrate cross-cluster communication.
+With this solution we showcase how to configure Amazon VPC Lattice using the AWS Gateway API Controller in order to manage Amazon VPC Lattice resources through native Kubernetes Gateway API objects. This pattern deploys two distinct VPCs each having it's own EKS cluster, which contain an application that will be used to demonstrate cross-cluster communication.
 
 The cross-cluster communication will be established through Amazon VPC Lattice, using a private Amazon Route53 domain name protected by a TLS Certificate issued by Certificate Managed and supported by an AWS Private Certificate Authority.
 
