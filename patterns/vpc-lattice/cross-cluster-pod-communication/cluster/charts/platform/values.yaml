@@ -1,5 +1,4 @@
 awsAccountID: to-replace
-region: to-replace
 
 #Allow source to connexct to app
 allowedCluster:
