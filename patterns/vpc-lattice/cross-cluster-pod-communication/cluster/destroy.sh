@@ -23,7 +23,7 @@ cleanup_vpc_resources() {
         aws ec2 delete-vpc-endpoints --vpc-endpoint-ids $endpoint
     done
 
-    #Dissassociate from VPC lattice
+    # Dissassociate from VPC lattice
     assoc=$(aws vpc-lattice list-service-network-vpc-associations --vpc-identifier $VPCID | jq ".items[0].arn" -r)
     echo $assoc
     aws vpc-lattice delete-service-network-vpc-association --service-network-vpc-association-identifier $assoc
@@ -72,4 +72,3 @@ if [ $? -eq 0 ]; then
 else
     echo "Error: Failed to delete VPC $VPCID, you may need to do some manuals cleanups"
 fi
-

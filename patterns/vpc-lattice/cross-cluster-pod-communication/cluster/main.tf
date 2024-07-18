@@ -36,6 +36,7 @@ locals {
 
   domain          = data.terraform_remote_state.environment.outputs.custom_domain_name
   certificate_arn = data.terraform_remote_state.environment.outputs.aws_acm_cert_arn
+  acmpca_arn      = data.terraform_remote_state.environment.outputs.aws_acmpca_cert_authority_arn
   custom_domain   = data.terraform_remote_state.environment.outputs.custom_domain_name
 
   app_namespace = "apps"

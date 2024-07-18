@@ -19,6 +19,11 @@ output "aws_acm_cert_arn" {
   value       = aws_acm_certificate.private_domain_cert.arn
 }
 
+output "aws_acmpca_cert_authority_arn" {
+  description = "Arn of ACM Private CA"
+  value       = aws_acmpca_certificate_authority.this.arn
+}
+
 output "route53_private_zone_arn" {
   description = "Arn of Amazon Route53 Private Zone"
   value       = aws_route53_zone.private_zone.arn

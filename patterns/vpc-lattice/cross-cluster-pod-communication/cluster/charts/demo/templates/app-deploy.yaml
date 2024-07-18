@@ -23,6 +23,9 @@ spec:
         env:
         - name: PodName
           value: "Hello from {{ .Release.Name }}-{{ .Values.version }}"
+        securityContext:
+          runAsUser: 0
+          runAsGroup: 1000  #different GID to prevent allow routing from iptable rule
         lifecycle:
           preStop:
             exec:

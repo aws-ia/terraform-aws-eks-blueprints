@@ -138,6 +138,33 @@ kubectl --context eks-cluster2 exec -ti -n apps deployments/demo-cluster2-v1 -c 
 AccessDeniedException: User: arn:aws:sts::12345678910:assumed-role/vpc-lattice-sigv4-client/eks-eks-cluste-demo-clust-a5c2432b-b84a-492f-8cbc-16f1fa5053eb is not authorized to perform: vpc-lattice-svcs:Invoke on resource: arn:aws:vpc-lattice:eu-west-1:12345678910:service/svc-00b57f32ed0a7b7c3/ because no service-based policy allows the vpc-lattice-svcs:Invoke action
 ```
 
+
+## Important
+
+In this setup, we used a Kyverno rule to inject iptables rules, and an envoy sidecar proxy into our application pod:
+- The iptables rule will route traffic from our application to the envoy proxy
+- The envoy proxy retrieve our Private CA certificate on startup, and install it so that it trust our VPC lattice service, through it's startup script:
+
+```bash
+kubectl  --context eks-cluster1 exec -it deploy/demo-cluster1-v1 -c envoy-sigv4 -n apps -- cat /usr/local/bin/launch_envoy.sh
+```
+
+```
+#!/bin/sh
+
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: MIT-0
+
+cat /etc/envoy/envoy.yaml.in | envsubst \$AWS_REGION,\$JWT_AUDIENCE,\$JWT_JWKS,\$JWT_ISSUER,\$JWKS_HOST,\$APP_DOMAIN > /etc/envoy/envoy.yaml
+aws acm-pca get-certificate-authority-certificate --certificate-authority-arn $CA_ARN --region $AWS_REGION --output text > /etc/pki/ca-trust/source/anchors/internal.pem
+update-ca-trust extract
+
+cat /etc/envoy/envoy.yaml
+/usr/local/bin/envoy --base-id 1 -l trace -c /etc/envoy/envoy.yaml
+```
+
+- Then envoy sign the request with sigv4, and proxy it in https to the targeted service.
+
 # Cleanup
 
 ## 1. We start by deleting the cluster2 terraform stack.

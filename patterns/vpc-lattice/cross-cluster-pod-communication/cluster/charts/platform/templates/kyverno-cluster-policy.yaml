@@ -6,7 +6,7 @@ metadata:
     policies.kyverno.io/title: Inject Sidecar Container
 spec:
   rules:
-    - name: inject-sidecar
+    - name: inject-sidecar-envoy
       match:
         any:
           - resources:
@@ -33,18 +33,23 @@ spec:
                       - >
                         iptables -t nat -N EGRESS_PROXY;
                         iptables -t nat -A OUTPUT -p tcp -d 169.254.171.0/24 -j EGRESS_PROXY;
-                        iptables -t nat -A EGRESS_PROXY -m owner --uid-owner 101 -j RETURN;
+                        iptables -t nat -A EGRESS_PROXY -m owner --gid-owner 0 -j RETURN;
                         iptables -t nat -A EGRESS_PROXY -p tcp -j REDIRECT --to-ports 8080;
+                        iptables -t nat -L -n -v;
                 containers:
-                  - name: sigv4proxy
-                    env:
-                      - name: AWS_REGION
-                        value: "{{ .Values.region }}"
-                    image: public.ecr.aws/seb-demo/aws-sigv4-proxy:latest
-                    args: ["--unsigned-payload", "--log-failed-requests", "-v", "--log-signing-process", "--name", "vpc-lattice-svcs", "--region", "{{ .Values.region }}", "--upstream-url-scheme", "http"]
-                    ports:
-                      - containerPort: 8080
-                        name: proxy
-                        protocol: TCP
+                  - name: envoy-sigv4
+                    image: public.ecr.aws/seb-demo/envoy-sigv4:v0.5
                     securityContext:
-                      runAsUser: 101
+                      runAsGroup: 0
+                    env:
+                    - name: APP_DOMAIN
+                      value: "example.com"
+                    - name: CA_ARN
+                      value: "{{ .Values.acmpCAArn }}"
+                    args: [
+                        "-l", "info"
+                    ]
+                    ports:
+                    - containerPort: 8080
+                      name: proxy
+                      protocol: TCP

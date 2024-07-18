@@ -196,10 +196,9 @@ resource "helm_release" "platform_application" {
     allowedCluster: ${terraform.workspace == "cluster1" ? "eks-cluster2" : "eks-cluster1"}
     allowedNamespace: "apps"
 
-    vpc1ID: ${module.vpc.vpc_id}
-    vpc2ID: to-replace
-
     certificateArn: ${local.certificate_arn}
+
+    acmpCAArn: ${local.acmpca_arn}
 
     customDomain: ${local.custom_domain}
   EOF
@@ -229,9 +228,6 @@ resource "helm_release" "demo_application" {
 
     allowedCluster: ${terraform.workspace == "cluster1" ? "eks-cluster2" : "eks-cluster1"}
     allowedNamespace: "apps"
-
-    vpc1ID: ${module.vpc.vpc_id}
-    vpc2ID: to-replace
 
     certificateArn: ${local.certificate_arn}
 
