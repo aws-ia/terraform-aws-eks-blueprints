@@ -165,6 +165,8 @@ In this setup, we used a Kyverno rule to inject iptables rules, and an envoy sid
 
 - Then envoy sign the request with sigv4, and proxy it in https to the targeted service.
 
+You can find [here](https://github.com/aws-samples/amazon-eks-security-immersion-day/tree/mainline/docker/envoy) the Dockerfile to create the envoy proxy. and [here](https://github.com/aws-samples/amazon-eks-security-immersion-day/tree/mainline/docker/http-server) for the application.
+
 # Cleanup
 
 ## 1. We start by deleting the cluster2 terraform stack.
