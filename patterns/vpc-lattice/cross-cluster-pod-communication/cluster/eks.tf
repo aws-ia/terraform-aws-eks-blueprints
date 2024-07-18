@@ -84,11 +84,7 @@ module "eks_blueprints_addons" {
       {
         name  = "defaultServiceNetwork"
         value = "lattice-gateway" # Specify this parameter to create a default VPC lattice service
-      },
-      # {
-      #   name  = "latticeEndpoint"
-      #   value = "https://vpc-lattice.${local.region}.amazonaws.com"
-      # }
+      }
     ]
     wait = true
   }

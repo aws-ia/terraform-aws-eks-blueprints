@@ -27,7 +27,6 @@ provider "helm" {
 }
 
 locals {
-  #TODO Change this
   name   = "eks-${terraform.workspace}"
   region = "us-west-2"
 
