@@ -4,7 +4,7 @@ provider "aws" {
 
 locals {
   name   = "vpc-lattice"
-  region = "eu-west-1"
+  region = "us-west-2"
 
   domain = var.custom_domain_name
 

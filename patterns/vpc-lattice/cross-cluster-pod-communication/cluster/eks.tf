@@ -190,7 +190,6 @@ resource "helm_release" "platform_application" {
   values = [
     <<EOF
     awsAccountID: "${data.aws_caller_identity.current.account_id}"
-    region: "${local.region}"
     version : "v1"
 
     allowedCluster: ${terraform.workspace == "cluster1" ? "eks-cluster2" : "eks-cluster1"}
@@ -223,7 +222,6 @@ resource "helm_release" "demo_application" {
   values = [
     <<EOF
     awsAccountID: "${data.aws_caller_identity.current.account_id}"
-    region: "${local.region}"
     version : "v1"
 
     allowedCluster: ${terraform.workspace == "cluster1" ? "eks-cluster2" : "eks-cluster1"}

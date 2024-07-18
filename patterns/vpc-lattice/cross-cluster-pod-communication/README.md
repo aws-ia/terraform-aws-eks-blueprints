@@ -185,6 +185,15 @@ In this setup, we used a Kyverno rule to inject iptables rules, and an envoy sid
 
 > If the VPC was not able to destroy, you may want to re-run the destroy command a second time
 
+If the VPC lattice service network still exists, you can remove it with the following command: 
+
+```bash
+SN=$(aws vpc-lattice list-service-networks --query 'items[?name==`lattice-gateway`].id' --output text)
+if [ -n "$SN" ]; then
+    aws vpc-lattice delete-service-network --service-network-id "$SN"
+fi
+```
+
 ## 3. Finally delete the environment terraform stack
 
 ```bash

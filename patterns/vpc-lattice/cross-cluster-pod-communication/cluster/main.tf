@@ -29,7 +29,7 @@ provider "helm" {
 locals {
   #TODO Change this
   name   = "eks-${terraform.workspace}"
-  region = "eu-west-1"
+  region = "us-west-2"
 
   cluster_vpc_cidr = "10.0.0.0/16"
   azs              = slice(data.aws_availability_zones.available.names, 0, 3)
