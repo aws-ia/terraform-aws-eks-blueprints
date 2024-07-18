@@ -17,7 +17,7 @@ jobs:
     # Do not remove environment setup without considering changes to pull_request_target and checkout of PR, as it may lead to checks running automatically against malicious code in PRs.
     environment: EKS Blueprints Test
     # Skip running on forks since it won't have access to secrets
-    if: github.repository == 'aws-ia/terraform-aws-eks-blueprints'
+    if: github.repository == 'abcxyzbank/terraform-aws-eks-blueprints'
     outputs:
       directories: ${{ steps.dirs.outputs.directories }}
     steps:
@@ -41,7 +41,7 @@ jobs:
     needs: getExampleDirectories
     runs-on: ubuntu-latest
     # Skip running on forks since it won't have access to secrets
-    if: github.repository == 'aws-ia/terraform-aws-eks-blueprints'
+    if: github.repository == 'abcxyzbank/terraform-aws-eks-blueprints'
 
     # These permissions are needed to interact with GitHub's OIDC Token endpoint.
     permissions:
@@ -87,10 +87,13 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4.0.2
         if: steps.changes.outputs.src== 'true'
         with:
-          role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
-          aws-region: us-west-2
-          role-duration-seconds: 3600
-          role-session-name: GithubActions-Session
+          # role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          # role-duration-seconds: 3600
+          # role-session-name: GithubActions-Session
 
       - name: Terraform Job
         uses: hashicorp/setup-terraform@v3
