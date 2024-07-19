@@ -56,7 +56,7 @@ module "eks_blueprints_addons" {
   karpenter = {
     repository_username = data.aws_ecrpublic_authorization_token.token.user_name
     repository_password = data.aws_ecrpublic_authorization_token.token.password
-    version             = "v0.33"
+    version             = "v0.36"
   }
 
   enable_bottlerocket_update_operator = true
@@ -98,6 +98,18 @@ module "eks_blueprints_addons" {
 ################################################################################
 # Karpenter resources
 ################################################################################
+resource "aws_eks_access_entry" "karpenter" {
+
+  cluster_name  = module.eks.cluster_name
+  principal_arn = module.eks_blueprints_addons.karpenter.node_iam_role_arn
+  type          = "EC2_LINUX"
+
+  tags = local.tags
+
+  depends_on = [module.eks_blueprints_addons]
+  }
+
+
 resource "helm_release" "karpenter_resources" {
   name  = "karpenter-resources"
   chart = "./karpenter-resources"

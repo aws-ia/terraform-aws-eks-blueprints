@@ -14,10 +14,10 @@ data "aws_ami" "eks_bottlerocket" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.21"
+  version = "~> 20.20"
 
   cluster_name                   = local.name
-  cluster_version                = "1.28"
+  cluster_version                = "1.30"
   cluster_endpoint_public_access = true
 
   cluster_enabled_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
@@ -37,18 +37,10 @@ module "eks" {
       before_compute = true
     }
   }
-
-  manage_aws_auth_configmap = true
-  aws_auth_roles = [
-    {
-      rolearn  = module.eks_blueprints_addons.karpenter.node_iam_role_arn
-      username = "system:node:{{EC2PrivateDNSName}}"
-      groups = [
-        "system:bootstrappers",
-        "system:nodes",
-      ]
-    },
-  ]
+  # Give the Terraform identity admin access to the cluster
+  # which will allow resources to be deployed into the cluster
+  enable_cluster_creator_admin_permissions = true
+  authentication_mode = "API"
 
   eks_managed_node_group_defaults = {
     ami_type       = "BOTTLEROCKET_x86_64"
