@@ -3,12 +3,7 @@
 ################################################################################
 locals {
   azs = slice(data.aws_availability_zones.available.names, 0, 3)
-}
-
-variable "cidr_block" {
-  type        = string
-  default     = "10.0.0.0/16"
-  description = "The CIDR block for the VPC"
+  vpc_cidr = "10.0.0.0/16"
 }
 
 module "vpc" {
@@ -16,11 +11,11 @@ module "vpc" {
   version = "~> 5.0"
 
   name = local.name
-  cidr = var.cidr_block
+  cidr = local.vpc_cidr
 
   azs             = local.azs
-  private_subnets = [for k, v in local.azs : cidrsubnet(var.cidr_block, 4, k)]
-  public_subnets  = [for k, v in local.azs : cidrsubnet(var.cidr_block, 8, k + 48)]
+  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 4, k)]
+  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 48)]
 
   enable_nat_gateway = true
   single_nat_gateway = true

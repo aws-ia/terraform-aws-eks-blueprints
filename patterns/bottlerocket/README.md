@@ -8,9 +8,9 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
 
 ## Validate
 
-* List all Nodes in the cluster. You should see three Nodes that belongs to the defined MNG, and should be in the `v1.28.1-eks-f0272c7` version since we are using a specific AMI ID to test the BRUPOP.
+1. List all Nodes in the cluster. You should see three Nodes that belongs to the defined MNG, and should be in the `v1.28.1-eks-f0272c7` version since we are using a specific AMI ID to test the BRUPOP.
 
-```bash
+```sh
 $ kubectl get nodes
 NAME                                        STATUS   ROLES    AGE     VERSION
 ip-10-0-2-29.us-west-2.compute.internal     Ready    <none>   7m24s   v1.28.1-eks-f0272c7
@@ -18,9 +18,9 @@ ip-10-0-26-48.us-west-2.compute.internal    Ready    <none>   7m23s   v1.28.1-ek
 ip-10-0-43-187.us-west-2.compute.internal   Ready    <none>   7m19s   v1.28.1-eks-f0272c7
 ```
 
-* Check for the Label `"bottlerocket.aws/updater-interface-version"="2.0.0"` that is set to all the Nodes in the MNG. This Label is responsible to mark the Nodes that will have updates managed by BRUPOP.
+2. Check for the Label `"bottlerocket.aws/updater-interface-version"="2.0.0"` that is set to all the Nodes in the MNG. This Label is responsible to mark the Nodes that will have updates managed by BRUPOP.
 
-```bash
+```sh
 $ kubectl get nodes -L bottlerocket.aws/updater-interface-version
 NAME                                        STATUS   ROLES    AGE   VERSION               UPDATER-INTERFACE-VERSION
 ip-10-0-2-29.us-west-2.compute.internal     Ready    <none>   79m   v1.28.1-eks-f0272c7   2.0.0
@@ -28,9 +28,9 @@ ip-10-0-26-48.us-west-2.compute.internal    Ready    <none>   79m   v1.28.1-eks-
 ip-10-0-43-187.us-west-2.compute.internal   Ready    <none>   79m   v1.28.1-eks-f0272c7   2.0.0
 ```
 
-* Validate if all the Pods are in Running status, and Ready.
+3. Validate if all the Pods are in Running status, and Ready.
 
-```bash
+```sh
 $ kubectl get pods -A
 NAMESPACE                 NAME                                            READY   STATUS    RESTARTS        AGE
 brupop-bottlerocket-aws   brupop-agent-2msn5                              1/1     Running   0               3m20s
@@ -55,7 +55,7 @@ kube-system               kube-proxy-gl5g9                                1/1   
 kube-system               kube-proxy-jwcqp                                1/1     Running   0               9m15s
 ```
 
-* Test the Bottlerocket Update Operator. By default in this pattern, it's set to check for updates every hour.
+4. Test the Bottlerocket Update Operator. By default in this pattern, it's set to check for updates every hour.
 
 ```hcl
   set = [{
@@ -66,14 +66,14 @@ kube-system               kube-proxy-jwcqp                                1/1   
 
 Describe any Node with the `v1.28.1-eks-f0272c7` version.
 
-```bash
+```sh
 $ kubectl describe node ip-10-0-43-187.us-west-2.compute.internal | grep Image
   OS Image:                   Bottlerocket OS 1.15.1 (aws-k8s-1.28)
 ```
 
-Wait until the next full hour and check that one of the Nodes were updated to a newer version without downtime, in this example, `v1.28.4-eks-d91a302`.
+5. Wait until the next full hour and check that one of the Nodes were updated to a newer version without downtime, in this example, `v1.28.4-eks-d91a302`.
 
-```bash
+```sh
 $ kubectl get nodes
 NAME                                        STATUS   ROLES    AGE   VERSION
 ip-10-0-2-29.us-west-2.compute.internal     Ready    <none>   83m   v1.28.4-eks-d91a302
@@ -81,16 +81,16 @@ ip-10-0-26-48.us-west-2.compute.internal    Ready    <none>   83m   v1.28.1-eks-
 ip-10-0-43-187.us-west-2.compute.internal   Ready    <none>   83m   v1.28.1-eks-f0272c7
 ```
 
-Describe the Node with the `v1.28.4-eks-d91a302` version.
+6. Describe the Node with the `v1.28.4-eks-d91a302` version.
 
-```bash
+```sh
 $ kubectl describe node ip-10-0-2-29.us-west-2.compute.internal | grep Image
   OS Image:                   Bottlerocket OS 1.18.0 (aws-k8s-1.28)
 ```
 
-* In the Karpenter's EC2NodeClass configuration, the default OS is also set to Bottlerocket, but in it's latest version, and the label to perform automated updates is not set, since Karpenter is configured to expire the Nodes every 24 hours.
+7. In the Karpenter's EC2NodeClass configuration, the default OS is also set to Bottlerocket, but in it's latest version, and the label to perform automated updates is not set, since Karpenter is configured to expire the Nodes every 24 hours.
 
-```bash
+```sh
 kubectl describe ec2nodeclasses.karpenter.k8s.aws default | grep Status -A50 | egrep 'Amis|Id|Name'
   Amis:
     Id:    ami-01b71889c3f284b0a
@@ -107,9 +107,9 @@ kubectl describe ec2nodeclasses.karpenter.k8s.aws default | grep Status -A50 | e
     Name:        bottlerocket-aws-k8s-1.28-aarch64-v1.18.0-7452c37e
 ```
 
-To validate that, use the `kubectl` command to create an example deployment, and scale it to any desired amount of replicas. Karpenter should provision a new Node in with the latest available version for Bottlerocket.
+8. To validate that, use the `kubectl` command to create an example deployment, and scale it to any desired amount of replicas. Karpenter should provision a new Node in with the latest available version for Bottlerocket.
 
-```bash
+```sh
 $ kubectl scale deployment inflate --replicas 10
 deployment.apps/inflate scaled
 

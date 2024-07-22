@@ -43,6 +43,7 @@ module "eks" {
   authentication_mode = "API"
 
   eks_managed_node_group_defaults = {
+    platform = "bottlerocket"
     ami_type       = "BOTTLEROCKET_x86_64"
     instance_types = ["m5.large", "m5a.large"]
 
@@ -51,8 +52,6 @@ module "eks" {
 
   eks_managed_node_groups = {
     bottlerocket = {
-      platform = "bottlerocket"
-
       # The following specifies a custom ami_id, this can be provided by a data-source. Remove/comment to use the latest Bottlerocket AMI available.
       ami_id = data.aws_ami.eks_bottlerocket.image_id
 

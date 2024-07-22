@@ -113,30 +113,23 @@ resource "aws_eks_access_entry" "karpenter" {
 resource "helm_release" "karpenter_resources" {
   name  = "karpenter-resources"
   chart = "./karpenter-resources"
-  set {
-    name  = "ec2nodeclass.securityGroupSelectorTerms.tags"
-    value = module.eks.cluster_name
-  }
-  set {
-    name  = "ec2nodeclass.subnetSelectorTerms.tags"
-    value = module.eks.cluster_name
-  }
-  set {
-    name  = "ec2nodeclass.tags"
-    value = module.eks.cluster_name
-  }
-  set {
-    name  = "ec2nodeclass.role"
-    value = split("/", module.eks_blueprints_addons.karpenter.node_iam_role_arn)[1]
-  }
-  set {
-    name  = "ec2nodeclass.blockDeviceMappings.ebs.kmsKeyID"
-    value = module.ebs_kms_key.key_id
-  }
   set_list {
     name  = "nodepool.zone"
     value = local.azs
   }
+  values = [<<-EOT
+    ec2nodeclass:
+      securityGroupSelectorTerms: 
+        tags: ${module.eks.cluster_name}
+      subnetSelectorTerms: 
+        tags: ${module.eks.cluster_name}
+      tags: ${module.eks.cluster_name}
+      role: ${split("/", module.eks_blueprints_addons.karpenter.node_iam_role_arn)[1]}
+      blockDeviceMappings:
+        ebs:
+          kmsKeyID: ${module.ebs_kms_key.key_id}
+  EOT
+  ]
 
   depends_on = [module.eks_blueprints_addons]
 }
