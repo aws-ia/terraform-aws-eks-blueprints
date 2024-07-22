@@ -1,17 +1,6 @@
 ################################################################################
 # EKS Cluster
 ################################################################################
-# This DataSource is for testing purposes in order to validate Botterocket Update Operator
-data "aws_ami" "eks_bottlerocket" {
-  most_recent = true
-  owners      = ["amazon"]
-
-  filter {
-    name   = "name"
-    values = ["bottlerocket-aws-k8s-1.28-x86_64-v1.15*"]
-  }
-}
-
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 20.20"
@@ -40,20 +29,16 @@ module "eks" {
   # Give the Terraform identity admin access to the cluster
   # which will allow resources to be deployed into the cluster
   enable_cluster_creator_admin_permissions = true
-  authentication_mode = "API"
-
-  eks_managed_node_group_defaults = {
-    platform = "bottlerocket"
-    ami_type       = "BOTTLEROCKET_x86_64"
-    instance_types = ["m5.large", "m5a.large"]
-
-    iam_role_attach_cni_policy = true
-  }
+  authentication_mode                      = "API"
 
   eks_managed_node_groups = {
     bottlerocket = {
-      # The following specifies a custom ami_id, this can be provided by a data-source. Remove/comment to use the latest Bottlerocket AMI available.
-      ami_id = data.aws_ami.eks_bottlerocket.image_id
+      ami_type       = "BOTTLEROCKET_x86_64"
+      instance_types = ["m5.large", "m5a.large"]
+
+      iam_role_attach_cni_policy = true
+      # The below AMI release version is for testing purposes in order to validate Botterocket Update Operator.
+      ami_release_version = "1.20.0-fcf71a47"
 
       min_size     = 1
       max_size     = 5
@@ -79,13 +64,8 @@ module "eks" {
           }
         }
       }
-      # The following line MUST be true when using a custom ami_id
-      use_custom_launch_template = true
 
-      # The next line MUST be uncomment when using a custom_launch_template is set to true
-      enable_bootstrap_user_data = true
-
-      # The following block customize your Bottlerocket user-data, you can comment if you don't need any customizations or add more parameters.
+      # The following block customize your Bottlerocket instances, including kubernetes tags, host and kernel parameters, and user-data.
       bootstrap_extra_args = <<-EOT
             [settings.host-containers.admin]
             enabled = false
@@ -101,7 +81,6 @@ module "eks" {
 
             [settings.kubernetes.node-taints]
             "CriticalAddonsOnly" = "true:NoSchedule"
-
           EOT
     }
   }

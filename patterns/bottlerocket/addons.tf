@@ -7,7 +7,7 @@ data "aws_ecrpublic_authorization_token" "token" {
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "~> 1.15"
+  version = "~> 1.16"
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
@@ -18,38 +18,24 @@ module "eks_blueprints_addons" {
   cert_manager = {
     wait          = true
     wait_for_jobs = true
-    set = [{
-      name  = "tolerations[0].key"
-      value = "CriticalAddonsOnly"
-      },
-      {
-        name  = "tolerations[0].operator"
-        value = "Exists"
-      },
-      {
-        name  = "cainjector.tolerations[0].key"
-        value = "CriticalAddonsOnly"
-      },
-      {
-        name  = "cainjector.tolerations[0].operator"
-        value = "Exists"
-      },
-      {
-        name  = "webhook.tolerations[0].key"
-        value = "CriticalAddonsOnly"
-      },
-      {
-        name  = "webhook.tolerations[0].operator"
-        value = "Exists"
-      },
-      {
-        name  = "startupapicheck.tolerations[0].key"
-        value = "CriticalAddonsOnly"
-      },
-      {
-        name  = "startupapicheck.tolerations[0].operator"
-        value = "Exists"
-    }]
+    values = [<<-EOT
+      tolerations:
+      - key: "CriticalAddonsOnly"
+        operator: "Exists"
+      cainjector:
+        tolerations:
+        - key: "CriticalAddonsOnly"
+          operator: "Exists"
+      webhook:
+        tolerations:
+        - key: "CriticalAddonsOnly"
+          operator: "Exists"
+      startupapicheck:
+        tolerations:
+        - key: "CriticalAddonsOnly"
+          operator: "Exists"
+    EOT
+    ]
   }
 
   enable_karpenter = true
@@ -61,34 +47,22 @@ module "eks_blueprints_addons" {
 
   enable_bottlerocket_update_operator = true
   bottlerocket_update_operator = {
-    set = [{
-      name  = "scheduler_cron_expression"
-      value = "0 * * * * * *" # Default Unix Cron syntax, set to check every hour. Example "0 0 23 * * Sat *" Perform update checks every Saturday at 23H / 11PM
-      },
-      {
-        name  = "placement.agent.tolerations[0].key"
-        value = "CriticalAddonsOnly"
-      },
-      {
-        name  = "placement.agent.tolerations[0].operator"
-        value = "Exists"
-      },
-      {
-        name  = "placement.controller.tolerations[0].key"
-        value = "CriticalAddonsOnly"
-      },
-      {
-        name  = "placement.controller.tolerations[0].operator"
-        value = "Exists"
-      },
-      {
-        name  = "placement.apiserver.tolerations[0].key"
-        value = "CriticalAddonsOnly"
-      },
-      {
-        name  = "placement.apiserver.tolerations[0].operator"
-        value = "Exists"
-      }
+    values = [<<-EOT
+      scheduler_cron_expression: "* * * * * * *"
+      placement:
+        agent:
+          tolerations:
+            - key: "CriticalAddonsOnly"
+              operator: "Exists"
+        controller:
+          tolerations:
+            - key: "CriticalAddonsOnly"
+              operator: "Exists"
+        apiserver:
+          tolerations:
+            - key: "CriticalAddonsOnly"
+              operator: "Exists"
+    EOT
     ]
   }
 
@@ -107,8 +81,7 @@ resource "aws_eks_access_entry" "karpenter" {
   tags = local.tags
 
   depends_on = [module.eks_blueprints_addons]
-  }
-
+}
 
 resource "helm_release" "karpenter_resources" {
   name  = "karpenter-resources"

@@ -10,7 +10,7 @@ locals {
   region = "us-west-2"
   tags = {
     Sample     = local.name
-    GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints" 
+    GithubRepo = "github.com/aws-ia/terraform-aws-eks-blueprints"
   }
 }
 
