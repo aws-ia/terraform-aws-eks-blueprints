@@ -1,6 +1,6 @@
-# EKS Cluster w/ NVIDIA GPUs and EFA for AI/ML Workloads
+# EKS Cluster w/ NVIDIA GPUs and EFA for Machine Learning
 
-This pattern demonstrates an Amazon EKS Cluster with an EFA-enabled nodegroup that utilizes `p5.48xlarge` instances with H100 NVIDIA GPUs used in distributed, multi-node AI/ML workloads.
+This pattern demonstrates an Amazon EKS Cluster with an EFA-enabled nodegroup that utilizes `p5.48xlarge` instances with H100 NVIDIA GPUs used in distributed, multi-node machine learning.
 
 The following components are demonstrated in this pattern:
 
@@ -17,13 +17,13 @@ The following components are demonstrated in this pattern:
 
 ## Code
 
-The code consists of the following files:
+```terraform hl_lines="24-26 32-67"
+{% include  "../../patterns/nvidia-gpu-efa/eks.tf" %}
+```
 
-[eks.tf](eks.tf) - template of the EKS cluster, containing a default node group and nvidia-efa node group.
-
-[helm.tf](helm.tf) - helm charts to install [nvidia-device-plugin](https://github.com/NVIDIA/k8s-device-plugin) and [efa-device-plugin](https://github.com/aws-samples/aws-efa-eks)
-
-[main.tf](main.tf) - main project template, includes [`eks.tf`](eks.tf) and [`helm.tf`](helm.tf)
+```terraform hl_lines="5-47"
+{% include  "../../patterns/nvidia-gpu-efa/helm.tf" %}
+```
 
 ## Deploy
 
@@ -31,7 +31,7 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
 
 ## Validate
 
-Note:
+!!! note
 
     Desired instance type can be specified in [eks.tf](eks.tf#L36). 
     Values shown below will change based on the instance type selected (i.e. - `p5.48xlarge` has 8 GPUs and 32 EFA interfaces).
@@ -39,7 +39,7 @@ Note:
     If you are using an on-demand capacity reservation (ODCR) for your instance type, please uncomment the `capacity_reservation_specification` block in `eks.tf`
     and specify a capacity_reservation_id. Please ensure that the region and availability zone of your ODCR match the ones used in `main.tf`.
 
-1. List the nodes with instance type details:
+1. List the nodes and their instance type:
 
     ```sh
     kubectl get nodes -L node.kubernetes.io/instance-type
@@ -91,13 +91,7 @@ Note:
 3. EFA info test
 
     This test prints a list of available EFA interfaces by using the `/opt/amazon/efa/bin/fi_info` utility.
-    Edit the script [generate-efa-info-test.sh](generate-efa-info-test.sh) and adjust the following environment variables if needed prior to running it:
-    
-    ```sh
-    export NUM_WORKERS=2
-    export GPU_PER_WORKER=8
-    export EFA_PER_WORKER=32
-    ```
+    The script [generate-efa-info-test.sh](generate-efa-info-test.sh) creates an MPIJob manifest file named `efa-info-test.yaml`. It assumes that there are two cluster nodes with 8 GPU's per node and 32 EFA adapters. If you are not using `p5.48xlarge` instances in your cluster, you may adjust the settings in the script prior to running it.
     
     `NUM_WORKERS` - number of nodes you want to run the test on
     `GPU_PER_WORKER` - number of GPUs available on each node
@@ -107,15 +101,13 @@ Note:
     ./generate-efa-info-test.sh
     ```
     
-    This script generates an MPIJob manifest file named `efa-info-test.yaml`.
-    
     To start the test apply the generated manifest to the cluster:
 
     ```sh
     kubectl apply -f ./efa-info-test.yaml
     ```
 
-    ```log
+    ```text
     mpijob.kubeflow.org/efa-info-test created
     ```    
 
@@ -180,9 +172,8 @@ Note:
 
 4. EFA NCCL test
 
-    The EFA NCCL test is used to measure network bandwidth by running the `/opt/nccl-tests/build/all_reduce_perf` utility. 
-    Please edit the script below and modify the environment variables at the beginning of the script as needed. 
-    Then generate the MPIjob manifest.
+    The EFA NCCL test is used to measure network bandwidth by running the `/opt/nccl-tests/build/all_reduce_perf` utility.  
+    Create an MPIjob manifest by executing the script below:
     
     ```sh
     ./generate-efa-nccl-test.sh
@@ -205,7 +196,7 @@ Note:
     kubectl logs -f $(kubectl get pods | grep launcher | cut -d ' ' -f 1)
     ```
 
-    ```log
+    ```text
     ...
     [1,0]<stdout>:#                                                              out-of-place                       in-place          
     [1,0]<stdout>:#       size         count      type   redop    root     time   algbw   busbw #wrong     time   algbw   busbw #wrong

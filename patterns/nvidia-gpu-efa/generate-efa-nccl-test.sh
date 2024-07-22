@@ -8,16 +8,18 @@ export GPU_PER_WORKER=8
 export EFA_PER_WORKER=32
 export TOTAL_GPUS=$((${NUM_WORKERS}*${GPU_PER_WORKER}))
 
-export NCCL_NVLS_ENABLE=1
-export NCCL_PROTO=LL,LL128,Simple
-export NCCL_ALGO=Ring
 export FI_PROVIDER=efa
 export FI_EFA_USE_DEVICE_RDMA=1
-export RDMAV_FORK_SAFE=1
-export NCCL_SHM_DISABLE=0
+export FI_EFA_FORK_SAFE=1
+
+export NCCL_DEBUG=WARN
+export NCCL_BUFFSIZE=8388608
+export NCCL_P2P_NET_CHUNKSIZE=524288
 
 export HUGEPAGES_2MI=5120Mi
-export MEMORY=10000Mi
+export MEMORY=32000Mi
+
+export DOLLAR='$'
 
 
 cat <<EOF >> efa-nccl-test.yaml
@@ -30,7 +32,6 @@ spec:
     cleanPodPolicy: Running
     backoffLimit: 20
   slotsPerWorker: ${GPU_PER_WORKER}
-  mpiImplementation: "OpenMPI"
   mpiReplicaSpecs:
     Launcher:
       replicas: 1
@@ -43,67 +44,54 @@ spec:
             imagePullPolicy: Always
             env:
              - name: LD_LIBRARY_PATH
-               value: "/opt/amazon/openmpi/lib:/opt/nccl/build/lib:/opt/amazon/efa/lib:/opt/aws-ofi-nccl/install/lib:/usr/local/nvidia/lib"
+               value: "/opt/amazon/openmpi/lib:/opt/nccl/build/lib:/opt/amazon/efa/lib:/opt/aws-ofi-nccl/install/lib:/usr/local/nvidia/lib:${DOLLAR}LD_LIBRARY_PATH"
              - name: PATH
-               value: "/opt/amazon/efa/bin:/usr/bin"
-             - name: XLA_FLAGS
-               value: "--xla_gpu_cuda_data_dir=/usr/local/cuda"
-             - name: TF_XLA_FLAGS
-               value: "--tf_xla_cpu_global_jit"
-             - name: NCCL_DEBUG
-               value: INFO
+               value: "${DOLLAR}PATH:/opt/amazon/efa/bin:/usr/bin"
             command:
             - /opt/amazon/openmpi/bin/mpirun
             - --allow-run-as-root
-            - --oversubscribe
             - --tag-output
-            #- -N
-            #- "8"
+            - -N
+            - "${GPU_PER_WORKER}"
             - -np
             - "${TOTAL_GPUS}"
             - -bind-to
             - none
-            - -map-by
-            - slot
             - -x
             - PATH
             - -x
             - LD_LIBRARY_PATH
             - -x
-            - XLA_FLAGS
+            - FI_PROVIDER=${FI_PROVIDER}
             - -x
-            - TF_XLA_FLAGS
+            - FI_EFA_USE_DEVICE_RDMA=${FI_EFA_USE_DEVICE_RDMA}
             - -x
-            - NCCL_DEBUG=INFO
-            #- -x
-            #- NCCL_NVLS_ENABLE=${NCCL_NVLS_ENABLE}
-            #- -x
-            #- NCCL_PROTO=${NCCL_PROTO}
-            #- -x
-            #- NCCL_ALGO=${NCCL_ALGO}
-            #- -x
-            #- FI_PROVIDER=${FI_PROVIDER}
-            #- -x
-            #- FI_EFA_USE_DEVICE_RDMA=${FI_EFA_USE_DEVICE_RDMA}
-            #- -x
-            #- RDMAV_FORK_SAFE=${RDMAV_FORK_SAFE}
-            #- -x
-            #- NCCL_SHM_DISABLE=${NCCL_SHM_DISABLE}
+            - FI_EFA_FORK_SAFE=${FI_EFA_FORK_SAFE}
+            - -x
+            - NCCL_DEBUG=${NCCL_DEBUG}
+            - -x
+            - NCCL_BUFFSIZE=${NCCL_BUFFSIZE}
+            - -x
+            - NCCL_P2P_NET_CHUNKSIZE=${NCCL_P2P_NET_CHUNKSIZE}
             - --mca
             - pml
-            - ^cm
+            - ^cm,ucx
+            - --mca
+            - btl
+            - tcp,self
+            - --mca
+            - btl_tcp_if_exclude
+            - lo,docker0,veth_def_agent
             - --mca
             - plm_rsh_agent
             - ssh
             - /opt/nccl-tests/build/all_reduce_perf
             - -b
-            - "1"
+            - "8"
             - -e
-            - 2G
+            - "16G"
             - -f
             - "2"
-            - -t
-            - "1"
             - -g
             - "1"
             - -c
