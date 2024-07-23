@@ -251,6 +251,6 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
 
 ## Destroy
 
-```sh
-terraform destroy -auto-approve
-```
+{%
+   include-markdown "../../docs/_partials/destroy.md"
+%}
