@@ -100,7 +100,7 @@ module "eks_blueprints_addons" {
 
 module "gatekeeper" {
   source  = "aws-ia/eks-blueprints-addon/aws"
-  version = "1.1.1"
+  version = "~> 1.1"
 
   name             = "gatekeeper"
   description      = "A Helm chart to deploy gatekeeper project"
