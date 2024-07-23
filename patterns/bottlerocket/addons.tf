@@ -92,9 +92,9 @@ resource "helm_release" "karpenter_resources" {
   }
   values = [<<-EOT
     ec2nodeclass:
-      securityGroupSelectorTerms: 
+      securityGroupSelectorTerms:
         tags: ${module.eks.cluster_name}
-      subnetSelectorTerms: 
+      subnetSelectorTerms:
         tags: ${module.eks.cluster_name}
       tags: ${module.eks.cluster_name}
       role: ${split("/", module.eks_blueprints_addons.karpenter.node_iam_role_arn)[1]}
