@@ -1,14 +1,10 @@
-locals {
-  ecr_account_id  = var.ecr_account_id != "" ? var.ecr_account_id : data.aws_caller_identity.current.account_id
-  ecr_region      = var.ecr_region != "" ? var.ecr_region : local.region
-}
-
-module "secrets-manager" {
+module "secrets_manager" {
   source  = "terraform-aws-modules/secrets-manager/aws"
   version = "1.1.2"
 
-  name          = "ecr-pullthroughcache/docker"
-  secret_string = jsonencode(var.docker_secret)
+  name                    = "ecr-pullthroughcache/docker"
+  secret_string           = jsonencode(var.docker_secret)
+  recovery_window_in_days = 0
 }
 
 module "ecr" {
@@ -33,12 +29,12 @@ module "ecr" {
     dockerhub = {
       ecr_repository_prefix = "docker-hub"
       upstream_registry_url = "registry-1.docker.io"
-      credential_arn        = module.secrets-manager.secret_arn
+      credential_arn        = module.secrets_manager.secret_arn
     }
   }
 
   manage_registry_scanning_configuration = true
-  registry_scan_type                     = "BASIC"
+  registry_scan_type                     = "ENHANCED"
   registry_scan_rules = [
     {
       scan_frequency = "SCAN_ON_PUSH"

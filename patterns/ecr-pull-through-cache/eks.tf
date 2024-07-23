@@ -36,12 +36,14 @@ module "eks" {
 
   eks_managed_node_groups = {
     initial = {
-      instance_types = ["m6i.large", "m5.large", "m5n.large", "m5zn.large"]
-      capacity_type  = var.capacity_type # defaults to SPOT
-      min_size       = 1
-      max_size       = 5
-      desired_size   = 3
-      subnet_ids     = module.vpc.private_subnets
+      instance_types = ["m5.large", "m5a.large"]
+
+      min_size     = 1
+      max_size     = 5
+      desired_size = 3
+
+      subnet_ids = module.vpc.private_subnets
+
       iam_role_additional_policies = {
         AmazonEC2ContainerRegistryReadOnly = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
         additional                         = aws_iam_policy.ecrpullthroughcache.arn
@@ -54,9 +56,8 @@ module "eks" {
   depends_on = [module.vpc]
 }
 
-
 resource "aws_iam_policy" "ecrpullthroughcache" {
-  name        = "ECRPullThroughCache"
+  name = "ECRPullThroughCache"
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -102,4 +103,3 @@ output "configure_kubectl" {
   description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
   value       = "aws eks --region ${local.region} update-kubeconfig --name ${module.eks.cluster_name} --alias ${module.eks.cluster_name}"
 }
-
