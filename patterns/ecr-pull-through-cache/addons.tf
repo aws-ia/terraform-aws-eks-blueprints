@@ -1,7 +1,5 @@
 locals {
-  ecr_account_id = var.ecr_account_id != "" ? var.ecr_account_id : data.aws_caller_identity.current.account_id
-  ecr_region     = var.ecr_region != "" ? var.ecr_region : local.region
-  ecr_url        = "${local.ecr_account_id}.dkr.ecr.${local.ecr_region}.amazonaws.com"
+  ecr_url        = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${local.region}.amazonaws.com"
 }
 
 module "eks_blueprints_addons" {
@@ -132,5 +130,5 @@ module "gatekeeper" {
   EOT
   ]
 
-  depends_on = [module.eks_blueprints_addons]
+  depends_on = [module.eks.cluster_addons]
 }
