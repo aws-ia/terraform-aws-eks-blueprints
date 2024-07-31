@@ -161,6 +161,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/vpc-lattice/cross-cluster-pod-communication/</loc>
+         <lastmod>2024-07-31</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/snippets/ipv4-prefix-delegation/</loc>
          <lastmod>2024-07-31</lastmod>
          <changefreq>daily</changefreq>
