@@ -1,0 +1,55 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: inject-sidecar
+  annotations:
+    policies.kyverno.io/title: Inject Sidecar Container
+spec:
+  rules:
+    - name: inject-sidecar-envoy
+      match:
+        any:
+          - resources:
+              kinds:
+                - Deployment
+      mutate:
+        patchStrategicMerge:
+          spec:
+            template:
+              metadata:
+                annotations:
+                  (vpc-lattices-svcs.amazonaws.com/agent-inject): "true"
+              spec:
+                initContainers: # IPTables rules are updated in init container
+                  - image: public.ecr.aws/seb-demo/iptables:v1
+                    name: iptables-init
+                    securityContext:
+                      capabilities:
+                        add:
+                          - NET_ADMIN
+                    command: # Adding --uid-owner 101 here to prevent traffic from envoy proxy itself from being redirected, which prevents an infinite loop
+                      - /bin/sh
+                      - -c
+                      - >
+                        iptables -t nat -N EGRESS_PROXY;
+                        iptables -t nat -A OUTPUT -p tcp -d 169.254.171.0/24 -j EGRESS_PROXY;
+                        iptables -t nat -A EGRESS_PROXY -m owner --gid-owner 0 -j RETURN;
+                        iptables -t nat -A EGRESS_PROXY -p tcp -j REDIRECT --to-ports 8080;
+                        iptables -t nat -L -n -v;
+                containers:
+                  - name: envoy-sigv4
+                    image: public.ecr.aws/seb-demo/envoy-sigv4:v0.5
+                    securityContext:
+                      runAsGroup: 0
+                    env:
+                    - name: APP_DOMAIN
+                      value: "example.com"
+                    - name: CA_ARN
+                      value: "{{ .Values.acmpCAArn }}"
+                    args: [
+                        "-l", "info"
+                    ]
+                    ports:
+                    - containerPort: 8080
+                      name: proxy
+                      protocol: TCP

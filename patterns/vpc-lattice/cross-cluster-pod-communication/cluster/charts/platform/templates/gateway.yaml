@@ -1,0 +1,74 @@
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: Gateway
+metadata:
+  name: {{ .Release.Namespace }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  gatewayClassName: amazon-vpc-lattice
+  listeners:
+  - name: http-listener
+    port: 80
+    protocol: HTTP
+    allowedRoutes:
+      kinds:
+      - kind: HTTPRoute
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            allow-attachment-to-infra-gw: "true"
+  - name: https-listener-with-default-domain
+    port: 443
+    protocol: HTTPS
+    allowedRoutes:
+      kinds:
+      - kind: HTTPRoute
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            allow-attachment-to-infra-gw: "true"
+  - name: https-listener-with-custom-domain
+    port: 443
+    protocol: HTTPS
+    allowedRoutes:
+      kinds:
+      - kind: HTTPRoute
+      namespaces:
+        from: Selector
+        selector:
+          matchLabels:
+            allow-attachment-to-infra-gw: "true"
+    tls:
+      mode: Terminate
+      options:
+        application-networking.k8s.aws/certificate-arn: {{ .Values.certificateArn }}
+---
+#https://github.com/aws/aws-application-networking-k8s/blob/main/docs/api-types/iam-auth-policy.md?plain=1
+apiVersion: application-networking.k8s.aws/v1alpha1
+kind: IAMAuthPolicy
+metadata:
+    name: {{ .Release.Namespace }}-iam-auth-policy
+    namespace: {{ .Release.Namespace }}
+spec:
+    targetRef:
+        group: "gateway.networking.k8s.io"
+        kind: Gateway
+        name: {{ .Release.Namespace }}
+    policy: |
+        {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Principal": "*",
+                    "Action": "vpc-lattice-svcs:Invoke",
+                    "Resource": "*",
+                    "Condition": {
+                        "StringNotEqualsIgnoreCase": {
+                            "aws:PrincipalType": "anonymous"
+                        }
+                    }
+                }
+            ]
+        }
