@@ -1,5 +1,5 @@
 ---
-title: Amazon VPC Lattice
+title: VPC lattice
 ---
 
 {%
