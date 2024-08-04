@@ -1,6 +1,6 @@
 # EKS Cluster w/ NVIDIA GPUs and EFA for Machine Learning
 
-This pattern demonstrates an Amazon EKS Cluster with an EFA-enabled nodegroup that utilizes `p5.48xlarge` instances with H100 NVIDIA GPUs used in distributed, multi-node machine learning workloads.
+This pattern demonstrates an Amazon EKS Cluster with an EFA-enabled nodegroup that utilizes `p5.48xlarge` instances with H100 NVIDIA GPUs used in distributed, multi-node machine learning.
 
 The following components are demonstrated in this pattern:
 
@@ -33,22 +33,28 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
 
 !!! note
 
-    The following steps are shown with `g5.8xlarge` for frugality. Values shown below will change based on the instance type selected (i.e. - `p5.48xlarge` has 8 GPUs and 32 EFA interfaces)
+    Desired instance type can be specified in [eks.tf](eks.tf#L36). 
+    Values shown below will change based on the instance type selected (i.e. - `p5.48xlarge` has 8 GPUs and 32 EFA interfaces).
+    A list of EFA-enabled instance types is available [here](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/efa.html#efa-instance-types).
+    If you are using an on-demand capacity reservation (ODCR) for your instance type, please uncomment the `capacity_reservation_specification` block in `eks.tf`
+    and specify a capacity_reservation_id. Please ensure that the region and availability zone of your ODCR match the ones used in `main.tf`.
 
-1. List the nodes by instance type:
+1. List the nodes and their instance type:
 
     ```sh
-    kubectl get nodes -o yaml | grep instance-type | grep node | grep -v f:
+    kubectl get nodes -L node.kubernetes.io/instance-type
     ```
 
     ```text
-    node.kubernetes.io/instance-type: g5.8xlarge
-    node.kubernetes.io/instance-type: m5.large
-    node.kubernetes.io/instance-type: m5.large
-    node.kubernetes.io/instance-type: g5.8xlarge
+    NAME                                        STATUS   ROLES    AGE   VERSION               INSTANCE-TYPE
+    ip-10-0-1-16.us-east-2.compute.internal     Ready    <none>   12h   v1.29.3-eks-ae9a62a   p5.48xlarge
+    ip-10-0-12-113.us-east-2.compute.internal   Ready    <none>   14h   v1.29.3-eks-ae9a62a   m5.large
+    ip-10-0-12-201.us-east-2.compute.internal   Ready    <none>   12h   v1.29.3-eks-ae9a62a   p5.48xlarge
+    ip-10-0-46-217.us-east-2.compute.internal   Ready    <none>   14h   v1.29.3-eks-ae9a62a   m5.large
+
     ```
 
-    You should see two EFA-enabled (in this example `g5.8xlarge`) nodes in the list.
+    You should see two EFA-enabled (in this example `p5.48xlarge`) nodes in the list.
 
 2. Deploy Kubeflow MPI Operator
 
@@ -56,7 +62,7 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
     To deploy the MPI operator execute the following:
 
     ```sh
-    kubectl apply -f https://raw.githubusercontent.com/kubeflow/mpi-operator/v0.3.0/deploy/v2beta1/mpi-operator.yaml
+    kubectl apply -f https://raw.githubusercontent.com/kubeflow/mpi-operator/v0.4.0/deploy/v2beta1/mpi-operator.yaml
     ```
 
     ```text
@@ -82,80 +88,165 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
     clusterrole.rbac.authorization.k8s.io/mpi-operator configured
     ```
 
-3. EFA test
+3. EFA info test
 
-    The results should shown that two EFA adapters are available (one for each worker pod)
+    This test prints a list of available EFA interfaces by using the `/opt/amazon/efa/bin/fi_info` utility.
+    The script [generate-efa-info-test.sh](generate-efa-info-test.sh) creates an MPIJob manifest file named `efa-info-test.yaml`. It assumes that there are two cluster nodes with 8 GPU's per node and 32 EFA adapters. If you are not using `p5.48xlarge` instances in your cluster, you may adjust the settings in the script prior to running it.
+    
+    `NUM_WORKERS` - number of nodes you want to run the test on
+    `GPU_PER_WORKER` - number of GPUs available on each node
+    `EFA_PER_WORKER` - number of EFA interfaces available on each node
+    
+    ```sh
+    ./generate-efa-info-test.sh
+    ```
+    
+    To start the test apply the generated manifest to the cluster:
 
     ```sh
-    kubectl apply -f https://raw.githubusercontent.com/aws-samples/aws-do-eks/main/Container-Root/eks/deployment/efa-device-plugin/test-efa.yaml
+    kubectl apply -f ./efa-info-test.yaml
     ```
 
     ```text
     mpijob.kubeflow.org/efa-info-test created
+    ```    
+
+    Observe the pods in the current namespace. You should see a launcher pod and worker pods.
+    It is normal for the launcher pod to restart a few times until the worker pods are fully running.
+
+    ```sh
+    watch kubectl get pods
     ```
 
-    Once the test launcher pod enters status `Running` or `Completed`, see the test logs using the command below:
+    ```log
+    NAME                           READY   STATUS             RESTARTS      AGE
+    efa-info-test-launcher-wm8pm   0/1     CrashLoopBackOff   1 (16s ago)   19s
+    efa-info-test-worker-0         1/1     Running            0             19s
+    efa-info-test-worker-1         1/1     Running            0             19s
+    ```
+
+    ```log
+    NAME                           READY   STATUS    RESTARTS      AGE
+    efa-info-test-launcher-wm8pm   1/1     Running   2 (18s ago)   21s
+    efa-info-test-worker-0         1/1     Running   0             21s
+    efa-info-test-worker-1         1/1     Running   0             21s
+    ```
+
+    ```log
+    NAME                           READY   STATUS      RESTARTS   AGE
+    efa-info-test-launcher-wm8pm   0/1     Completed   2          5m20s
+    ```
+
+    Once the test launcher pod enters status `Running` or `Completed`, 
+    see the test logs using the command below:
 
     ```sh
     kubectl logs -f $(kubectl get pods | grep launcher | cut -d ' ' -f 1)
     ```
 
-    ```text
-    Warning: Permanently added 'efa-info-test-worker-1.efa-info-test-worker.default.svc,10.11.13.224' (ECDSA) to the list of known hosts.
-    Warning: Permanently added 'efa-info-test-worker-0.efa-info-test-worker.default.svc,10.11.4.63' (ECDSA) to the list of known hosts.
+    ```log
+    Warning: Permanently added 'efa-info-test-worker-1.efa-info-test.default.svc' (ED25519) to the list of known hosts.
+    Warning: Permanently added 'efa-info-test-worker-0.efa-info-test.default.svc' (ED25519) to the list of known hosts.
     [1,1]<stdout>:provider: efa
     [1,1]<stdout>:    fabric: efa
-    [1,1]<stdout>:    domain: rdmap197s0-rdm
-    [1,1]<stdout>:    version: 116.10
+    [1,1]<stdout>:    domain: rdmap79s0-rdm
+    [1,1]<stdout>:    version: 120.10
     [1,1]<stdout>:    type: FI_EP_RDM
     [1,1]<stdout>:    protocol: FI_PROTO_EFA
+    
+    ...
+    
     [1,0]<stdout>:provider: efa
     [1,0]<stdout>:    fabric: efa
-    [1,0]<stdout>:    domain: rdmap197s0-rdm
-    [1,0]<stdout>:    version: 116.10
+    [1,0]<stdout>:    domain: rdmap201s0-rdm
+    [1,0]<stdout>:    version: 120.10
     [1,0]<stdout>:    type: FI_EP_RDM
     [1,0]<stdout>:    protocol: FI_PROTO_EFA
     ```
 
+    Finally, remove the job:
+    
+    ```sh
+    kubectl delete -f ./efa-info-test.yaml
+    ```
+
 4. EFA NCCL test
 
-    To run the EFA NCCL test please execute the following kubectl command:
+    The EFA NCCL test is used to measure network bandwidth by running the `/opt/nccl-tests/build/all_reduce_perf` utility.  
+    Create an MPIjob manifest by executing the script below:
+    
+    ```sh
+    ./generate-efa-nccl-test.sh
+    ```
+    
+    This script creates a file named `efa-nccl-test.yaml`. Apply the manifest to start the EFA nccl test.
 
     ```sh
-    kubectl apply -f https://raw.githubusercontent.com/aws-samples/aws-do-eks/main/Container-Root/eks/deployment/efa-device-plugin/test-nccl-efa.yaml
-    ```
+    kubectl apply -f ./efa-nccl-test.yaml
 
     ```text
-    mpijob.kubeflow.org/test-nccl-efa created
-    ```
+    mpijob.kubeflow.org/efa-nccl-test created
+    ``` 
 
-    Once the launcher pod enters `Running` or `Completed` state, execute the following to see the test logs:
-
+    Similarly to the EFA info test, a launcher and worker pods will be created. The launcher pod will be
+    in CrashLoopBackoff mode until the worker pods enter Running state. 
+    As soon as the launcher pod enters Running state as well, execute the following command to see the test logs:
+    
     ```sh
     kubectl logs -f $(kubectl get pods | grep launcher | cut -d ' ' -f 1)
     ```
 
     ```text
-    [1,0]<stdout>:test-nccl-efa-worker-0:21:21 [0] NCCL INFO NET/OFI Selected Provider is efa (found 1 nics)
-    [1,0]<stdout>:test-nccl-efa-worker-0:21:21 [0] NCCL INFO Using network AWS Libfabric
-    [1,0]<stdout>:NCCL version 2.12.7+cuda11.4
+    ...
+    [1,0]<stdout>:#                                                              out-of-place                       in-place          
+    [1,0]<stdout>:#       size         count      type   redop    root     time   algbw   busbw #wrong     time   algbw   busbw #wrong
+    [1,0]<stdout>:#        (B)    (elements)                               (us)  (GB/s)  (GB/s)            (us)  (GB/s)  (GB/s)       
+    [1,0]<stdout>:           0             0     float     sum      -1     0.13    0.00    0.00      0     0.12    0.00    0.00      0
+    [1,0]<stdout>:           0             0     float     sum      -1     0.12    0.00    0.00      0     0.12    0.00    0.00      0
+    [1,0]<stdout>:           4             1     float     sum      -1    65.43    0.00    0.00      0    65.82    0.00    0.00      0
+    [1,0]<stdout>:           8             2     float     sum      -1    64.86    0.00    0.00      0    65.67    0.00    0.00      0
+    [1,0]<stdout>:          16             4     float     sum      -1    64.72    0.00    0.00      0    64.83    0.00    0.00      0
+    [1,0]<stdout>:          32             8     float     sum      -1    65.47    0.00    0.00      0    65.16    0.00    0.00      0
+    [1,0]<stdout>:          64            16     float     sum      -1    65.34    0.00    0.00      0    65.58    0.00    0.00      0
+    [1,0]<stdout>:         128            32     float     sum      -1    65.99    0.00    0.00      0    66.28    0.00    0.00      0
+    [1,0]<stdout>:         256            64     float     sum      -1    75.81    0.00    0.01      0    66.76    0.00    0.01      0
+    [1,0]<stdout>:         512           128     float     sum      -1    69.43    0.01    0.01      0    67.18    0.01    0.01      0
+    [1,0]<stdout>:        1024           256     float     sum      -1    82.35    0.01    0.02      0    69.03    0.01    0.03      0
+    [1,0]<stdout>:        2048           512     float     sum      -1    72.49    0.03    0.05      0    71.37    0.03    0.05      0
+    [1,0]<stdout>:        4096          1024     float     sum      -1    77.47    0.05    0.10      0    77.42    0.05    0.10      0
+    [1,0]<stdout>:        8192          2048     float     sum      -1    78.10    0.10    0.20      0    78.01    0.11    0.20      0
+    [1,0]<stdout>:       16384          4096     float     sum      -1    93.35    0.18    0.33      0    80.11    0.20    0.38      0
+    [1,0]<stdout>:       32768          8192     float     sum      -1    106.6    0.31    0.58      0    96.22    0.34    0.64      0
+    [1,0]<stdout>:       65536         16384     float     sum      -1    120.6    0.54    1.02      0    89.06    0.74    1.38      0
+    [1,0]<stdout>:      131072         32768     float     sum      -1    93.62    1.40    2.62      0    106.3    1.23    2.31      0
+    [1,0]<stdout>:      262144         65536     float     sum      -1    111.5    2.35    4.41      0    111.6    2.35    4.41      0
+    [1,0]<stdout>:      524288        131072     float     sum      -1    121.2    4.33    8.11      0    109.9    4.77    8.94      0
+    [1,0]<stdout>:     1048576        262144     float     sum      -1    119.7    8.76   16.43      0    118.7    8.83   16.56      0
+    [1,0]<stdout>:     2097152        524288     float     sum      -1    143.9   14.58   27.33      0    144.2   14.55   27.28      0
+    [1,0]<stdout>:     4194304       1048576     float     sum      -1    163.7   25.62   48.03      0    163.6   25.64   48.08      0
+    [1,0]<stdout>:     8388608       2097152     float     sum      -1    195.3   42.95   80.54      0    194.9   43.03   80.69      0
+    [1,0]<stdout>:    16777216       4194304     float     sum      -1    278.6   60.22  112.91      0    279.9   59.94  112.38      0
+    [1,0]<stdout>:    33554432       8388608     float     sum      -1    459.7   73.00  136.87      0    433.9   77.34  145.01      0
+    [1,0]<stdout>:    67108864      16777216     float     sum      -1    587.2  114.29  214.29      0    587.1  114.31  214.34      0
+    [1,0]<stdout>:   134217728      33554432     float     sum      -1    926.6  144.85  271.60      0    851.5  157.63  295.55      0
+    [1,0]<stdout>:   268435456      67108864     float     sum      -1   1497.8  179.22  336.03      0   1496.0  179.44  336.45      0
+    [1,0]<stdout>:   536870912     134217728     float     sum      -1   2558.6  209.83  393.42      0   2560.8  209.65  393.10      0
+    [1,0]<stdout>:  1073741824     268435456     float     sum      -1   4553.6  235.80  442.13      0   4553.0  235.83  442.19      0
+    [1,0]<stdout>:  2147483648     536870912     float     sum      -1   9062.5  236.96  444.31      0   9060.4  237.02  444.41      0
+    [1,0]<stdout>:# Out of bounds values : 0 OK
+    [1,0]<stdout>:# Avg bus bandwidth    : 79.9352 
+    [1,0]<stdout>:#
     ```
 
-    Columns 8 and 12 in the output table show the in-place and out-of-place bus bandwidth calculated for the data size listed in column 1. In this case it is 3.13 and 3.12 GB/s respectively.
-    Your actual results may be slightly different. The calculated average bus bandwidth is displayed at the bottom of the log when the test finishes after it reaches the max data size,
-    specified in the mpijob manifest. In this result the average bus bandwidth is 1.15 GB/s.
+    Columns 9 and 13 in the output table show the in-place and out-of-place bus bandwidth calculated for the data size listed in column 2. 
+    In this case it is at maximum 444.31 and 444.41 GB/s respectively.
+    Your actual results may be slightly different. The calculated average bus bandwidth is displayed at the end of the log.
+    In this test run the average bus bandwidth was 79.9352 GB/s.
 
-    ```text
-    [1,0]<stdout>:#       size         count      type   redop    root     time   algbw   busbw #wrong     time   algbw   busbw #wrong
-    [1,0]<stdout>:#        (B)    (elements)                               (us)  (GB/s)  (GB/s)            (us)  (GB/s)  (GB/s)
-    ...
-    [1,0]<stdout>:      262144         65536     float     sum      -1    195.0    1.34    1.34      0    194.0    1.35    1.35      0
-    [1,0]<stdout>:      524288        131072     float     sum      -1    296.9    1.77    1.77      0    291.1    1.80    1.80      0
-    [1,0]<stdout>:     1048576        262144     float     sum      -1    583.4    1.80    1.80      0    579.6    1.81    1.81      0
-    [1,0]<stdout>:     2097152        524288     float     sum      -1    983.3    2.13    2.13      0    973.9    2.15    2.15      0
-    [1,0]<stdout>:     4194304       1048576     float     sum      -1   1745.4    2.40    2.40      0   1673.2    2.51    2.51      0
-    ...
-    [1,0]<stdout>:# Avg bus bandwidth    : 1.15327
+    Lastly, delete the MPIJob:
+    
+    ```sh
+    kubectl delete -f ./efa-nccl-test.yaml
     ```
 
 ## Destroy
