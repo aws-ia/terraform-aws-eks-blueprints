@@ -41,6 +41,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/bottlerocket/</loc>
+         <lastmod>2024-08-04</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/ecr-pull-through-cache/</loc>
          <lastmod>2024-08-04</lastmod>
          <changefreq>daily</changefreq>
