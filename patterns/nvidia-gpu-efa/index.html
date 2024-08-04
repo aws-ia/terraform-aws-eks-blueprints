@@ -1387,7 +1387,7 @@
 
 <!-- BEGIN INCLUDE ../../patterns/nvidia-gpu-efa/README.md -->
 <h1 id="eks-cluster-w-nvidia-gpus-and-efa-for-machine-learning">EKS Cluster w/ NVIDIA GPUs and EFA for Machine Learning<a class="headerlink" href="#eks-cluster-w-nvidia-gpus-and-efa-for-machine-learning" title="Permanent link">&para;</a></h1>
-<p>This pattern demonstrates an Amazon EKS Cluster with an EFA-enabled nodegroup that utilizes <code>p5.48xlarge</code> instances with H100 NVIDIA GPUs used in distributed, multi-node machine learning workloads.</p>
+<p>This pattern demonstrates an Amazon EKS Cluster with an EFA-enabled nodegroup that utilizes <code>p5.48xlarge</code> instances with H100 NVIDIA GPUs used in distributed, multi-node machine learning.</p>
 <p>The following components are demonstrated in this pattern:</p>
 <ul>
 <li>A "default" node group that supports addons and components that do not require GPUs nor EFA devices. Any pods that do not tolerate the taints of the GPU node group will be scheduled on instances within this node group.</li>
@@ -1536,25 +1536,30 @@
 <h2 id="validate">Validate<a class="headerlink" href="#validate" title="Permanent link">&para;</a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The following steps are shown with <code>g5.8xlarge</code> for frugality. Values shown below will change based on the instance type selected (i.e. - <code>p5.48xlarge</code> has 8 GPUs and 32 EFA interfaces)</p>
+<p>Desired instance type can be specified in <a href="../../patterns/nvidia-gpu-efa/eks.tf#L36">eks.tf</a>. 
+Values shown below will change based on the instance type selected (i.e. - <code>p5.48xlarge</code> has 8 GPUs and 32 EFA interfaces).
+A list of EFA-enabled instance types is available <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/efa.html#efa-instance-types">here</a>.
+If you are using an on-demand capacity reservation (ODCR) for your instance type, please uncomment the <code>capacity_reservation_specification</code> block in <code>eks.tf</code>
+and specify a capacity_reservation_id. Please ensure that the region and availability zone of your ODCR match the ones used in <code>main.tf</code>.</p>
 </div>
 <ol>
 <li>
-<p>List the nodes by instance type:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>nodes<span class="w"> </span>-o<span class="w"> </span>yaml<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>instance-type<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>node<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-v<span class="w"> </span>f:
+<p>List the nodes and their instance type:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>nodes<span class="w"> </span>-L<span class="w"> </span>node.kubernetes.io/instance-type
 </span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>node.kubernetes.io/instance-type: g5.8xlarge
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>node.kubernetes.io/instance-type: m5.large
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>node.kubernetes.io/instance-type: m5.large
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>node.kubernetes.io/instance-type: g5.8xlarge
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>NAME                                        STATUS   ROLES    AGE   VERSION               INSTANCE-TYPE
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>ip-10-0-1-16.us-east-2.compute.internal     Ready    &lt;none&gt;   12h   v1.29.3-eks-ae9a62a   p5.48xlarge
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>ip-10-0-12-113.us-east-2.compute.internal   Ready    &lt;none&gt;   14h   v1.29.3-eks-ae9a62a   m5.large
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>ip-10-0-12-201.us-east-2.compute.internal   Ready    &lt;none&gt;   12h   v1.29.3-eks-ae9a62a   p5.48xlarge
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>ip-10-0-46-217.us-east-2.compute.internal   Ready    &lt;none&gt;   14h   v1.29.3-eks-ae9a62a   m5.large
 </span></code></pre></div>
-<p>You should see two EFA-enabled (in this example <code>g5.8xlarge</code>) nodes in the list.</p>
+<p>You should see two EFA-enabled (in this example <code>p5.48xlarge</code>) nodes in the list.</p>
 </li>
 <li>
 <p>Deploy Kubeflow MPI Operator</p>
 <p>Kubeflow MPI Operator is required for running MPIJobs on EKS. We will use an MPIJob to test EFA.
 To deploy the MPI operator execute the following:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>https://raw.githubusercontent.com/kubeflow/mpi-operator/v0.3.0/deploy/v2beta1/mpi-operator.yaml
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>https://raw.githubusercontent.com/kubeflow/mpi-operator/v0.4.0/deploy/v2beta1/mpi-operator.yaml
 </span></code></pre></div>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>namespace/mpi-operator created
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>customresourcedefinition.apiextensions.k8s.io/mpijobs.kubeflow.org created
@@ -1574,66 +1579,133 @@ to allow the mpi-operator service account access to <code>leases</code> resource
 </span></code></pre></div>
 </li>
 <li>
-<p>EFA test</p>
-<p>The results should shown that two EFA adapters are available (one for each worker pod)</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>https://raw.githubusercontent.com/aws-samples/aws-do-eks/main/Container-Root/eks/deployment/efa-device-plugin/test-efa.yaml
+<p>EFA info test</p>
+<p>This test prints a list of available EFA interfaces by using the <code>/opt/amazon/efa/bin/fi_info</code> utility.
+The script <a href="../../patterns/nvidia-gpu-efa/generate-efa-info-test.sh">generate-efa-info-test.sh</a> creates an MPIJob manifest file named <code>efa-info-test.yaml</code>. It assumes that there are two cluster nodes with 8 GPU's per node and 32 EFA adapters. If you are not using <code>p5.48xlarge</code> instances in your cluster, you may adjust the settings in the script prior to running it.</p>
+<p><code>NUM_WORKERS</code> - number of nodes you want to run the test on
+<code>GPU_PER_WORKER</code> - number of GPUs available on each node
+<code>EFA_PER_WORKER</code> - number of EFA interfaces available on each node</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>./generate-efa-info-test.sh
 </span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>mpijob.kubeflow.org/efa-info-test created
+<p>To start the test apply the generated manifest to the cluster:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>./efa-info-test.yaml
 </span></code></pre></div>
-<p>Once the test launcher pod enters status <code>Running</code> or <code>Completed</code>, see the test logs using the command below:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>kubectl<span class="w"> </span>logs<span class="w"> </span>-f<span class="w"> </span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>launcher<span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39; &#39;</span><span class="w"> </span>-f<span class="w"> </span><span class="m">1</span><span class="k">)</span>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>mpijob.kubeflow.org/efa-info-test created
 </span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>Warning: Permanently added &#39;efa-info-test-worker-1.efa-info-test-worker.default.svc,10.11.13.224&#39; (ECDSA) to the list of known hosts.
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>Warning: Permanently added &#39;efa-info-test-worker-0.efa-info-test-worker.default.svc,10.11.4.63&#39; (ECDSA) to the list of known hosts.
-</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>[1,1]&lt;stdout&gt;:provider: efa
-</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>[1,1]&lt;stdout&gt;:    fabric: efa
-</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>[1,1]&lt;stdout&gt;:    domain: rdmap197s0-rdm
-</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>[1,1]&lt;stdout&gt;:    version: 116.10
-</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>[1,1]&lt;stdout&gt;:    type: FI_EP_RDM
-</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>[1,1]&lt;stdout&gt;:    protocol: FI_PROTO_EFA
-</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>[1,0]&lt;stdout&gt;:provider: efa
-</span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>[1,0]&lt;stdout&gt;:    fabric: efa
-</span><span id="__span-11-11"><a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>[1,0]&lt;stdout&gt;:    domain: rdmap197s0-rdm
-</span><span id="__span-11-12"><a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>[1,0]&lt;stdout&gt;:    version: 116.10
-</span><span id="__span-11-13"><a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>[1,0]&lt;stdout&gt;:    type: FI_EP_RDM
-</span><span id="__span-11-14"><a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a>[1,0]&lt;stdout&gt;:    protocol: FI_PROTO_EFA
+<p>Observe the pods in the current namespace. You should see a launcher pod and worker pods.
+It is normal for the launcher pod to restart a few times until the worker pods are fully running.</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>watch<span class="w"> </span>kubectl<span class="w"> </span>get<span class="w"> </span>pods
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>NAME                           READY   STATUS             RESTARTS      AGE
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>efa-info-test-launcher-wm8pm   0/1     CrashLoopBackOff   1 (16s ago)   19s
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>efa-info-test-worker-0         1/1     Running            0             19s
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>efa-info-test-worker-1         1/1     Running            0             19s
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>NAME                           READY   STATUS    RESTARTS      AGE
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>efa-info-test-launcher-wm8pm   1/1     Running   2 (18s ago)   21s
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>efa-info-test-worker-0         1/1     Running   0             21s
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>efa-info-test-worker-1         1/1     Running   0             21s
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>NAME                           READY   STATUS      RESTARTS   AGE
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>efa-info-test-launcher-wm8pm   0/1     Completed   2          5m20s
+</span></code></pre></div>
+<p>Once the test launcher pod enters status <code>Running</code> or <code>Completed</code>, 
+see the test logs using the command below:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>kubectl<span class="w"> </span>logs<span class="w"> </span>-f<span class="w"> </span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>launcher<span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39; &#39;</span><span class="w"> </span>-f<span class="w"> </span><span class="m">1</span><span class="k">)</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>Warning: Permanently added &#39;efa-info-test-worker-1.efa-info-test.default.svc&#39; (ED25519) to the list of known hosts.
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>Warning: Permanently added &#39;efa-info-test-worker-0.efa-info-test.default.svc&#39; (ED25519) to the list of known hosts.
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>[1,1]&lt;stdout&gt;:provider: efa
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>[1,1]&lt;stdout&gt;:    fabric: efa
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>[1,1]&lt;stdout&gt;:    domain: rdmap79s0-rdm
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>[1,1]&lt;stdout&gt;:    version: 120.10
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>[1,1]&lt;stdout&gt;:    type: FI_EP_RDM
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>[1,1]&lt;stdout&gt;:    protocol: FI_PROTO_EFA
+</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>
+</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>...
+</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a>
+</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a>[1,0]&lt;stdout&gt;:provider: efa
+</span><span id="__span-16-13"><a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a>[1,0]&lt;stdout&gt;:    fabric: efa
+</span><span id="__span-16-14"><a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a>[1,0]&lt;stdout&gt;:    domain: rdmap201s0-rdm
+</span><span id="__span-16-15"><a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a>[1,0]&lt;stdout&gt;:    version: 120.10
+</span><span id="__span-16-16"><a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a>[1,0]&lt;stdout&gt;:    type: FI_EP_RDM
+</span><span id="__span-16-17"><a id="__codelineno-16-17" name="__codelineno-16-17" href="#__codelineno-16-17"></a>[1,0]&lt;stdout&gt;:    protocol: FI_PROTO_EFA
+</span></code></pre></div>
+<p>Finally, remove the job:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>./efa-info-test.yaml
 </span></code></pre></div>
 </li>
 <li>
 <p>EFA NCCL test</p>
-<p>To run the EFA NCCL test please execute the following kubectl command:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>https://raw.githubusercontent.com/aws-samples/aws-do-eks/main/Container-Root/eks/deployment/efa-device-plugin/test-nccl-efa.yaml
+<p>The EFA NCCL test is used to measure network bandwidth by running the <code>/opt/nccl-tests/build/all_reduce_perf</code> utility.<br />
+Create an MPIjob manifest by executing the script below:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>./generate-efa-nccl-test.sh
 </span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>mpijob.kubeflow.org/test-nccl-efa created
+<p>This script creates a file named <code>efa-nccl-test.yaml</code>. Apply the manifest to start the EFA nccl test.</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>./efa-nccl-test.yaml
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="sb">```</span>text
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>mpijob.kubeflow.org/efa-nccl-test<span class="w"> </span>created
 </span></code></pre></div>
-<p>Once the launcher pod enters <code>Running</code> or <code>Completed</code> state, execute the following to see the test logs:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>kubectl<span class="w"> </span>logs<span class="w"> </span>-f<span class="w"> </span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>launcher<span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39; &#39;</span><span class="w"> </span>-f<span class="w"> </span><span class="m">1</span><span class="k">)</span>
+<p>Similarly to the EFA info test, a launcher and worker pods will be created. The launcher pod will be
+in CrashLoopBackoff mode until the worker pods enter Running state. 
+As soon as the launcher pod enters Running state as well, execute the following command to see the test logs:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>kubectl<span class="w"> </span>logs<span class="w"> </span>-f<span class="w"> </span><span class="k">$(</span>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>launcher<span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39; &#39;</span><span class="w"> </span>-f<span class="w"> </span><span class="m">1</span><span class="k">)</span>
 </span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>[1,0]&lt;stdout&gt;:test-nccl-efa-worker-0:21:21 [0] NCCL INFO NET/OFI Selected Provider is efa (found 1 nics)
-</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>[1,0]&lt;stdout&gt;:test-nccl-efa-worker-0:21:21 [0] NCCL INFO Using network AWS Libfabric
-</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>[1,0]&lt;stdout&gt;:NCCL version 2.12.7+cuda11.4
+<div class="language-text highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>...
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>[1,0]&lt;stdout&gt;:#                                                              out-of-place                       in-place          
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>[1,0]&lt;stdout&gt;:#       size         count      type   redop    root     time   algbw   busbw #wrong     time   algbw   busbw #wrong
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>[1,0]&lt;stdout&gt;:#        (B)    (elements)                               (us)  (GB/s)  (GB/s)            (us)  (GB/s)  (GB/s)       
+</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a>[1,0]&lt;stdout&gt;:           0             0     float     sum      -1     0.13    0.00    0.00      0     0.12    0.00    0.00      0
+</span><span id="__span-21-6"><a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a>[1,0]&lt;stdout&gt;:           0             0     float     sum      -1     0.12    0.00    0.00      0     0.12    0.00    0.00      0
+</span><span id="__span-21-7"><a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a>[1,0]&lt;stdout&gt;:           4             1     float     sum      -1    65.43    0.00    0.00      0    65.82    0.00    0.00      0
+</span><span id="__span-21-8"><a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a>[1,0]&lt;stdout&gt;:           8             2     float     sum      -1    64.86    0.00    0.00      0    65.67    0.00    0.00      0
+</span><span id="__span-21-9"><a id="__codelineno-21-9" name="__codelineno-21-9" href="#__codelineno-21-9"></a>[1,0]&lt;stdout&gt;:          16             4     float     sum      -1    64.72    0.00    0.00      0    64.83    0.00    0.00      0
+</span><span id="__span-21-10"><a id="__codelineno-21-10" name="__codelineno-21-10" href="#__codelineno-21-10"></a>[1,0]&lt;stdout&gt;:          32             8     float     sum      -1    65.47    0.00    0.00      0    65.16    0.00    0.00      0
+</span><span id="__span-21-11"><a id="__codelineno-21-11" name="__codelineno-21-11" href="#__codelineno-21-11"></a>[1,0]&lt;stdout&gt;:          64            16     float     sum      -1    65.34    0.00    0.00      0    65.58    0.00    0.00      0
+</span><span id="__span-21-12"><a id="__codelineno-21-12" name="__codelineno-21-12" href="#__codelineno-21-12"></a>[1,0]&lt;stdout&gt;:         128            32     float     sum      -1    65.99    0.00    0.00      0    66.28    0.00    0.00      0
+</span><span id="__span-21-13"><a id="__codelineno-21-13" name="__codelineno-21-13" href="#__codelineno-21-13"></a>[1,0]&lt;stdout&gt;:         256            64     float     sum      -1    75.81    0.00    0.01      0    66.76    0.00    0.01      0
+</span><span id="__span-21-14"><a id="__codelineno-21-14" name="__codelineno-21-14" href="#__codelineno-21-14"></a>[1,0]&lt;stdout&gt;:         512           128     float     sum      -1    69.43    0.01    0.01      0    67.18    0.01    0.01      0
+</span><span id="__span-21-15"><a id="__codelineno-21-15" name="__codelineno-21-15" href="#__codelineno-21-15"></a>[1,0]&lt;stdout&gt;:        1024           256     float     sum      -1    82.35    0.01    0.02      0    69.03    0.01    0.03      0
+</span><span id="__span-21-16"><a id="__codelineno-21-16" name="__codelineno-21-16" href="#__codelineno-21-16"></a>[1,0]&lt;stdout&gt;:        2048           512     float     sum      -1    72.49    0.03    0.05      0    71.37    0.03    0.05      0
+</span><span id="__span-21-17"><a id="__codelineno-21-17" name="__codelineno-21-17" href="#__codelineno-21-17"></a>[1,0]&lt;stdout&gt;:        4096          1024     float     sum      -1    77.47    0.05    0.10      0    77.42    0.05    0.10      0
+</span><span id="__span-21-18"><a id="__codelineno-21-18" name="__codelineno-21-18" href="#__codelineno-21-18"></a>[1,0]&lt;stdout&gt;:        8192          2048     float     sum      -1    78.10    0.10    0.20      0    78.01    0.11    0.20      0
+</span><span id="__span-21-19"><a id="__codelineno-21-19" name="__codelineno-21-19" href="#__codelineno-21-19"></a>[1,0]&lt;stdout&gt;:       16384          4096     float     sum      -1    93.35    0.18    0.33      0    80.11    0.20    0.38      0
+</span><span id="__span-21-20"><a id="__codelineno-21-20" name="__codelineno-21-20" href="#__codelineno-21-20"></a>[1,0]&lt;stdout&gt;:       32768          8192     float     sum      -1    106.6    0.31    0.58      0    96.22    0.34    0.64      0
+</span><span id="__span-21-21"><a id="__codelineno-21-21" name="__codelineno-21-21" href="#__codelineno-21-21"></a>[1,0]&lt;stdout&gt;:       65536         16384     float     sum      -1    120.6    0.54    1.02      0    89.06    0.74    1.38      0
+</span><span id="__span-21-22"><a id="__codelineno-21-22" name="__codelineno-21-22" href="#__codelineno-21-22"></a>[1,0]&lt;stdout&gt;:      131072         32768     float     sum      -1    93.62    1.40    2.62      0    106.3    1.23    2.31      0
+</span><span id="__span-21-23"><a id="__codelineno-21-23" name="__codelineno-21-23" href="#__codelineno-21-23"></a>[1,0]&lt;stdout&gt;:      262144         65536     float     sum      -1    111.5    2.35    4.41      0    111.6    2.35    4.41      0
+</span><span id="__span-21-24"><a id="__codelineno-21-24" name="__codelineno-21-24" href="#__codelineno-21-24"></a>[1,0]&lt;stdout&gt;:      524288        131072     float     sum      -1    121.2    4.33    8.11      0    109.9    4.77    8.94      0
+</span><span id="__span-21-25"><a id="__codelineno-21-25" name="__codelineno-21-25" href="#__codelineno-21-25"></a>[1,0]&lt;stdout&gt;:     1048576        262144     float     sum      -1    119.7    8.76   16.43      0    118.7    8.83   16.56      0
+</span><span id="__span-21-26"><a id="__codelineno-21-26" name="__codelineno-21-26" href="#__codelineno-21-26"></a>[1,0]&lt;stdout&gt;:     2097152        524288     float     sum      -1    143.9   14.58   27.33      0    144.2   14.55   27.28      0
+</span><span id="__span-21-27"><a id="__codelineno-21-27" name="__codelineno-21-27" href="#__codelineno-21-27"></a>[1,0]&lt;stdout&gt;:     4194304       1048576     float     sum      -1    163.7   25.62   48.03      0    163.6   25.64   48.08      0
+</span><span id="__span-21-28"><a id="__codelineno-21-28" name="__codelineno-21-28" href="#__codelineno-21-28"></a>[1,0]&lt;stdout&gt;:     8388608       2097152     float     sum      -1    195.3   42.95   80.54      0    194.9   43.03   80.69      0
+</span><span id="__span-21-29"><a id="__codelineno-21-29" name="__codelineno-21-29" href="#__codelineno-21-29"></a>[1,0]&lt;stdout&gt;:    16777216       4194304     float     sum      -1    278.6   60.22  112.91      0    279.9   59.94  112.38      0
+</span><span id="__span-21-30"><a id="__codelineno-21-30" name="__codelineno-21-30" href="#__codelineno-21-30"></a>[1,0]&lt;stdout&gt;:    33554432       8388608     float     sum      -1    459.7   73.00  136.87      0    433.9   77.34  145.01      0
+</span><span id="__span-21-31"><a id="__codelineno-21-31" name="__codelineno-21-31" href="#__codelineno-21-31"></a>[1,0]&lt;stdout&gt;:    67108864      16777216     float     sum      -1    587.2  114.29  214.29      0    587.1  114.31  214.34      0
+</span><span id="__span-21-32"><a id="__codelineno-21-32" name="__codelineno-21-32" href="#__codelineno-21-32"></a>[1,0]&lt;stdout&gt;:   134217728      33554432     float     sum      -1    926.6  144.85  271.60      0    851.5  157.63  295.55      0
+</span><span id="__span-21-33"><a id="__codelineno-21-33" name="__codelineno-21-33" href="#__codelineno-21-33"></a>[1,0]&lt;stdout&gt;:   268435456      67108864     float     sum      -1   1497.8  179.22  336.03      0   1496.0  179.44  336.45      0
+</span><span id="__span-21-34"><a id="__codelineno-21-34" name="__codelineno-21-34" href="#__codelineno-21-34"></a>[1,0]&lt;stdout&gt;:   536870912     134217728     float     sum      -1   2558.6  209.83  393.42      0   2560.8  209.65  393.10      0
+</span><span id="__span-21-35"><a id="__codelineno-21-35" name="__codelineno-21-35" href="#__codelineno-21-35"></a>[1,0]&lt;stdout&gt;:  1073741824     268435456     float     sum      -1   4553.6  235.80  442.13      0   4553.0  235.83  442.19      0
+</span><span id="__span-21-36"><a id="__codelineno-21-36" name="__codelineno-21-36" href="#__codelineno-21-36"></a>[1,0]&lt;stdout&gt;:  2147483648     536870912     float     sum      -1   9062.5  236.96  444.31      0   9060.4  237.02  444.41      0
+</span><span id="__span-21-37"><a id="__codelineno-21-37" name="__codelineno-21-37" href="#__codelineno-21-37"></a>[1,0]&lt;stdout&gt;:# Out of bounds values : 0 OK
+</span><span id="__span-21-38"><a id="__codelineno-21-38" name="__codelineno-21-38" href="#__codelineno-21-38"></a>[1,0]&lt;stdout&gt;:# Avg bus bandwidth    : 79.9352 
+</span><span id="__span-21-39"><a id="__codelineno-21-39" name="__codelineno-21-39" href="#__codelineno-21-39"></a>[1,0]&lt;stdout&gt;:#
 </span></code></pre></div>
-<p>Columns 8 and 12 in the output table show the in-place and out-of-place bus bandwidth calculated for the data size listed in column 1. In this case it is 3.13 and 3.12 GB/s respectively.
-Your actual results may be slightly different. The calculated average bus bandwidth is displayed at the bottom of the log when the test finishes after it reaches the max data size,
-specified in the mpijob manifest. In this result the average bus bandwidth is 1.15 GB/s.</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>[1,0]&lt;stdout&gt;:#       size         count      type   redop    root     time   algbw   busbw #wrong     time   algbw   busbw #wrong
-</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>[1,0]&lt;stdout&gt;:#        (B)    (elements)                               (us)  (GB/s)  (GB/s)            (us)  (GB/s)  (GB/s)
-</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>...
-</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>[1,0]&lt;stdout&gt;:      262144         65536     float     sum      -1    195.0    1.34    1.34      0    194.0    1.35    1.35      0
-</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>[1,0]&lt;stdout&gt;:      524288        131072     float     sum      -1    296.9    1.77    1.77      0    291.1    1.80    1.80      0
-</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>[1,0]&lt;stdout&gt;:     1048576        262144     float     sum      -1    583.4    1.80    1.80      0    579.6    1.81    1.81      0
-</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>[1,0]&lt;stdout&gt;:     2097152        524288     float     sum      -1    983.3    2.13    2.13      0    973.9    2.15    2.15      0
-</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>[1,0]&lt;stdout&gt;:     4194304       1048576     float     sum      -1   1745.4    2.40    2.40      0   1673.2    2.51    2.51      0
-</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>...
-</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>[1,0]&lt;stdout&gt;:# Avg bus bandwidth    : 1.15327
+<p>Columns 9 and 13 in the output table show the in-place and out-of-place bus bandwidth calculated for the data size listed in column 2. 
+In this case it is at maximum 444.31 and 444.41 GB/s respectively.
+Your actual results may be slightly different. The calculated average bus bandwidth is displayed at the end of the log.
+In this test run the average bus bandwidth was 79.9352 GB/s.</p>
+<p>Lastly, delete the MPIJob:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>kubectl<span class="w"> </span>delete<span class="w"> </span>-f<span class="w"> </span>./efa-nccl-test.yaml
 </span></code></pre></div>
 </li>
 </ol>
 <h2 id="destroy">Destroy<a class="headerlink" href="#destroy" title="Permanent link">&para;</a></h2>
 <!-- BEGIN INCLUDE ../../docs/_partials/destroy.md -->
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints_addons&quot;</span><span class="w"> </span>-auto-approve
-</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks&quot;</span><span class="w"> </span>-auto-approve
-</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints_addons&quot;</span><span class="w"> </span>-auto-approve
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks&quot;</span><span class="w"> </span>-auto-approve
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
 </span></code></pre></div>
 <p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#destroy">here</a> for more details on cleaning up the resources created.</p>
 <!-- END INCLUDE -->
