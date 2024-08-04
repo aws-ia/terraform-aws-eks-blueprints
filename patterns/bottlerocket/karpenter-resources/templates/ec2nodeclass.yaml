@@ -1,0 +1,28 @@
+apiVersion: karpenter.k8s.aws/v1beta1
+kind: EC2NodeClass
+metadata:
+  name: default
+spec:
+  amiFamily: Bottlerocket
+  role: {{- toYaml .Values.ec2nodeclass.role | nindent 4 }}
+  securityGroupSelectorTerms:
+  - tags:
+      karpenter.sh/discovery: {{ .Values.ec2nodeclass.securityGroupSelectorTerms.tags }}
+  subnetSelectorTerms:
+  - tags:
+      karpenter.sh/discovery: {{ .Values.ec2nodeclass.subnetSelectorTerms.tags }}
+  tags:
+    karpenter.sh/discovery: {{ .Values.ec2nodeclass.tags }}
+  blockDeviceMappings:
+    - deviceName: /dev/xvda
+      ebs:
+        encrypted: true
+        kmsKeyID: {{ .Values.ec2nodeclass.blockDeviceMappings.ebs.kmsKeyID }}
+        deleteOnTermination: true
+        volumeSize: 4Gi
+    - deviceName: /dev/xvdb
+      ebs:
+        encrypted: true
+        kmsKeyID: {{ .Values.ec2nodeclass.blockDeviceMappings.ebs.kmsKeyID }}
+        deleteOnTermination: true
+        volumeSize: 20Gi

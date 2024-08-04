@@ -1,0 +1,47 @@
+apiVersion: karpenter.sh/v1beta1
+kind: NodePool
+metadata:
+  name: default
+spec:
+  disruption:
+    consolidationPolicy: WhenUnderutilized
+    expireAfter: 24h0m0s
+  limits:
+    cpu: 1k
+  template:
+    spec:
+      kubelet:
+        maxPods: 110
+      nodeClassRef:
+        name: default
+      requirements:
+      - key: karpenter.k8s.aws/instance-category
+        operator: In
+        values:
+        - c
+        - m
+      - key: karpenter.k8s.aws/instance-cpu
+        operator: In
+        values:
+        - "8"
+        - "16"
+        - "32"
+      - key: karpenter.k8s.aws/instance-hypervisor
+        operator: In
+        values:
+        - nitro
+      - key: topology.kubernetes.io/zone
+        operator: In
+        values: {{- toYaml .Values.nodepool.zone | nindent 8 }}
+      - key: kubernetes.io/arch
+        operator: In
+        values:
+        - amd64
+      - key: karpenter.sh/capacity-type
+        operator: In
+        values:
+        - on-demand
+      - key: kubernetes.io/os
+        operator: In
+        values:
+        - linux

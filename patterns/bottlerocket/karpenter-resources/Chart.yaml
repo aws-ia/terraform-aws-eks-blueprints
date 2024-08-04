@@ -1,0 +1,4 @@
+apiVersion: v2
+name: karpenter-resources
+description: Helm chart to deploy Karpenter resources
+version: 0.0.1
