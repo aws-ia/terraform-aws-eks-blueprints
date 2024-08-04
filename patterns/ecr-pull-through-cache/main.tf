@@ -1,6 +1,3 @@
-# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-# SPDX-License-Identifier: Apache-2.0
-
 terraform {
   required_version = ">= 1.8"
 
@@ -11,10 +8,13 @@ terraform {
     }
     helm = {
       source  = "hashicorp/helm"
-      version = ">= 2.13"
+      version = ">= 2.9"
+    }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = ">= 2.20"
     }
   }
-
 }
 
 provider "aws" {
@@ -51,10 +51,10 @@ data "aws_caller_identity" "current" {}
 data "aws_availability_zones" "available" {}
 
 locals {
-  name   = var.name != "" ? var.name : "${basename(path.cwd)}"
-  region = var.region
+  name   = basename(path.cwd)
+  region = "us-west-2"
 
-  cluster_version = var.cluster_version
+  cluster_version = "1.30"
 
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)

@@ -3,20 +3,25 @@
 This pattern demonstrates how to set up ECR cache pull-through for public images. The Terraform code creates four cache pull-through rules for public image repositories: Docker, Kubernetes, Quay, and ECR. It also configures basic scanning on push for all repositories and includes a creation template. Additionally, it configures the EC2 node role with permissions to pull through images. The setup then installs ALB Controller, Metrics Server, Gatekeeper, ArgoCD, and Prometheus Operator, with their respective Helm charts configured in the values files to pull images through the pull-through cache.
 
 ## Deploy
+
 Follow the instructions [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#prerequisites) for the prerequisites and steps to deploy this pattern.
 
-```
+```sh
 terraform init
 terraform apply -var='docker_secret={"username":"your-docker-username", "accessToken":"your-docker-password"}'
 ```
 
 ## Validate
+
 Validate the pull trough cache rules connectivity:
-```
+
+```sh
 for i in docker-hub ecr k8s quay ; do aws ecr validate-pull-through-cache-rule --ecr-repository-prefix $i --region us-east-1; done
 ```
+
 Expected output:
-```
+
+```json
 {
     "ecrRepositoryPrefix": "docker-hub",
     "registryId": "111122223333",
@@ -47,12 +52,16 @@ Expected output:
     "failure": ""
 }
 ```
+
 Validate pods are pulling the images and in Running state:
-```
+
+```sh
 kubectl get pods -A
 ```
+
 Expected output:
-```
+
+```sh
 NAMESPACE               NAME                                                        READY   STATUS      RESTARTS   AGE
 argocd                  argo-cd-argocd-application-controller-0                     1/1     Running     0          2m26s
 argocd                  argo-cd-argocd-applicationset-controller-78ccd75cfb-7zfs5   1/1     Running     0          2m28s
@@ -97,11 +106,15 @@ kube-system             metrics-server-5d6489d58d-pbrxv                         
 ```
 
 ## Destroy
+
 ECR repositories are automatically created via pull through cache and can be deleted using the following command.
-NOTE: This commands deletes all the ecr repositories in a region.
-```
+
+> NOTE: This commands deletes all the ECR repositories in the specified region.
+
+```sh
 for REPO in $(aws ecr describe-repositories --query 'repositories[].repositoryName' --output text); do aws ecr delete-repository --repository-name $REPO --force ; done
-```  
+```
+
 {%
    include-markdown "../../docs/_partials/destroy.md"
 %}

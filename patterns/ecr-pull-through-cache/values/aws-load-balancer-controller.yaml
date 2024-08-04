@@ -1,3 +1,0 @@
-image:
-  repository: "${ecr_account_id}.dkr.ecr.${ecr_region}.amazonaws.com/ecr/eks/aws-load-balancer-controller"
-  pullPolicy: IfNotPresent
