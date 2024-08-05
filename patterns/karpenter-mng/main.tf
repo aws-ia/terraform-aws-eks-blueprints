@@ -52,7 +52,13 @@ data "aws_ecrpublic_authorization_token" "token" {
   provider = aws.virginia
 }
 
-data "aws_availability_zones" "available" {}
+data "aws_availability_zones" "available" {
+  #Do not include local zones
+  filter {
+    name   = "opt-in-status"
+    values = ["opt-in-not-required"]
+  }
+}
 
 locals {
   name   = "ex-${basename(path.cwd)}"
