@@ -24,10 +24,11 @@ provider "aws" {
   region = local.region
 }
 
-# Required for public ECR where Karpenter artifacts are hosted
+# This provider is required for ECR to autheticate with public repos. Please note ECR authetication requires us-east-1 as region hence its hardcoded below.
+# If your region is same as us-east-1 then you can just use one aws provider
 provider "aws" {
+  alias  = "ecr"
   region = "us-east-1"
-  alias  = "virginia"
 }
 
 provider "helm" {
@@ -49,7 +50,7 @@ provider "helm" {
 ################################################################################
 
 data "aws_ecrpublic_authorization_token" "token" {
-  provider = aws.virginia
+  provider = aws.ecr
 }
 
 data "aws_availability_zones" "available" {
