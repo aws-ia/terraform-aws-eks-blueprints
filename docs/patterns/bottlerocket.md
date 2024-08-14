@@ -1,5 +1,5 @@
 ---
-title: Bottlerocket 
+title: Bottlerocket
 ---
 
 {%

@@ -1,5 +1,5 @@
 locals {
-  ecr_url        = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${local.region}.amazonaws.com"
+  ecr_url = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${local.region}.amazonaws.com"
 }
 
 module "eks_blueprints_addons" {

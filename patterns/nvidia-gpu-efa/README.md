@@ -33,7 +33,7 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
 
 !!! note
 
-    Desired instance type can be specified in [eks.tf](eks.tf#L36). 
+    Desired instance type can be specified in [eks.tf](eks.tf#L36).
     Values shown below will change based on the instance type selected (i.e. - `p5.48xlarge` has 8 GPUs and 32 EFA interfaces).
     A list of EFA-enabled instance types is available [here](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/efa.html#efa-instance-types).
     If you are using an on-demand capacity reservation (ODCR) for your instance type, please uncomment the `capacity_reservation_specification` block in `eks.tf`
@@ -92,15 +92,15 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
 
     This test prints a list of available EFA interfaces by using the `/opt/amazon/efa/bin/fi_info` utility.
     The script [generate-efa-info-test.sh](generate-efa-info-test.sh) creates an MPIJob manifest file named `efa-info-test.yaml`. It assumes that there are two cluster nodes with 8 GPU's per node and 32 EFA adapters. If you are not using `p5.48xlarge` instances in your cluster, you may adjust the settings in the script prior to running it.
-    
+
     `NUM_WORKERS` - number of nodes you want to run the test on
     `GPU_PER_WORKER` - number of GPUs available on each node
     `EFA_PER_WORKER` - number of EFA interfaces available on each node
-    
+
     ```sh
     ./generate-efa-info-test.sh
     ```
-    
+
     To start the test apply the generated manifest to the cluster:
 
     ```sh
@@ -109,7 +109,7 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
 
     ```text
     mpijob.kubeflow.org/efa-info-test created
-    ```    
+    ```
 
     Observe the pods in the current namespace. You should see a launcher pod and worker pods.
     It is normal for the launcher pod to restart a few times until the worker pods are fully running.
@@ -137,7 +137,7 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
     efa-info-test-launcher-wm8pm   0/1     Completed   2          5m20s
     ```
 
-    Once the test launcher pod enters status `Running` or `Completed`, 
+    Once the test launcher pod enters status `Running` or `Completed`,
     see the test logs using the command below:
 
     ```sh
@@ -153,9 +153,9 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
     [1,1]<stdout>:    version: 120.10
     [1,1]<stdout>:    type: FI_EP_RDM
     [1,1]<stdout>:    protocol: FI_PROTO_EFA
-    
+
     ...
-    
+
     [1,0]<stdout>:provider: efa
     [1,0]<stdout>:    fabric: efa
     [1,0]<stdout>:    domain: rdmap201s0-rdm
@@ -165,20 +165,20 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
     ```
 
     Finally, remove the job:
-    
+
     ```sh
     kubectl delete -f ./efa-info-test.yaml
     ```
 
 4. EFA NCCL test
 
-    The EFA NCCL test is used to measure network bandwidth by running the `/opt/nccl-tests/build/all_reduce_perf` utility.  
+    The EFA NCCL test is used to measure network bandwidth by running the `/opt/nccl-tests/build/all_reduce_perf` utility.
     Create an MPIjob manifest by executing the script below:
-    
+
     ```sh
     ./generate-efa-nccl-test.sh
     ```
-    
+
     This script creates a file named `efa-nccl-test.yaml`. Apply the manifest to start the EFA nccl test.
 
     ```sh
@@ -186,21 +186,21 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
 
     ```text
     mpijob.kubeflow.org/efa-nccl-test created
-    ``` 
+    ```
 
     Similarly to the EFA info test, a launcher and worker pods will be created. The launcher pod will be
-    in CrashLoopBackoff mode until the worker pods enter Running state. 
+    in CrashLoopBackoff mode until the worker pods enter Running state.
     As soon as the launcher pod enters Running state as well, execute the following command to see the test logs:
-    
+
     ```sh
     kubectl logs -f $(kubectl get pods | grep launcher | cut -d ' ' -f 1)
     ```
 
     ```text
     ...
-    [1,0]<stdout>:#                                                              out-of-place                       in-place          
+    [1,0]<stdout>:#                                                              out-of-place                       in-place
     [1,0]<stdout>:#       size         count      type   redop    root     time   algbw   busbw #wrong     time   algbw   busbw #wrong
-    [1,0]<stdout>:#        (B)    (elements)                               (us)  (GB/s)  (GB/s)            (us)  (GB/s)  (GB/s)       
+    [1,0]<stdout>:#        (B)    (elements)                               (us)  (GB/s)  (GB/s)            (us)  (GB/s)  (GB/s)
     [1,0]<stdout>:           0             0     float     sum      -1     0.13    0.00    0.00      0     0.12    0.00    0.00      0
     [1,0]<stdout>:           0             0     float     sum      -1     0.12    0.00    0.00      0     0.12    0.00    0.00      0
     [1,0]<stdout>:           4             1     float     sum      -1    65.43    0.00    0.00      0    65.82    0.00    0.00      0
@@ -234,17 +234,17 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
     [1,0]<stdout>:  1073741824     268435456     float     sum      -1   4553.6  235.80  442.13      0   4553.0  235.83  442.19      0
     [1,0]<stdout>:  2147483648     536870912     float     sum      -1   9062.5  236.96  444.31      0   9060.4  237.02  444.41      0
     [1,0]<stdout>:# Out of bounds values : 0 OK
-    [1,0]<stdout>:# Avg bus bandwidth    : 79.9352 
+    [1,0]<stdout>:# Avg bus bandwidth    : 79.9352
     [1,0]<stdout>:#
     ```
 
-    Columns 9 and 13 in the output table show the in-place and out-of-place bus bandwidth calculated for the data size listed in column 2. 
+    Columns 9 and 13 in the output table show the in-place and out-of-place bus bandwidth calculated for the data size listed in column 2.
     In this case it is at maximum 444.31 and 444.41 GB/s respectively.
     Your actual results may be slightly different. The calculated average bus bandwidth is displayed at the end of the log.
     In this test run the average bus bandwidth was 79.9352 GB/s.
 
     Lastly, delete the MPIJob:
-    
+
     ```sh
     kubectl delete -f ./efa-nccl-test.yaml
     ```

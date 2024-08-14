@@ -90,4 +90,3 @@ spec:
                 nvidia.com/gpu: ${GPU_PER_WORKER}
                 vpc.amazonaws.com/efa: ${EFA_PER_WORKER}
 EOF
-
