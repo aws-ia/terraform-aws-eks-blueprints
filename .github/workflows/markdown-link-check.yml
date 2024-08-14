@@ -28,9 +28,9 @@ jobs:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
       - uses: actions/setup-node@v4
         with:
-          node-version: '16.x'
+          node-version: '20.x'
       - name: install markdown-link-check
-        run: npm install -g markdown-link-check@3.10.2
+        run: npm install -g markdown-link-check@3.12.2
       - name: markdown-link-check version
         run: npm list -g markdown-link-check
       - name: Run markdown-link-check on MD files
