@@ -1,0 +1,19 @@
+nav:
+  - Agones Game Controller: agones-game-controller.md
+  - Blue/Green Upgrade: blue-green-upgrade.md
+  - Bottlerocket: bottlerocket.md
+  - ECR Pull Through Cache: ecr-pull-through-cache.md
+  - External Secrets: external-secrets.md
+  - Fargate Serverless: fargate-serverless.md
+  - Fully Private Cluster: fully-private-cluster.md
+  - GitOps: gitops
+  - Istio: istio.md
+  - Karpenter on EKS Fargate: karpenter.md
+  - Karpenter on EKS MNG: karpenter-mng.md
+  - Kubecost: kubecost.md
+  - Machine Learning: machine-learning
+  - Multi-tenancy: multi-tenancy-with-teams.md
+  - Network: network
+  - SSO - IAM Identity Center: sso-iam-identity-center.md
+  - SSO - Okta: sso-okta.md
+  - Stateful: stateful.md
