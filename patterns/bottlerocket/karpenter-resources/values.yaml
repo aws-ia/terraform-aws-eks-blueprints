@@ -4,10 +4,10 @@ ec2nodeclass:
   role: ""
   securityGroupSelectorTerms:
     tags:
-       karpenter.sh/discovery: ""
+      karpenter.sh/discovery: ""
   subnetSelectorTerms:
     tags:
-       karpenter.sh/discovery: ""
+      karpenter.sh/discovery: ""
   blockDeviceMappings:
     ebs:
       kmsKeyID: ""

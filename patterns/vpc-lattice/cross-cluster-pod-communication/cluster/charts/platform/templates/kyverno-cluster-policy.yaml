@@ -42,14 +42,12 @@ spec:
                     securityContext:
                       runAsGroup: 0
                     env:
-                    - name: APP_DOMAIN
-                      value: "example.com"
-                    - name: CA_ARN
-                      value: "{{ .Values.acmpCAArn }}"
-                    args: [
-                        "-l", "info"
-                    ]
+                      - name: APP_DOMAIN
+                        value: "example.com"
+                      - name: CA_ARN
+                        value: "{{ .Values.acmpCAArn }}"
+                    args: ["-l", "info"]
                     ports:
-                    - containerPort: 8080
-                      name: proxy
-                      protocol: TCP
+                      - containerPort: 8080
+                        name: proxy
+                        protocol: TCP
