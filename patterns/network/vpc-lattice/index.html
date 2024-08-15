@@ -10,13 +10,13 @@
         <meta name="author" content="AWS">
       
       
-        <link rel="canonical" href="https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/vpc-lattice/client-server-communication/">
+        <link rel="canonical" href="https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/network/vpc-lattice/">
       
       
-        <link rel="prev" href="../../wireguard-with-cilium/">
+        <link rel="prev" href="../tls-with-aws-pca-issuer/">
       
       
-        <link rel="next" href="../cross-cluster-pod-communication/">
+        <link rel="next" href="../wireguard-with-cilium/">
       
       
       <link rel="icon" href="../../../images/colored-logo.png">
@@ -24,7 +24,7 @@
     
     
       
-        <title>Amazon VPC Lattice Client-server Communication - Amazon EKS Blueprints for Terraform</title>
+        <title>VPC lattice - Amazon EKS Blueprints for Terraform</title>
       
     
     
@@ -115,7 +115,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#amazon-vpc-lattice-simple-client-to-server-communication" class="md-skip">
+        <a href="#amazon-vpc-lattice" class="md-skip">
           Skip to content
         </a>
       
@@ -154,7 +154,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Amazon VPC Lattice Client-server Communication
+              VPC lattice
             
           </span>
         </div>
@@ -368,27 +368,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../aws-vpc-cni-network-policy/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    AWS VPC CNI Network Policy
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../blue-green-upgrade/" class="md-nav__link">
         
   
@@ -514,12 +493,47 @@
   
   
   
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_8" id="__nav_3_8_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    GitOps
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_8">
+            <span class="md-nav__icon md-icon"></span>
+            GitOps
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
-      <a href="../../gitops-getting-started-argocd/" class="md-nav__link">
+      <a href="../../gitops/gitops-getting-started-argocd/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    GitOps Getting Started (ArgoCD)
+    ArgoCD - Getting Started
   </span>
   
 
@@ -536,11 +550,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../../gitops-multi-cluster-hub-spoke-argocd/" class="md-nav__link">
+      <a href="../../gitops/gitops-multi-cluster-hub-spoke-argocd/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    GitOps Multi-Cluster Hub-Spoke Topology (ArgoCD)
+    ArgoCD - Multi-Cluster Hub & Spoke
   </span>
   
 
@@ -550,22 +564,9 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../ipv6-eks-cluster/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    IPv6 Networking
-  </span>
-  
-
-      </a>
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -583,27 +584,6 @@
   
   <span class="md-ellipsis">
     Istio
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../karpenter-mng/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Karpenter on EKS MNG
   </span>
   
 
@@ -641,6 +621,27 @@
   
   
     <li class="md-nav__item">
+      <a href="../../karpenter-mng/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Karpenter on EKS MNG
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../kubecost/" class="md-nav__link">
         
   
@@ -661,8 +662,43 @@
   
   
   
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_13" id="__nav_3_13_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Machine Learning
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_13">
+            <span class="md-nav__icon md-icon"></span>
+            Machine Learning
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
-      <a href="../../ml-capacity-block/" class="md-nav__link">
+      <a href="../../machine-learning/ml-capacity-block/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -683,28 +719,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../multi-tenancy-with-teams/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Multi-Tenancy w/ Teams
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../nvidia-gpu-efa/" class="md-nav__link">
+      <a href="../../machine-learning/nvidia-gpu-efa/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -725,7 +740,178 @@
   
   
     <li class="md-nav__item">
-      <a href="../../private-public-ingress/" class="md-nav__link">
+      <a href="../../machine-learning/targeted-odcr/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Targeted On-Demand Capacity Reservation (ODCR)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../multi-tenancy-with-teams/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Multi-tenancy
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_15" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_15" id="__nav_3_15_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Network
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_15_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_15">
+            <span class="md-nav__icon md-icon"></span>
+            Network
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../aws-vpc-cni-network-policy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    AWS VPC CNI Network Policy
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../client-server-communication/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Amazon VPC Lattice Client-server Communication
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cross-cluster-pod-communication/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Cross VPC and EKS clusters secure Communication
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ipv6-eks-cluster/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    IPv6 Networking
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../private-public-ingress/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -746,7 +932,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../privatelink-access/" class="md-nav__link">
+      <a href="../privatelink-access/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -755,6 +941,135 @@
   
 
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tls-with-aws-pca-issuer/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    TLS w/ AWS PCA Issuer
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    VPC lattice
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    VPC lattice
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Use cases
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#supporting-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      Supporting resources
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wireguard-with-cilium/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Wireguard /w Cilium
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -818,253 +1133,6 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../targeted-odcr/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Targeted On-Demand Capacity Reservation (ODCR)
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../tls-with-aws-pca-issuer/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    TLS w/ AWS PCA Issuer
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    VPC lattice
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../wireguard-with-cilium/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Wireguard /w Cilium
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-    
-  
-  
-  
-    
-    
-    
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_28" checked>
-        
-          
-          <label class="md-nav__link" for="__nav_3_28" id="__nav_3_28_label" tabindex="0">
-            
-  
-  <span class="md-ellipsis">
-    Vpc lattice
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_28_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_3_28">
-            <span class="md-nav__icon md-icon"></span>
-            Vpc lattice
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-    
-  
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Amazon VPC Lattice Client-server Communication
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        
-  
-  <span class="md-ellipsis">
-    Amazon VPC Lattice Client-server Communication
-  </span>
-  
-
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#scenario" class="md-nav__link">
-    <span class="md-ellipsis">
-      Scenario
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#deploy" class="md-nav__link">
-    <span class="md-ellipsis">
-      Deploy
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#validate" class="md-nav__link">
-    <span class="md-ellipsis">
-      Validate
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#destroy" class="md-nav__link">
-    <span class="md-ellipsis">
-      Destroy
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../cross-cluster-pod-communication/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Cross VPC and EKS clusters secure Communication
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1334,36 +1402,18 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#scenario" class="md-nav__link">
+  <a href="#use-cases" class="md-nav__link">
     <span class="md-ellipsis">
-      Scenario
+      Use cases
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#deploy" class="md-nav__link">
+  <a href="#supporting-resources" class="md-nav__link">
     <span class="md-ellipsis">
-      Deploy
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#validate" class="md-nav__link">
-    <span class="md-ellipsis">
-      Validate
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#destroy" class="md-nav__link">
-    <span class="md-ellipsis">
-      Destroy
+      Supporting resources
     </span>
   </a>
   
@@ -1387,40 +1437,25 @@
   
 
 
-<!-- BEGIN INCLUDE ../../../patterns/vpc-lattice/client-server-communication/README.md -->
-<h1 id="amazon-vpc-lattice-simple-client-to-server-communication">Amazon VPC Lattice - Simple Client to Server Communication<a class="headerlink" href="#amazon-vpc-lattice-simple-client-to-server-communication" title="Permanent link">&para;</a></h1>
-<p>This pattern demonstrates how to expose an EKS cluster hosted application to an internal consumer through Amazon VPC Lattice.</p>
-<h2 id="scenario">Scenario<a class="headerlink" href="#scenario" title="Permanent link">&para;</a></h2>
-<p>With this solution we showcase how to configure Amazon VPC Lattice using the AWS Gateway API Controller in order to manage Amazon VPC Lattice resources through native K8S Gateway API objects. This pattern deploys two distinct VPCs with a client application running in one of them and a server application in the other. The server application is deployed inside an EKS cluster and made exposed to the client application through Amazon VPC Lattice which establishes connectivity between the two applications. Further we demonstrate how to configure a custom domain name for the exposed service using Amazon Route53 and the external-dns project.</p>
-<p><img alt="diagram" src="https://raw.githubusercontent.com/aws-ia/terraform-aws-eks-blueprints/main/patterns/vpc-lattice/client-server-communication/assets/diagram.png" /></p>
-<h2 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h2>
-<p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#prerequisites">here</a> for the prerequisites and steps to deploy this pattern.</p>
-<h2 id="validate">Validate<a class="headerlink" href="#validate" title="Permanent link">&para;</a></h2>
-<p>In order to test the connectivity between the client and server, please follow the steps outlined below:</p>
-<ol>
-<li>Login to the management console of your AWS account and navigate to the EC2 service</li>
-<li>Select your the EC2 Instance with the name <strong>client</strong>, click <strong>Connect</strong>, choose <strong>Session Manager</strong> and click <strong>Connect</strong></li>
-<li>
-<p>Within the console test the connectivity to the server application by entering the following command:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>$<span class="w"> </span>curl<span class="w"> </span>-i<span class="w"> </span>http://server.example.com
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>HTTP/1.1<span class="w"> </span><span class="m">200</span><span class="w"> </span>OK
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>date:<span class="w"> </span>Thu,<span class="w"> </span><span class="m">14</span><span class="w"> </span>Dec<span class="w"> </span><span class="m">2023</span><span class="w"> </span><span class="m">08</span>:29:39<span class="w"> </span>GMT
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>content-length:<span class="w"> </span><span class="m">54</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>content-type:<span class="w"> </span>text/plain<span class="p">;</span><span class="w"> </span><span class="nv">charset</span><span class="o">=</span>utf-8
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>Requesting<span class="w"> </span>to<span class="w"> </span>Pod<span class="o">(</span>server-6f487b9bcd-5qm4v<span class="o">)</span>:<span class="w"> </span>server<span class="w"> </span>pod
-</span></code></pre></div>
+<!-- BEGIN INCLUDE ../../../patterns/vpc-lattice/README.md -->
+<h1 id="amazon-vpc-lattice">Amazon VPC Lattice<a class="headerlink" href="#amazon-vpc-lattice" title="Permanent link">&para;</a></h1>
+<p>This folder contains use case-driven patterns covering different aspects of the Amazon VPC Lattice service.</p>
+<h2 id="use-cases">Use cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../../../patterns/vpc-lattice/client-server-communication/">Simple Client to Server Communication</a><ul>
+<li>This pattern describes how to expose a simple API within an Amazon EKS cluster deployed in VPC A to a client application hosted in VPC B through Amazon VPC Lattice.</li>
+</ul>
 </li>
-</ol>
-<h2 id="destroy">Destroy<a class="headerlink" href="#destroy" title="Permanent link">&para;</a></h2>
-<!-- BEGIN INCLUDE ../../../docs/_partials/destroy.md -->
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints_addons&quot;</span><span class="w"> </span>-auto-approve
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks&quot;</span><span class="w"> </span>-auto-approve
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
-</span></code></pre></div>
-<p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#destroy">here</a> for more details on cleaning up the resources created.</p>
-<!-- END INCLUDE -->
-
+<li><a href="../../../patterns/vpc-lattice/cross-cluster-pod-communication/">Cross VPC and EKS clusters secure Communication</a><ul>
+<li>This patterns shows how to make 2 services in 2 different EKS clusters and VPC can communicate securely on private domain and sigV4 authorization.</li>
+</ul>
+</li>
+</ul>
+<h2 id="supporting-resources">Supporting resources<a class="headerlink" href="#supporting-resources" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="https://docs.aws.amazon.com/vpc-lattice/latest/ug/what-is-vpc-lattice.html">Documentation</a></li>
+<li><a href="https://www.gateway-api-controller.eks.aws.dev/">AWS Gateway API Controller</a></li>
+</ul>
 <!-- END INCLUDE -->
 
 

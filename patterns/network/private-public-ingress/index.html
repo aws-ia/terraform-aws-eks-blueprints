@@ -10,28 +10,28 @@
         <meta name="author" content="AWS">
       
       
-        <link rel="canonical" href="https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/aws-vpc-cni-network-policy/">
+        <link rel="canonical" href="https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/network/private-public-ingress/">
       
       
-        <link rel="prev" href="../agones-game-controller/">
+        <link rel="prev" href="../ipv6-eks-cluster/">
       
       
-        <link rel="next" href="../blue-green-upgrade/">
+        <link rel="next" href="../privatelink-access/">
       
       
-      <link rel="icon" href="../../images/colored-logo.png">
+      <link rel="icon" href="../../../images/colored-logo.png">
       <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.21">
     
     
       
-        <title>AWS VPC CNI Network Policy - Amazon EKS Blueprints for Terraform</title>
+        <title>Private and Public Ingress - Amazon EKS Blueprints for Terraform</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.66ac8b77.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.66ac8b77.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
       
       
   
@@ -91,7 +91,7 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -115,7 +115,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#amazon-eks-cluster-w-network-policies" class="md-skip">
+        <a href="#amazon-eks-private-and-public-ingress-example" class="md-skip">
           Skip to content
         </a>
       
@@ -135,9 +135,9 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="Amazon EKS Blueprints for Terraform" class="md-header__button md-logo" aria-label="Amazon EKS Blueprints for Terraform" data-md-component="logo">
+    <a href="../../.." title="Amazon EKS Blueprints for Terraform" class="md-header__button md-logo" aria-label="Amazon EKS Blueprints for Terraform" data-md-component="logo">
       
-  <img src="../../images/white-logo.png" alt="logo">
+  <img src="../../../images/white-logo.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -154,7 +154,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              AWS VPC CNI Network Policy
+              Private and Public Ingress
             
           </span>
         </div>
@@ -241,9 +241,9 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="Amazon EKS Blueprints for Terraform" class="md-nav__button md-logo" aria-label="Amazon EKS Blueprints for Terraform" data-md-component="logo">
+    <a href="../../.." title="Amazon EKS Blueprints for Terraform" class="md-nav__button md-logo" aria-label="Amazon EKS Blueprints for Terraform" data-md-component="logo">
       
-  <img src="../../images/white-logo.png" alt="logo">
+  <img src="../../../images/white-logo.png" alt="logo">
 
     </a>
     Amazon EKS Blueprints for Terraform
@@ -270,7 +270,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href="../../.." class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -290,7 +290,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting-started/" class="md-nav__link">
+      <a href="../../../getting-started/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -347,11 +347,554 @@
   
   
     <li class="md-nav__item">
-      <a href="../agones-game-controller/" class="md-nav__link">
+      <a href="../../agones-game-controller/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
     Agones Game Controller
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../blue-green-upgrade/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Blue/Green Upgrade
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bottlerocket/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bottlerocket
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecr-pull-through-cache/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ECR Pull Through Cache
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../external-secrets/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    External Secrets
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../fargate-serverless/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Fargate Serverless
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../fully-private-cluster/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Fully Private Cluster
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_8" id="__nav_3_8_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    GitOps
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_8">
+            <span class="md-nav__icon md-icon"></span>
+            GitOps
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gitops/gitops-getting-started-argocd/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ArgoCD - Getting Started
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gitops/gitops-multi-cluster-hub-spoke-argocd/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ArgoCD - Multi-Cluster Hub & Spoke
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../istio/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Istio
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../karpenter/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Karpenter on EKS Fargate
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../karpenter-mng/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Karpenter on EKS MNG
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../kubecost/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Kubecost
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_13" id="__nav_3_13_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Machine Learning
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_13">
+            <span class="md-nav__icon md-icon"></span>
+            Machine Learning
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../machine-learning/ml-capacity-block/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ML Capacity Block Reservation (CBR)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../machine-learning/nvidia-gpu-efa/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NVIDIA GPUs with EFA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../machine-learning/targeted-odcr/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Targeted On-Demand Capacity Reservation (ODCR)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../multi-tenancy-with-teams/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Multi-tenancy
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_15" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_15" id="__nav_3_15_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Network
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_15_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_15">
+            <span class="md-nav__icon md-icon"></span>
+            Network
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../aws-vpc-cni-network-policy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    AWS VPC CNI Network Policy
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../client-server-communication/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Amazon VPC Lattice Client-server Communication
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cross-cluster-pod-communication/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Cross VPC and EKS clusters secure Communication
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ipv6-eks-cluster/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    IPv6 Networking
   </span>
   
 
@@ -381,7 +924,7 @@
           
   
   <span class="md-ellipsis">
-    AWS VPC CNI Network Policy
+    Private and Public Ingress
   </span>
   
 
@@ -392,7 +935,7 @@
         
   
   <span class="md-ellipsis">
-    AWS VPC CNI Network Policy
+    Private and Public Ingress
   </span>
   
 
@@ -412,15 +955,6 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#scenario" class="md-nav__link">
-    <span class="md-ellipsis">
-      Scenario
-    </span>
-  </a>
-  
-</li>
       
         <li class="md-nav__item">
   <a href="#deploy" class="md-nav__link">
@@ -465,452 +999,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../blue-green-upgrade/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Blue/Green Upgrade
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../bottlerocket/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Bottlerocket
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ecr-pull-through-cache/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    ECR Pull Through Cache
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../external-secrets/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    External Secrets
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../fargate-serverless/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Fargate Serverless
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../fully-private-cluster/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Fully Private Cluster
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../gitops-getting-started-argocd/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    GitOps Getting Started (ArgoCD)
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../gitops-multi-cluster-hub-spoke-argocd/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    GitOps Multi-Cluster Hub-Spoke Topology (ArgoCD)
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ipv6-eks-cluster/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    IPv6 Networking
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../istio/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Istio
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../karpenter-mng/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Karpenter on EKS MNG
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../karpenter/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Karpenter on EKS Fargate
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../kubecost/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Kubecost
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ml-capacity-block/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    ML Capacity Block Reservation (CBR)
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../multi-tenancy-with-teams/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Multi-Tenancy w/ Teams
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../nvidia-gpu-efa/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    NVIDIA GPUs with EFA
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../private-public-ingress/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Private and Public Ingress
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../privatelink-access/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
     PrivateLink Access
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../sso-iam-identity-center/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    SSO - IAM Identity Center
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../sso-okta/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    SSO - Okta
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../stateful/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Stateful
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../targeted-odcr/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Targeted On-Demand Capacity Reservation (ODCR)
   </span>
   
 
@@ -983,86 +1076,72 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_28" >
-        
-          
-          <label class="md-nav__link" for="__nav_3_28" id="__nav_3_28_label" tabindex="0">
-            
-  
-  <span class="md-ellipsis">
-    Vpc lattice
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_28_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_28">
-            <span class="md-nav__icon md-icon"></span>
-            Vpc lattice
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../vpc-lattice/client-server-communication/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Amazon VPC Lattice Client-server Communication
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../vpc-lattice/cross-cluster-pod-communication/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Cross VPC and EKS clusters secure Communication
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sso-iam-identity-center/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SSO - IAM Identity Center
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sso-okta/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SSO - Okta
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../stateful/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Stateful
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -1117,7 +1196,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../snippets/ipv4-prefix-delegation/" class="md-nav__link">
+      <a href="../../../snippets/ipv4-prefix-delegation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1138,7 +1217,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../snippets/vpc-cni-custom-networking/" class="md-nav__link">
+      <a href="../../../snippets/vpc-cni-custom-networking/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1201,7 +1280,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../v4-to-v5/motivation/" class="md-nav__link">
+      <a href="../../../v4-to-v5/motivation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1222,7 +1301,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../v4-to-v5/cluster/" class="md-nav__link">
+      <a href="../../../v4-to-v5/cluster/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1243,7 +1322,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../v4-to-v5/addons/" class="md-nav__link">
+      <a href="../../../v4-to-v5/addons/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1264,7 +1343,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../v4-to-v5/teams/" class="md-nav__link">
+      <a href="../../../v4-to-v5/teams/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1292,7 +1371,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../faq/" class="md-nav__link">
+      <a href="../../../faq/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1330,15 +1409,6 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#scenario" class="md-nav__link">
-    <span class="md-ellipsis">
-      Scenario
-    </span>
-  </a>
-  
-</li>
       
         <li class="md-nav__item">
   <a href="#deploy" class="md-nav__link">
@@ -1385,47 +1455,28 @@
   
 
 
-<!-- BEGIN INCLUDE ../../patterns/aws-vpc-cni-network-policy/README.md -->
-<h1 id="amazon-eks-cluster-w-network-policies">Amazon EKS Cluster w/ Network Policies<a class="headerlink" href="#amazon-eks-cluster-w-network-policies" title="Permanent link">&para;</a></h1>
-<p>This pattern demonstrates an EKS cluster that uses the native Network Policy support provided by the Amazon VPC CNI (1.14.0 or higher).</p>
+<!-- BEGIN INCLUDE ../../../patterns/private-public-ingress/README.md -->
+<h1 id="amazon-eks-private-and-public-ingress-example">Amazon EKS Private and Public Ingress example<a class="headerlink" href="#amazon-eks-private-and-public-ingress-example" title="Permanent link">&para;</a></h1>
+<p>This example demonstrates how to provision an Amazon EKS cluster with two  ingress-nginx controllers; one to expose applications publicly and the other to expose applications internally. It also assigns security groups to the Network Load Balancers used to expose the internal and external ingress controllers.</p>
+<p>This solution:</p>
 <ul>
-<li><a href="https://docs.aws.amazon.com/eks/latest/userguide/cni-network-policy.html">Documentation</a></li>
-<li><a href="https://aws.amazon.com/blogs/containers/amazon-vpc-cni-now-supports-kubernetes-network-policies/">Launch Blog</a></li>
+<li>Installs an ingress-nginx controller for public traffic</li>
+<li>Installs an ingress-nginx controller for internal traffic</li>
 </ul>
-<h2 id="scenario">Scenario<a class="headerlink" href="#scenario" title="Permanent link">&para;</a></h2>
-<p>This pattern deploys an Amazon EKS Cluster with Network Policies support implemented by the Amazon VPC CNI. Further it deploys a simple demo application (distributed as a Helm Chart) and some sample Network Policies to restrict the traffic between different components of the application.</p>
-<p>For a detailed description of the demo application and the Network Policies, please refer to the Stars demo of network policy section in the official <a href="https://docs.aws.amazon.com/eks/latest/userguide/cni-network-policy.html">Documentation</a>.</p>
+<p>To expose your application services via an <code>Ingress</code> resource with this solution you can set the respective <code>ingressClassName</code> as either <code>ingress-nginx-external</code> or <code>ingress-nginx-internal</code>.</p>
+<p>Refer to the <a href="https://kubernetes-sigs.github.io/aws-load-balancer-controller">documentation</a> for <code>AWS Load Balancer controller</code> configuration options.</p>
 <h2 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h2>
 <p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#prerequisites">here</a> for the prerequisites and steps to deploy this pattern.</p>
 <h2 id="validate">Validate<a class="headerlink" href="#validate" title="Permanent link">&para;</a></h2>
-<ol>
-<li>
-<p>List out the pods running currently:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-A
-</span></code></pre></div>
-<p><code>text
-   NAMESPACE         NAME                                       READY   STATUS    RESTARTS   AGE
-[...]
-client            client-xlf2c                               1/1     Running   0          5m19s
-[...]
-management-ui     management-ui-qrb2g                        1/1     Running   0          5m24s
-stars             backend-sz87q                              1/1     Running   0          5m23s
-stars             frontend-c1cnf                             1/1     Running   0          5m21s
-[...]</code></p>
-<p>In your output, you should see pods in the namespaces shown in the following output. The NAMES of your pods and the number of pods in the READY column are different than those in the following output. Don't continue until you see pods with similar names and they all have Running in the STATUS column.</p>
-</li>
-<li>
-<p>Connect to the management user interface using the EXTERNAL IP of the running service and observe the traffic flow and restrictions based on the Network Policies deployed:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>service/management-ui<span class="w"> </span>-n<span class="w"> </span>management-ui
-</span></code></pre></div>
-<p>Open the browser based on the URL obtained from the previous step to see the connection map and restrictions put in place by the Network Policies deployed.</p>
-</li>
-</ol>
+<div class="admonition danger">
+<p class="admonition-title">TODO</p>
+<p>Add in validation steps</p>
+</div>
 <h2 id="destroy">Destroy<a class="headerlink" href="#destroy" title="Permanent link">&para;</a></h2>
 <!-- BEGIN INCLUDE ../../docs/_partials/destroy.md -->
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints_addons&quot;</span><span class="w"> </span>-auto-approve
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks&quot;</span><span class="w"> </span>-auto-approve
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints_addons&quot;</span><span class="w"> </span>-auto-approve
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks&quot;</span><span class="w"> </span>-auto-approve
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
 </span></code></pre></div>
 <p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#destroy">here</a> for more details on cleaning up the resources created.</p>
 <!-- END INCLUDE -->
@@ -1484,10 +1535,10 @@ stars             frontend-c1cnf                             1/1     Running   0
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs.sticky"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs.sticky"], "search": "../../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.a7c05c9e.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.a7c05c9e.min.js"></script>
       
     
   </body>

@@ -10,28 +10,28 @@
         <meta name="author" content="AWS">
       
       
-        <link rel="canonical" href="https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/wireguard-with-cilium/">
+        <link rel="canonical" href="https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/network/cross-cluster-pod-communication/">
       
       
-        <link rel="prev" href="../vpc-lattice/">
+        <link rel="prev" href="../client-server-communication/">
       
       
-        <link rel="next" href="../vpc-lattice/client-server-communication/">
+        <link rel="next" href="../ipv6-eks-cluster/">
       
       
-      <link rel="icon" href="../../images/colored-logo.png">
+      <link rel="icon" href="../../../images/colored-logo.png">
       <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.21">
     
     
       
-        <title>Wireguard /w Cilium - Amazon EKS Blueprints for Terraform</title>
+        <title>Cross VPC and EKS clusters secure Communication - Amazon EKS Blueprints for Terraform</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.66ac8b77.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.66ac8b77.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
       
       
   
@@ -91,7 +91,7 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -115,7 +115,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#transparent-encryption-with-cilium-and-wireguard" class="md-skip">
+        <a href="#amazon-vpc-lattice-multi-cluster-secure-communication" class="md-skip">
           Skip to content
         </a>
       
@@ -135,9 +135,9 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="Amazon EKS Blueprints for Terraform" class="md-header__button md-logo" aria-label="Amazon EKS Blueprints for Terraform" data-md-component="logo">
+    <a href="../../.." title="Amazon EKS Blueprints for Terraform" class="md-header__button md-logo" aria-label="Amazon EKS Blueprints for Terraform" data-md-component="logo">
       
-  <img src="../../images/white-logo.png" alt="logo">
+  <img src="../../../images/white-logo.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -154,7 +154,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Wireguard /w Cilium
+              Cross VPC and EKS clusters secure Communication
             
           </span>
         </div>
@@ -241,9 +241,9 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="Amazon EKS Blueprints for Terraform" class="md-nav__button md-logo" aria-label="Amazon EKS Blueprints for Terraform" data-md-component="logo">
+    <a href="../../.." title="Amazon EKS Blueprints for Terraform" class="md-nav__button md-logo" aria-label="Amazon EKS Blueprints for Terraform" data-md-component="logo">
       
-  <img src="../../images/white-logo.png" alt="logo">
+  <img src="../../../images/white-logo.png" alt="logo">
 
     </a>
     Amazon EKS Blueprints for Terraform
@@ -270,7 +270,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href="../../.." class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -290,7 +290,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting-started/" class="md-nav__link">
+      <a href="../../../getting-started/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -347,7 +347,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../agones-game-controller/" class="md-nav__link">
+      <a href="../../agones-game-controller/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -360,6 +360,465 @@
   
 
               
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../blue-green-upgrade/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Blue/Green Upgrade
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bottlerocket/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bottlerocket
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecr-pull-through-cache/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ECR Pull Through Cache
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../external-secrets/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    External Secrets
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../fargate-serverless/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Fargate Serverless
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../fully-private-cluster/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Fully Private Cluster
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_8" id="__nav_3_8_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    GitOps
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_8">
+            <span class="md-nav__icon md-icon"></span>
+            GitOps
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gitops/gitops-getting-started-argocd/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ArgoCD - Getting Started
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gitops/gitops-multi-cluster-hub-spoke-argocd/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ArgoCD - Multi-Cluster Hub & Spoke
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../istio/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Istio
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../karpenter/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Karpenter on EKS Fargate
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../karpenter-mng/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Karpenter on EKS MNG
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../kubecost/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Kubecost
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_13" id="__nav_3_13_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Machine Learning
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_13">
+            <span class="md-nav__icon md-icon"></span>
+            Machine Learning
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../machine-learning/ml-capacity-block/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ML Capacity Block Reservation (CBR)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../machine-learning/nvidia-gpu-efa/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NVIDIA GPUs with EFA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../machine-learning/targeted-odcr/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Targeted On-Demand Capacity Reservation (ODCR)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../multi-tenancy-with-teams/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Multi-tenancy
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_15" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_15" id="__nav_3_15_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Network
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_15_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_15">
+            <span class="md-nav__icon md-icon"></span>
+            Network
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -389,11 +848,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../blue-green-upgrade/" class="md-nav__link">
+      <a href="../client-server-communication/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Blue/Green Upgrade
+    Amazon VPC Lattice Client-server Communication
   </span>
   
 
@@ -407,144 +866,127 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../bottlerocket/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Cross VPC and EKS clusters secure Communication
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
-    Bottlerocket
+    Cross VPC and EKS clusters secure Communication
   </span>
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ecr-pull-through-cache/" class="md-nav__link">
+      
         
-  
-  <span class="md-ellipsis">
-    ECR Pull Through Cache
-  </span>
-  
 
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../external-secrets/" class="md-nav__link">
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#scenario" class="md-nav__link">
+    <span class="md-ellipsis">
+      Scenario
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deploy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deploy
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Deploy">
+      <ul class="md-nav__list">
         
+          <li class="md-nav__item">
+  <a href="#1-create-shared-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Create shared Environment
+    </span>
+  </a>
   
-  <span class="md-ellipsis">
-    External Secrets
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../fargate-serverless/" class="md-nav__link">
+</li>
         
+          <li class="md-nav__item">
+  <a href="#2-create-eks-cluster-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Create EKS cluster 1
+    </span>
+  </a>
   
-  <span class="md-ellipsis">
-    Fargate Serverless
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../fully-private-cluster/" class="md-nav__link">
+</li>
         
+          <li class="md-nav__item">
+  <a href="#3-create-eks-cluster-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Create EKS cluster 2
+    </span>
+  </a>
   
-  <span class="md-ellipsis">
-    Fully Private Cluster
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../gitops-getting-started-argocd/" class="md-nav__link">
+</li>
         
+      </ul>
+    </nav>
   
-  <span class="md-ellipsis">
-    GitOps Getting Started (ArgoCD)
-  </span>
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#validate" class="md-nav__link">
+    <span class="md-ellipsis">
+      Validate
+    </span>
+  </a>
   
-
-      </a>
-    </li>
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#important" class="md-nav__link">
+    <span class="md-ellipsis">
+      Important
+    </span>
+  </a>
   
-
-              
-            
-              
-                
+</li>
+      
+    </ul>
   
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../gitops-multi-cluster-hub-spoke-argocd/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    GitOps Multi-Cluster Hub-Spoke Topology (ArgoCD)
-  </span>
-  
-
-      </a>
+</nav>
+      
     </li>
   
 
@@ -562,153 +1004,6 @@
   
   <span class="md-ellipsis">
     IPv6 Networking
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../istio/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Istio
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../karpenter-mng/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Karpenter on EKS MNG
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../karpenter/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Karpenter on EKS Fargate
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../kubecost/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Kubecost
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ml-capacity-block/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    ML Capacity Block Reservation (CBR)
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../multi-tenancy-with-teams/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Multi-Tenancy w/ Teams
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../nvidia-gpu-efa/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    NVIDIA GPUs with EFA
   </span>
   
 
@@ -767,90 +1062,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../sso-iam-identity-center/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    SSO - IAM Identity Center
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../sso-okta/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    SSO - Okta
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../stateful/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Stateful
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../targeted-odcr/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Targeted On-Demand Capacity Reservation (ODCR)
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../tls-with-aws-pca-issuer/" class="md-nav__link">
         
   
@@ -890,167 +1101,14 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Wireguard /w Cilium
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../wireguard-with-cilium/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
     Wireguard /w Cilium
-  </span>
-  
-
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#focal-points" class="md-nav__link">
-    <span class="md-ellipsis">
-      Focal Points
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#deploy" class="md-nav__link">
-    <span class="md-ellipsis">
-      Deploy
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#validate" class="md-nav__link">
-    <span class="md-ellipsis">
-      Validate
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#destroy" class="md-nav__link">
-    <span class="md-ellipsis">
-      Destroy
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_28" >
-        
-          
-          <label class="md-nav__link" for="__nav_3_28" id="__nav_3_28_label" tabindex="0">
-            
-  
-  <span class="md-ellipsis">
-    Vpc lattice
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_28_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_28">
-            <span class="md-nav__icon md-icon"></span>
-            Vpc lattice
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../vpc-lattice/client-server-communication/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Amazon VPC Lattice Client-server Communication
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../vpc-lattice/cross-cluster-pod-communication/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Cross VPC and EKS clusters secure Communication
   </span>
   
 
@@ -1063,6 +1121,69 @@
           </ul>
         </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sso-iam-identity-center/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SSO - IAM Identity Center
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sso-okta/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SSO - Okta
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../stateful/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Stateful
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -1117,7 +1238,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../snippets/ipv4-prefix-delegation/" class="md-nav__link">
+      <a href="../../../snippets/ipv4-prefix-delegation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1138,7 +1259,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../snippets/vpc-cni-custom-networking/" class="md-nav__link">
+      <a href="../../../snippets/vpc-cni-custom-networking/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1201,7 +1322,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../v4-to-v5/motivation/" class="md-nav__link">
+      <a href="../../../v4-to-v5/motivation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1222,7 +1343,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../v4-to-v5/cluster/" class="md-nav__link">
+      <a href="../../../v4-to-v5/cluster/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1243,7 +1364,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../v4-to-v5/addons/" class="md-nav__link">
+      <a href="../../../v4-to-v5/addons/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1264,7 +1385,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../v4-to-v5/teams/" class="md-nav__link">
+      <a href="../../../v4-to-v5/teams/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1292,7 +1413,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../faq/" class="md-nav__link">
+      <a href="../../../faq/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1332,9 +1453,9 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#focal-points" class="md-nav__link">
+  <a href="#scenario" class="md-nav__link">
     <span class="md-ellipsis">
-      Focal Points
+      Scenario
     </span>
   </a>
   
@@ -1346,6 +1467,39 @@
       Deploy
     </span>
   </a>
+  
+    <nav class="md-nav" aria-label="Deploy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-create-shared-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Create shared Environment
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-create-eks-cluster-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Create EKS cluster 1
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-create-eks-cluster-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Create EKS cluster 2
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1359,9 +1513,9 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#destroy" class="md-nav__link">
+  <a href="#important" class="md-nav__link">
     <span class="md-ellipsis">
-      Destroy
+      Important
     </span>
   </a>
   
@@ -1385,182 +1539,146 @@
   
 
 
-<!-- BEGIN INCLUDE ../../patterns/wireguard-with-cilium/README.md -->
-<h1 id="transparent-encryption-with-cilium-and-wireguard">Transparent Encryption with Cilium and Wireguard<a class="headerlink" href="#transparent-encryption-with-cilium-and-wireguard" title="Permanent link">&para;</a></h1>
-<p>This pattern demonstrates Cilium configured in CNI chaining mode with the VPC CNI and with Wireguard transparent encryption enabled on an Amazon EKS cluster.</p>
-<ul>
-<li><a href="https://docs.cilium.io/en/stable/installation/cni-chaining-aws-cni/">Cilium CNI Chaining Documentation</a></li>
-<li><a href="https://docs.cilium.io/en/stable/security/network/encryption-wireguard/">Cilium Wireguard Encryption Documentation</a></li>
-</ul>
-<h2 id="focal-points">Focal Points<a class="headerlink" href="#focal-points" title="Permanent link">&para;</a></h2>
-<ul>
-<li><code>eks.tf</code> contains the cluster configuration and the deployment of Cilium.<ul>
-<li>There are no specific requirements from an EKS perspective, other than the Linux Kernel version used by the OS must be 5.10+</li>
-</ul>
-</li>
-<li><code>example.yaml</code> provides a sample application used to demonstrate the encrypted connectivity. This is optional and not required for the pattern.</li>
-</ul>
-<h2 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h2>
-<p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#prerequisites">here</a> for the prerequisites and steps to deploy this pattern.</p>
-<h2 id="validate">Validate<a class="headerlink" href="#validate" title="Permanent link">&para;</a></h2>
-<ol>
-<li>
-<p>Deploy the example pods:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>example.yaml
-</span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>pod/server created
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>service/server created
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>pod/client created
-</span></code></pre></div>
-</li>
-<li>
-<p>Get the Cilium status from one of the Cilium pods.</p>
-<p>Under the <code>Encryption</code> field, it should state <code>Wireguard</code> with a PubKey.
-<code>NodeEncryption: Disabled</code> is expected since <code>NodeEncryption</code> was not enabled
-via the Helm values provided.</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl<span class="w"> </span>-n<span class="w"> </span>kube-system<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-ti<span class="w"> </span>ds/cilium<span class="w"> </span>--<span class="w"> </span>cilium<span class="w"> </span>status
-</span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>Defaulted container &quot;cilium-agent&quot; out of: cilium-agent, config (init), mount-cgroup (init), apply-sysctl-overwrites (init), mount-bpf-fs (init), clean-cilium-state (init), install-cni-binaries (init)
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>KVStore:                 Ok   Disabled
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>Kubernetes:              Ok   1.28+ (v1.28.1-eks-43840fb) [linux/amd64]
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>Kubernetes APIs:         [&quot;EndpointSliceOrEndpoint&quot;, &quot;cilium/v2::CiliumClusterwideNetworkPolicy&quot;, &quot;cilium/v2::CiliumEndpoint&quot;, &quot;cilium/v2::CiliumNetworkPolicy&quot;, &quot;cilium/v2::CiliumNode&quot;, &quot;cilium/v2alpha1::CiliumCIDRGroup&quot;, &quot;core/v1::Namespace&quot;, &quot;core/v1::Pods&quot;, &quot;core/v1::Service&quot;, &quot;networking.k8s.io/v1::NetworkPolicy&quot;]
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>KubeProxyReplacement:    False   [eth0 10.0.21.109 (Direct Routing), eth1 10.0.27.0]
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>Host firewall:           Disabled
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>CNI Chaining:            aws-cni
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>Cilium:                  Ok   1.14.2 (v1.14.2-a6748946)
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>NodeMonitor:             Listening for events on 2 CPUs with 64x4096 of shared memory
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>Cilium health daemon:    Ok
-</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>IPAM:                    IPv4: 1/254 allocated from 10.0.0.0/24,
-</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>IPv4 BIG TCP:            Disabled
-</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>IPv6 BIG TCP:            Disabled
-</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>BandwidthManager:        Disabled
-</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>Host Routing:            Legacy
-</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>Masquerading:            Disabled
-</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>Controller Status:       24/24 healthy
-</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>Proxy Status:            No managed proxy redirect
-</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>Global Identity Range:   min 256, max 65535
-</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>Hubble:                  Ok          Current/Max Flows: 410/4095 (10.01%), Flows/s: 1.59   Metrics: Disabled
-</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>Encryption:              Wireguard   [NodeEncryption: Disabled, cilium_wg0 (Pubkey: /yuqsZyG91AzVIkZ3AIq8qjQ0gGKQd6GWcRYh4LYpko=, Port: 51871, Peers: 1)]
-</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>Cluster health:                      Probe disabled
-</span></code></pre></div>
-</li>
-<li>
-<p>Open a shell inside the cilium container</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>kubectl<span class="w"> </span>-n<span class="w"> </span>kube-system<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-ti<span class="w"> </span>ds/cilium<span class="w"> </span>--<span class="w"> </span>bash
-</span></code></pre></div>
-</li>
-<li>
-<p>Install <a href="https://www.tcpdump.org/"><code>tcpdump</code></a></p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>apt-get<span class="w"> </span>update
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>tcpdump
-</span></code></pre></div>
-</li>
-<li>
-<p>Start a packet capture on <code>cilium_wg0</code> and verify you see payload in clear text, it means the traffic is encrypted with wireguard</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>tcpdump<span class="w"> </span>-A<span class="w"> </span>-c<span class="w"> </span><span class="m">40</span><span class="w"> </span>-i<span class="w"> </span>cilium_wg0<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s2">&quot;Welcome to nginx!&quot;</span>
-</span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>tcpdump: verbose output suppressed, use -v[v]... for full protocol decode
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>listening on cilium_wg0, link-type RAW (Raw IP), snapshot length 262144 bytes
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>&lt;title&gt;Welcome to nginx!&lt;/title&gt;
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>&lt;h1&gt;Welcome to nginx!&lt;/h1&gt;
-</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>40 packets captured
-</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>40 packets received by filter
-</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>0 packets dropped by kernel
-</span></code></pre></div>
-<div class="admonition info">
-<p class="admonition-title">Exit</p>
-<p>Exit the container shell by typing <code>exit</code> before continuing to next step</p>
-</div>
-</li>
-<li>
-<p>Deploy the Cilium connectivity resources to check and evaluate connectivity:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>kubectl<span class="w"> </span>create<span class="w"> </span>ns<span class="w"> </span>cilium-test
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-n<span class="w"> </span>cilium-test<span class="w"> </span>-f<span class="w"> </span>https://raw.githubusercontent.com/cilium/cilium/v1.14.1/examples/kubernetes/connectivity-check/connectivity-check.yaml
-</span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>deployment.apps/echo-a created
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>deployment.apps/echo-b created
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>deployment.apps/echo-b-host created
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>deployment.apps/pod-to-a created
-</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>deployment.apps/pod-to-external-1111 created
-</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>deployment.apps/pod-to-a-denied-cnp created
-</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>deployment.apps/pod-to-a-allowed-cnp created
-</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>deployment.apps/pod-to-external-fqdn-allow-google-cnp created
-</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>deployment.apps/pod-to-b-multi-node-clusterip created
-</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>deployment.apps/pod-to-b-multi-node-headless created
-</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>deployment.apps/host-to-b-multi-node-clusterip created
-</span><span id="__span-9-12"><a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>deployment.apps/host-to-b-multi-node-headless created
-</span><span id="__span-9-13"><a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>deployment.apps/pod-to-b-multi-node-nodeport created
-</span><span id="__span-9-14"><a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>deployment.apps/pod-to-b-intra-node-nodeport created
-</span><span id="__span-9-15"><a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a>service/echo-a created
-</span><span id="__span-9-16"><a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a>service/echo-b created
-</span><span id="__span-9-17"><a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a>service/echo-b-headless created
-</span><span id="__span-9-18"><a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a>service/echo-b-host-headless created
-</span><span id="__span-9-19"><a id="__codelineno-9-19" name="__codelineno-9-19" href="#__codelineno-9-19"></a>ciliumnetworkpolicy.cilium.io/pod-to-a-denied-cnp created
-</span><span id="__span-9-20"><a id="__codelineno-9-20" name="__codelineno-9-20" href="#__codelineno-9-20"></a>ciliumnetworkpolicy.cilium.io/pod-to-a-allowed-cnp created
-</span><span id="__span-9-21"><a id="__codelineno-9-21" name="__codelineno-9-21" href="#__codelineno-9-21"></a>ciliumnetworkpolicy.cilium.io/pod-to-external-fqdn-allow-google-cnp created
-</span></code></pre></div>
-</li>
-<li>
-<p>View the logs of any of the connectivity tests to view the results:</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>kubectl<span class="w"> </span>logs<span class="w"> </span>&lt;cilium<span class="w"> </span><span class="nb">test</span><span class="w"> </span>pod&gt;<span class="w"> </span>-n<span class="w"> </span>cilium-test
-</span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>\{^_^}/ hi!
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
-</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>Loading /default.json
-</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>Done
-</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>
-</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>Resources
-</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>http://:8080/private
-</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>http://:8080/public
-</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>
-</span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>Home
-</span><span id="__span-11-11"><a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>http://:8080
-</span><span id="__span-11-12"><a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>
-</span><span id="__span-11-13"><a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>Type s + enter at any time to create a snapshot of the database
-</span><span id="__span-11-14"><a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a>Watching...
-</span><span id="__span-11-15"><a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a>
-</span><span id="__span-11-16"><a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a>GET /public 200 7.063 ms - 57
-</span><span id="__span-11-17"><a id="__codelineno-11-17" name="__codelineno-11-17" href="#__codelineno-11-17"></a>GET /public 200 3.126 ms - 57
-</span><span id="__span-11-18"><a id="__codelineno-11-18" name="__codelineno-11-18" href="#__codelineno-11-18"></a>GET /public 200 3.039 ms - 57
-</span><span id="__span-11-19"><a id="__codelineno-11-19" name="__codelineno-11-19" href="#__codelineno-11-19"></a>GET /public 200 2.776 ms - 57
-</span><span id="__span-11-20"><a id="__codelineno-11-20" name="__codelineno-11-20" href="#__codelineno-11-20"></a>GET /public 200 3.087 ms - 57
-</span><span id="__span-11-21"><a id="__codelineno-11-21" name="__codelineno-11-21" href="#__codelineno-11-21"></a>GET /public 200 2.781 ms - 57
-</span><span id="__span-11-22"><a id="__codelineno-11-22" name="__codelineno-11-22" href="#__codelineno-11-22"></a>GET /public 200 2.977 ms - 57
-</span><span id="__span-11-23"><a id="__codelineno-11-23" name="__codelineno-11-23" href="#__codelineno-11-23"></a>GET /public 200 2.596 ms - 57
-</span><span id="__span-11-24"><a id="__codelineno-11-24" name="__codelineno-11-24" href="#__codelineno-11-24"></a>GET /public 200 2.991 ms - 57
-</span><span id="__span-11-25"><a id="__codelineno-11-25" name="__codelineno-11-25" href="#__codelineno-11-25"></a>GET /public 200 2.708 ms - 57
-</span><span id="__span-11-26"><a id="__codelineno-11-26" name="__codelineno-11-26" href="#__codelineno-11-26"></a>GET /public 200 3.066 ms - 57
-</span><span id="__span-11-27"><a id="__codelineno-11-27" name="__codelineno-11-27" href="#__codelineno-11-27"></a>GET /public 200 2.616 ms - 57
-</span><span id="__span-11-28"><a id="__codelineno-11-28" name="__codelineno-11-28" href="#__codelineno-11-28"></a>GET /public 200 2.875 ms - 57
-</span><span id="__span-11-29"><a id="__codelineno-11-29" name="__codelineno-11-29" href="#__codelineno-11-29"></a>GET /public 200 2.689 ms - 57
-</span><span id="__span-11-30"><a id="__codelineno-11-30" name="__codelineno-11-30" href="#__codelineno-11-30"></a>GET /public 200 2.800 ms - 57
-</span><span id="__span-11-31"><a id="__codelineno-11-31" name="__codelineno-11-31" href="#__codelineno-11-31"></a>GET /public 200 2.556 ms - 57
-</span><span id="__span-11-32"><a id="__codelineno-11-32" name="__codelineno-11-32" href="#__codelineno-11-32"></a>GET /public 200 3.238 ms - 57
-</span><span id="__span-11-33"><a id="__codelineno-11-33" name="__codelineno-11-33" href="#__codelineno-11-33"></a>GET /public 200 2.538 ms - 57
-</span><span id="__span-11-34"><a id="__codelineno-11-34" name="__codelineno-11-34" href="#__codelineno-11-34"></a>GET /public 200 2.890 ms - 57
-</span><span id="__span-11-35"><a id="__codelineno-11-35" name="__codelineno-11-35" href="#__codelineno-11-35"></a>GET /public 200 2.666 ms - 57
-</span><span id="__span-11-36"><a id="__codelineno-11-36" name="__codelineno-11-36" href="#__codelineno-11-36"></a>GET /public 200 2.729 ms - 57
-</span><span id="__span-11-37"><a id="__codelineno-11-37" name="__codelineno-11-37" href="#__codelineno-11-37"></a>GET /public 200 2.580 ms - 57
-</span><span id="__span-11-38"><a id="__codelineno-11-38" name="__codelineno-11-38" href="#__codelineno-11-38"></a>GET /public 200 2.919 ms - 57
-</span><span id="__span-11-39"><a id="__codelineno-11-39" name="__codelineno-11-39" href="#__codelineno-11-39"></a>GET /public 200 2.630 ms - 57
-</span><span id="__span-11-40"><a id="__codelineno-11-40" name="__codelineno-11-40" href="#__codelineno-11-40"></a>GET /public 200 2.857 ms - 57
-</span><span id="__span-11-41"><a id="__codelineno-11-41" name="__codelineno-11-41" href="#__codelineno-11-41"></a>GET /public 200 2.716 ms - 57
-</span><span id="__span-11-42"><a id="__codelineno-11-42" name="__codelineno-11-42" href="#__codelineno-11-42"></a>GET /public 200 1.693 ms - 57
-</span><span id="__span-11-43"><a id="__codelineno-11-43" name="__codelineno-11-43" href="#__codelineno-11-43"></a>GET /public 200 2.715 ms - 57
-</span><span id="__span-11-44"><a id="__codelineno-11-44" name="__codelineno-11-44" href="#__codelineno-11-44"></a>GET /public 200 2.729 ms - 57
-</span><span id="__span-11-45"><a id="__codelineno-11-45" name="__codelineno-11-45" href="#__codelineno-11-45"></a>GET /public 200 2.655 ms - 57
-</span></code></pre></div>
-</li>
-</ol>
-<h2 id="destroy">Destroy<a class="headerlink" href="#destroy" title="Permanent link">&para;</a></h2>
-<!-- BEGIN INCLUDE ../../docs/_partials/destroy.md -->
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints_addons&quot;</span><span class="w"> </span>-auto-approve
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks&quot;</span><span class="w"> </span>-auto-approve
-</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
-</span></code></pre></div>
-<p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#destroy">here</a> for more details on cleaning up the resources created.</p>
-<!-- END INCLUDE -->
+<!-- BEGIN INCLUDE ../../../patterns/vpc-lattice/cross-cluster-pod-communication/README.md -->
 
+<h1 id="amazon-vpc-lattice-multi-cluster-secure-communication">Amazon VPC Lattice - Multi-cluster secure communication<a class="headerlink" href="#amazon-vpc-lattice-multi-cluster-secure-communication" title="Permanent link">&para;</a></h1>
+<p>This pattern showcases secure multi-cluster communication between two EKS clusters in different VPCs using VPC Lattice with IAM authorization. It illustrates service discovery and highlights how VPC Lattice facilitates communication between services in EKS clusters with overlapping CIDRs, eliminating the need for networking constructs like private NAT Gateways and Transit Gateways.</p>
+<h2 id="scenario">Scenario<a class="headerlink" href="#scenario" title="Permanent link">&para;</a></h2>
+<p>With this solution we showcase how to configure Amazon VPC Lattice using the AWS Gateway API Controller in order to manage Amazon VPC Lattice resources through native Kubernetes Gateway API objects. This pattern deploys two distinct VPCs each having it's own EKS cluster, which contain an application that will be used to demonstrate cross-cluster communication.</p>
+<p>The cross-cluster communication will be established through Amazon VPC Lattice, using a private Amazon Route53 domain name protected by a TLS Certificate issued by Certificate Manager (ACM) and supported by an AWS Private Certificate Authority.</p>
+<p><img alt="vpc-lattice-pattern-environment.png" src="https://raw.githubusercontent.com/aws-ia/terraform-aws-eks-blueprints/main/patterns/vpc-lattice/cross-cluster-pod-communication/assets/vpc-lattice-pattern-cross-cluster.png" /></p>
+<h2 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h2>
+<p>This pattern is composed of 3 Terraform stacks, that needs to be deployed in order.</p>
+<h3 id="1-create-shared-environment">1. Create shared Environment<a class="headerlink" href="#1-create-shared-environment" title="Permanent link">&para;</a></h3>
+<p>First, we need to deploy the shared environment:</p>
+<p><img alt="vpc-lattice-pattern-environment.png" src="https://raw.githubusercontent.com/aws-ia/terraform-aws-eks-blueprints/main/patterns/vpc-lattice/cross-cluster-pod-communication/assets/vpc-lattice-pattern-environment.png" /></p>
+<p>Deploy terraform environment stack:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">cd</span><span class="w"> </span>environment
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>terraform<span class="w"> </span>init
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>terraform<span class="w"> </span>apply<span class="w"> </span>--auto-approve
+</span></code></pre></div>
+<h3 id="2-create-eks-cluster-1">2. Create EKS cluster 1<a class="headerlink" href="#2-create-eks-cluster-1" title="Permanent link">&para;</a></h3>
+<p>Now we will deploy the 2 EKS clusters to match our architecture diagram</p>
+<p>Deploy terraform cluster1 stack:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nb">cd</span><span class="w"> </span>../cluster
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>./deploy.sh<span class="w"> </span>cluster1
+</span></code></pre></div>
+<p>Configure Kubectl:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nb">eval</span><span class="w"> </span><span class="sb">`</span>terraform<span class="w"> </span>output<span class="w"> </span>-raw<span class="w"> </span>configure_kubectl<span class="sb">`</span>
+</span></code></pre></div>
+<h3 id="3-create-eks-cluster-2">3. Create EKS cluster 2<a class="headerlink" href="#3-create-eks-cluster-2" title="Permanent link">&para;</a></h3>
+<p>Deploy terraform cluster2 stack:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>./deploy.sh<span class="w"> </span>cluster2
+</span></code></pre></div>
+<p>Configure Kubectl:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nb">eval</span><span class="w"> </span><span class="sb">`</span>terraform<span class="w"> </span>output<span class="w"> </span>-raw<span class="w"> </span>configure_kubectl<span class="sb">`</span>
+</span></code></pre></div>
+<h2 id="validate">Validate<a class="headerlink" href="#validate" title="Permanent link">&para;</a></h2>
+<p>In order to validate the connectivity between our services, we can use the following commands:</p>
+<ol>
+<li>From cluster1 app1, call cluster2 app2 -&gt; success</li>
+</ol>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>kubectl<span class="w"> </span>--context<span class="w"> </span>eks-cluster1<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-ti<span class="w"> </span>-n<span class="w"> </span>apps<span class="w"> </span>deployments/demo-cluster1-v1<span class="w"> </span>-c<span class="w"> </span>demo-cluster1-v1<span class="w"> </span>--<span class="w"> </span>curl<span class="w"> </span>demo-cluster2.example.com
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>Requsting to Pod(demo-cluster2-v1-c99c7bb69-2gm5f): Hello from demo-cluster2-v1
+</span></code></pre></div>
+<ol>
+<li>From cluster1 app1, call cluster1 app1 -&gt; forbidden</li>
+</ol>
+<p>We can see the response if we call the service but don't have the authorization from VPC lattice:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>kubectl<span class="w"> </span>--context<span class="w"> </span>eks-cluster1<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-ti<span class="w"> </span>-n<span class="w"> </span>apps<span class="w"> </span>deployments/demo-cluster1-v1<span class="w"> </span>-c<span class="w"> </span>demo-cluster1-v1<span class="w"> </span>--<span class="w"> </span>curl<span class="w"> </span>demo-cluster1.example.com
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>AccessDeniedException: User: arn:aws:sts::12345678910:assumed-role/vpc-lattice-sigv4-client/eks-eks-cluste-demo-clust-1b575f8d-fb77-486a-8a13-af5a2a0f78ae is not authorized to perform: vpc-lattice-svcs:Invoke on resource: arn:aws:vpc-lattice:eu-west-1:12345678910:service/svc-002349360ddc5a463/ because no service-based policy allows the vpc-lattice-svcs:Invoke action
+</span></code></pre></div>
+<p>This is because in the VPC lattice IAMAuth Policy of Application1 we only authorize call from namespace apps from cluster2:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>kubectl<span class="w"> </span>--context<span class="w"> </span>eks-cluster1<span class="w"> </span>get<span class="w"> </span>IAMAuthPolicy<span class="w"> </span>-n<span class="w"> </span>apps<span class="w"> </span>demo-cluster1-iam-auth-policy<span class="w">  </span>-o<span class="w"> </span>json<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s2">&quot;.spec.policy | fromjson&quot;</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>{
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>  &quot;Version&quot;: &quot;2012-10-17&quot;,
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>  &quot;Statement&quot;: [
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    {
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>      &quot;Effect&quot;: &quot;Allow&quot;,
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>      &quot;Principal&quot;: {
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>        &quot;AWS&quot;: &quot;arn:aws:iam::12345678910:root&quot;
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>      },
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>      &quot;Action&quot;: &quot;vpc-lattice-svcs:Invoke&quot;,
+</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>      &quot;Resource&quot;: &quot;*&quot;,
+</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>      &quot;Condition&quot;: {
+</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>        &quot;StringEquals&quot;: {
+</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a>          &quot;aws:PrincipalTag/eks-cluster-name&quot;: &quot;eks-cluster2&quot;,
+</span><span id="__span-10-14"><a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>          &quot;aws:PrincipalTag/kubernetes-namespace&quot;: &quot;apps&quot;
+</span><span id="__span-10-15"><a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a>        }
+</span><span id="__span-10-16"><a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a>      }
+</span><span id="__span-10-17"><a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a>    }
+</span><span id="__span-10-18"><a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a>  ]
+</span><span id="__span-10-19"><a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a>}
+</span></code></pre></div>
+<ol>
+<li>From cluster2 app2, call cluster1 app1 -&gt; success</li>
+</ol>
+<p>We can also validate the reverse flow, from cluster2 to cluster1:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>kubectl<span class="w"> </span>--context<span class="w"> </span>eks-cluster2<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-ti<span class="w"> </span>-n<span class="w"> </span>apps<span class="w"> </span>deployments/demo-cluster2-v1<span class="w"> </span>-c<span class="w"> </span>demo-cluster2-v1<span class="w"> </span>--<span class="w"> </span>curl<span class="w"> </span>demo-cluster1.example.com
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>Requsting to Pod(demo-cluster1-v1-6d7558f5b4-zk5cg): Hello from demo-cluster1-v1
+</span></code></pre></div>
+<ol>
+<li>From cluster1 app2, call cluster1 app2 -&gt; forbidden</li>
+</ol>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>kubectl<span class="w"> </span>--context<span class="w"> </span>eks-cluster2<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-ti<span class="w"> </span>-n<span class="w"> </span>apps<span class="w"> </span>deployments/demo-cluster2-v1<span class="w"> </span>-c<span class="w"> </span>demo-cluster2-v1<span class="w"> </span>--<span class="w"> </span>curl<span class="w"> </span>demo-cluster2.example.com
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>AccessDeniedException: User: arn:aws:sts::12345678910:assumed-role/vpc-lattice-sigv4-client/eks-eks-cluste-demo-clust-a5c2432b-b84a-492f-8cbc-16f1fa5053eb is not authorized to perform: vpc-lattice-svcs:Invoke on resource: arn:aws:vpc-lattice:eu-west-1:12345678910:service/svc-00b57f32ed0a7b7c3/ because no service-based policy allows the vpc-lattice-svcs:Invoke action
+</span></code></pre></div>
+<h2 id="important">Important<a class="headerlink" href="#important" title="Permanent link">&para;</a></h2>
+<p>In this setup, we used a Kyverno rule to inject iptables rules, and an envoy sidecar proxy into our application pod:
+- The iptables rule will route traffic from our application to the envoy proxy (the rule don't apply if source process gid is 0, so we provide a different gid for the application: <code>runAsGroup: 1000</code>).
+- The envoy proxy retrieve our Private CA certificate on startup, and install it so that it trust our VPC lattice service, through it's startup script:
+  <div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>kubectl<span class="w">  </span>--context<span class="w"> </span>eks-cluster1<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>-it<span class="w"> </span>deploy/demo-cluster1-v1<span class="w"> </span>-c<span class="w"> </span>envoy-sigv4<span class="w"> </span>-n<span class="w"> </span>apps<span class="w"> </span>--<span class="w"> </span>cat<span class="w"> </span>/usr/local/bin/launch_envoy.sh
+</span></code></pre></div></p>
+<p>Output:
+  <div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>#!/bin/sh
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a># Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a># SPDX-License-Identifier: MIT-0
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>cat /etc/envoy/envoy.yaml.in | envsubst \$AWS_REGION,\$JWT_AUDIENCE,\$JWT_JWKS,\$JWT_ISSUER,\$JWKS_HOST,\$APP_DOMAIN &gt; /etc/envoy/envoy.yaml
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>aws acm-pca get-certificate-authority-certificate --certificate-authority-arn $CA_ARN --region $AWS_REGION --output text &gt; /etc/pki/ca-trust/source/anchors/internal.pem
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>update-ca-trust extract
+</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>
+</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>cat /etc/envoy/envoy.yaml
+</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a>/usr/local/bin/envoy --base-id 1 -l trace -c /etc/envoy/envoy.yaml
+</span></code></pre></div></p>
+<ul>
+<li>Then envoy sign the request with sigv4, and proxy it in https to the targeted service.</li>
+</ul>
+<blockquote>
+<p>You can find <a href="https://github.com/aws-samples/amazon-eks-security-immersion-day/tree/mainline/docker/">here</a> the Dockerfiles used to create the envoy proxy, the iptables and the http-server images used in this demo.</p>
+</blockquote>
+<h1 id="cleanup">Cleanup<a class="headerlink" href="#cleanup" title="Permanent link">&para;</a></h1>
+<h2 id="1-we-start-by-deleting-the-cluster2-terraform-stack">1. We start by deleting the cluster2 terraform stack.<a class="headerlink" href="#1-we-start-by-deleting-the-cluster2-terraform-stack" title="Permanent link">&para;</a></h2>
+<blockquote>
+<p>Note that we need to do this in order, so that our kubernetes controllers will be able to clean external resources before deleting the controller, and kubernetes nodes.</p>
+</blockquote>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>./destroy.sh<span class="w"> </span>cluster2
+</span></code></pre></div>
+<blockquote>
+<p>If the VPC was not able to destroy, you may want to re-run the destroy command a second time</p>
+</blockquote>
+<h2 id="2-we-can-then-delete-the-cluster1-terraform-stack">2. We can then delete the cluster1 terraform stack.<a class="headerlink" href="#2-we-can-then-delete-the-cluster1-terraform-stack" title="Permanent link">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>./destroy.sh<span class="w"> </span>cluster1
+</span></code></pre></div>
+<blockquote>
+<p>If the VPC was not able to destroy, you may want to re-run the destroy command a second time</p>
+</blockquote>
+<p>If the VPC lattice service network still exists, you can remove it with the following command:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="nv">SN</span><span class="o">=</span><span class="k">$(</span>aws<span class="w"> </span>vpc-lattice<span class="w"> </span>list-service-networks<span class="w"> </span>--query<span class="w"> </span><span class="s1">&#39;items[?name==`lattice-gateway`].id&#39;</span><span class="w"> </span>--output<span class="w"> </span>text<span class="k">)</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-n<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$SN</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="w">    </span>aws<span class="w"> </span>vpc-lattice<span class="w"> </span>delete-service-network<span class="w"> </span>--service-network-id<span class="w"> </span><span class="s2">&quot;</span><span class="nv">$SN</span><span class="s2">&quot;</span>
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="k">fi</span>
+</span></code></pre></div>
+<h2 id="3-finally-delete-the-environment-terraform-stack">3. Finally delete the environment terraform stack<a class="headerlink" href="#3-finally-delete-the-environment-terraform-stack" title="Permanent link">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="nb">cd</span><span class="w"> </span>../environment
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
+</span></code></pre></div>
 <!-- END INCLUDE -->
 
 
@@ -1615,10 +1733,10 @@ via the Helm values provided.</p>
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs.sticky"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs.sticky"], "search": "../../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.a7c05c9e.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.a7c05c9e.min.js"></script>
       
     
   </body>

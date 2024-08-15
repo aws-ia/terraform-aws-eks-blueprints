@@ -10,28 +10,28 @@
         <meta name="author" content="AWS">
       
       
-        <link rel="canonical" href="https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/ipv6-eks-cluster/">
+        <link rel="canonical" href="https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/network/privatelink-access/">
       
       
-        <link rel="prev" href="../gitops-multi-cluster-hub-spoke-argocd/">
+        <link rel="prev" href="../private-public-ingress/">
       
       
-        <link rel="next" href="../istio/">
+        <link rel="next" href="../tls-with-aws-pca-issuer/">
       
       
-      <link rel="icon" href="../../images/colored-logo.png">
+      <link rel="icon" href="../../../images/colored-logo.png">
       <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.21">
     
     
       
-        <title>IPv6 Networking - Amazon EKS Blueprints for Terraform</title>
+        <title>PrivateLink Access - Amazon EKS Blueprints for Terraform</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.66ac8b77.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.66ac8b77.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
       
       
   
@@ -91,7 +91,7 @@
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -115,7 +115,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#amazon-eks-cluster-w-ipv6-networking" class="md-skip">
+        <a href="#private-eks-cluster-access-via-aws-privatelink" class="md-skip">
           Skip to content
         </a>
       
@@ -135,9 +135,9 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="Amazon EKS Blueprints for Terraform" class="md-header__button md-logo" aria-label="Amazon EKS Blueprints for Terraform" data-md-component="logo">
+    <a href="../../.." title="Amazon EKS Blueprints for Terraform" class="md-header__button md-logo" aria-label="Amazon EKS Blueprints for Terraform" data-md-component="logo">
       
-  <img src="../../images/white-logo.png" alt="logo">
+  <img src="../../../images/white-logo.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -154,7 +154,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              IPv6 Networking
+              PrivateLink Access
             
           </span>
         </div>
@@ -241,9 +241,9 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="Amazon EKS Blueprints for Terraform" class="md-nav__button md-logo" aria-label="Amazon EKS Blueprints for Terraform" data-md-component="logo">
+    <a href="../../.." title="Amazon EKS Blueprints for Terraform" class="md-nav__button md-logo" aria-label="Amazon EKS Blueprints for Terraform" data-md-component="logo">
       
-  <img src="../../images/white-logo.png" alt="logo">
+  <img src="../../../images/white-logo.png" alt="logo">
 
     </a>
     Amazon EKS Blueprints for Terraform
@@ -270,7 +270,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../.." class="md-nav__link">
+      <a href="../../.." class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -290,7 +290,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../getting-started/" class="md-nav__link">
+      <a href="../../../getting-started/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -347,7 +347,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../agones-game-controller/" class="md-nav__link">
+      <a href="../../agones-game-controller/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -360,6 +360,465 @@
   
 
               
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../blue-green-upgrade/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Blue/Green Upgrade
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../bottlerocket/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Bottlerocket
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../ecr-pull-through-cache/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ECR Pull Through Cache
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../external-secrets/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    External Secrets
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../fargate-serverless/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Fargate Serverless
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../fully-private-cluster/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Fully Private Cluster
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_8" id="__nav_3_8_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    GitOps
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_8">
+            <span class="md-nav__icon md-icon"></span>
+            GitOps
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gitops/gitops-getting-started-argocd/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ArgoCD - Getting Started
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gitops/gitops-multi-cluster-hub-spoke-argocd/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ArgoCD - Multi-Cluster Hub & Spoke
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../istio/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Istio
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../karpenter/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Karpenter on EKS Fargate
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../karpenter-mng/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Karpenter on EKS MNG
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../kubecost/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Kubecost
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_13" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_13" id="__nav_3_13_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Machine Learning
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_13_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_13">
+            <span class="md-nav__icon md-icon"></span>
+            Machine Learning
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../machine-learning/ml-capacity-block/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ML Capacity Block Reservation (CBR)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../machine-learning/nvidia-gpu-efa/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NVIDIA GPUs with EFA
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../machine-learning/targeted-odcr/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Targeted On-Demand Capacity Reservation (ODCR)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../multi-tenancy-with-teams/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Multi-tenancy
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_15" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_15" id="__nav_3_15_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Network
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_15_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_15">
+            <span class="md-nav__icon md-icon"></span>
+            Network
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -389,11 +848,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../blue-green-upgrade/" class="md-nav__link">
+      <a href="../client-server-communication/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Blue/Green Upgrade
+    Amazon VPC Lattice Client-server Communication
   </span>
   
 
@@ -410,11 +869,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../bottlerocket/" class="md-nav__link">
+      <a href="../cross-cluster-pod-communication/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Bottlerocket
+    Cross VPC and EKS clusters secure Communication
   </span>
   
 
@@ -431,351 +890,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../ecr-pull-through-cache/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    ECR Pull Through Cache
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../external-secrets/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    External Secrets
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../fargate-serverless/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Fargate Serverless
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../fully-private-cluster/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Fully Private Cluster
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../gitops-getting-started-argocd/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    GitOps Getting Started (ArgoCD)
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../gitops-multi-cluster-hub-spoke-argocd/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    GitOps Multi-Cluster Hub-Spoke Topology (ArgoCD)
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-    
-  
-  
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    IPv6 Networking
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+      <a href="../ipv6-eks-cluster/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
     IPv6 Networking
-  </span>
-  
-
-      </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#deploy" class="md-nav__link">
-    <span class="md-ellipsis">
-      Deploy
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#validate" class="md-nav__link">
-    <span class="md-ellipsis">
-      Validate
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#destroy" class="md-nav__link">
-    <span class="md-ellipsis">
-      Destroy
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../istio/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Istio
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../karpenter-mng/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Karpenter on EKS MNG
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../karpenter/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Karpenter on EKS Fargate
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../kubecost/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Kubecost
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../ml-capacity-block/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    ML Capacity Block Reservation (CBR)
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../multi-tenancy-with-teams/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Multi-Tenancy w/ Teams
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../nvidia-gpu-efa/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    NVIDIA GPUs with EFA
   </span>
   
 
@@ -810,10 +929,30 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../privatelink-access/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    PrivateLink Access
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -822,90 +961,95 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../sso-iam-identity-center/" class="md-nav__link">
+      
         
-  
-  <span class="md-ellipsis">
-    SSO - IAM Identity Center
-  </span>
-  
 
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../sso-okta/" class="md-nav__link">
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#deploy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deploy
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#test-access-to-eks-kubernetes-api-server-endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      Test access to EKS Kubernetes API server endpoint
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#test-access-to-eks-kubernetes-api-with-kubectl" class="md-nav__link">
+    <span class="md-ellipsis">
+      Test access to EKS Kubernetes API with kubectl
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Test access to EKS Kubernetes API with kubectl">
+      <ul class="md-nav__list">
         
+          <li class="md-nav__item">
+  <a href="#log-into-the-client-ec2-instance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Log into the Client EC2 instance
+    </span>
+  </a>
   
-  <span class="md-ellipsis">
-    SSO - Okta
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../stateful/" class="md-nav__link">
+</li>
         
+          <li class="md-nav__item">
+  <a href="#update-kubeconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      Update Kubeconfig
+    </span>
+  </a>
   
-  <span class="md-ellipsis">
-    Stateful
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../targeted-odcr/" class="md-nav__link">
+</li>
         
+          <li class="md-nav__item">
+  <a href="#test-complete-access-with-kubectl" class="md-nav__link">
+    <span class="md-ellipsis">
+      Test complete access with kubectl
+    </span>
+  </a>
   
-  <span class="md-ellipsis">
-    Targeted On-Demand Capacity Reservation (ODCR)
-  </span>
+</li>
+        
+      </ul>
+    </nav>
   
-
-      </a>
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#destroy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Destroy
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -974,86 +1118,72 @@
 
               
             
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_28" >
-        
-          
-          <label class="md-nav__link" for="__nav_3_28" id="__nav_3_28_label" tabindex="0">
-            
-  
-  <span class="md-ellipsis">
-    Vpc lattice
-  </span>
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_28_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_28">
-            <span class="md-nav__icon md-icon"></span>
-            Vpc lattice
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../vpc-lattice/client-server-communication/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Amazon VPC Lattice Client-server Communication
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../vpc-lattice/cross-cluster-pod-communication/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Cross VPC and EKS clusters secure Communication
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
           </ul>
         </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sso-iam-identity-center/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SSO - IAM Identity Center
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../sso-okta/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SSO - Okta
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../stateful/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Stateful
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -1108,7 +1238,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../snippets/ipv4-prefix-delegation/" class="md-nav__link">
+      <a href="../../../snippets/ipv4-prefix-delegation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1129,7 +1259,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../snippets/vpc-cni-custom-networking/" class="md-nav__link">
+      <a href="../../../snippets/vpc-cni-custom-networking/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1192,7 +1322,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../v4-to-v5/motivation/" class="md-nav__link">
+      <a href="../../../v4-to-v5/motivation/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1213,7 +1343,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../v4-to-v5/cluster/" class="md-nav__link">
+      <a href="../../../v4-to-v5/cluster/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1234,7 +1364,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../v4-to-v5/addons/" class="md-nav__link">
+      <a href="../../../v4-to-v5/addons/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1255,7 +1385,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../v4-to-v5/teams/" class="md-nav__link">
+      <a href="../../../v4-to-v5/teams/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1283,7 +1413,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../faq/" class="md-nav__link">
+      <a href="../../../faq/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1332,11 +1462,53 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#validate" class="md-nav__link">
+  <a href="#test-access-to-eks-kubernetes-api-server-endpoint" class="md-nav__link">
     <span class="md-ellipsis">
-      Validate
+      Test access to EKS Kubernetes API server endpoint
     </span>
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#test-access-to-eks-kubernetes-api-with-kubectl" class="md-nav__link">
+    <span class="md-ellipsis">
+      Test access to EKS Kubernetes API with kubectl
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Test access to EKS Kubernetes API with kubectl">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#log-into-the-client-ec2-instance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Log into the Client EC2 instance
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#update-kubeconfig" class="md-nav__link">
+    <span class="md-ellipsis">
+      Update Kubeconfig
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-complete-access-with-kubectl" class="md-nav__link">
+    <span class="md-ellipsis">
+      Test complete access with kubectl
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1367,43 +1539,68 @@
   
 
 
-<!-- BEGIN INCLUDE ../../patterns/ipv6-eks-cluster/README.md -->
-<h1 id="amazon-eks-cluster-w-ipv6-networking">Amazon EKS Cluster w/ IPv6 Networking<a class="headerlink" href="#amazon-eks-cluster-w-ipv6-networking" title="Permanent link">&para;</a></h1>
-<p>This pattern demonstrates an EKS cluster that utilizes IPv6 networking.</p>
+<!-- BEGIN INCLUDE ../../../patterns/privatelink-access/README.md -->
+<h1 id="private-eks-cluster-access-via-aws-privatelink">Private EKS cluster access via AWS PrivateLink<a class="headerlink" href="#private-eks-cluster-access-via-aws-privatelink" title="Permanent link">&para;</a></h1>
+<p>This pattern demonstrates how to access a private EKS cluster using AWS PrivateLink.</p>
+<p>Refer to the <a href="https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html">documentation</a>
+for further details on  <code>AWS PrivateLink</code>.</p>
 <h2 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h2>
-<p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#prerequisites">here</a> for the prerequisites and steps to deploy this pattern.</p>
-<h2 id="validate">Validate<a class="headerlink" href="#validate" title="Permanent link">&para;</a></h2>
-<ol>
-<li>
-<p>Test by listing all the pods running currently; the <code>IP</code> should be an IPv6 address.</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-A<span class="w"> </span>-o<span class="w"> </span>wide
+<p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#prerequisites">here</a> for the prerequisites and follow the steps below to deploy this pattern.</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>terraform<span class="w"> </span>init
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>terraform<span class="w"> </span>apply<span class="w"> </span>-target<span class="o">=</span>module.eventbridge<span class="w"> </span>-target<span class="o">=</span>module.nlb<span class="w"> </span>--auto-approve
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>terraform<span class="w"> </span>apply<span class="w"> </span>--auto-approve
 </span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a># Output should look like below
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>NAMESPACE     NAME                       READY   STATUS    RESTARTS   AGE     IP                                       NODE                                        NOMINATED NODE   READINESS GATES
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>kube-system   aws-node-1hd2s             1/1     Running   0          3m5s    2600:1f13:6c4:a703:ecf8:3ac1:76b0:9303   ip-10-0-10-183.us-west-2.compute.internal   &lt;none&gt;           &lt;none&gt;
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>kube-system   aws-node-2mdg             1/1     Running   0          3m21s   2600:1f13:6c4:a705:a929:f8d4:9350:1b20   ip-10-0-12-188.us-west-2.compute.internal   &lt;none&gt;           &lt;none&gt;
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>kube-system   coredns-799c5565b4-6xrc   1/1     Running   0          10m     2600:1f13:6c4:a705:1bda::                ip-10-0-12-188.us-west-2.compute.internal   &lt;none&gt;           &lt;none&gt;
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>kube-system   coredns-799c5565b4-fjq4q   1/1     Running   0          10m     2600:1f13:6c4:a705:1bda::1               ip-10-0-12-188.us-west-2.compute.internal   &lt;none&gt;           &lt;none&gt;
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>kube-system   kube-proxy-58tp7           1/1     Running   0          4m25s   2600:1f13:6c4:a703:ecf8:3ac1:76b0:9303   ip-10-0-10-183.us-west-2.compute.internal   &lt;none&gt;           &lt;none&gt;
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>kube-system   kube-proxy-3kgw           1/1     Running   0          4m25s   2600:1f13:6c4:a705:a929:f8d4:9350:1b20   ip-10-0-12-188.us-west-2.compute.internal   &lt;none&gt;           &lt;none&gt;
+<h2 id="test-access-to-eks-kubernetes-api-server-endpoint">Test access to EKS Kubernetes API server endpoint<a class="headerlink" href="#test-access-to-eks-kubernetes-api-server-endpoint" title="Permanent link">&para;</a></h2>
+<p>Of the output values, the value <code>ssm_test</code> is provided to aid in quickly
+testing the connectivity from the client EC2 instance to the private EKS cluster
+via AWS PrivateLink. Copy the output value, which looks like the snippet shown
+below (as an example) and paste it into your terminal to execute and check the
+connectivity. If configured correctly, the value returned should be <code>ok</code>.</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nv">COMMAND</span><span class="o">=</span><span class="s2">&quot;curl -ks https://9A85B21811733524E3ABCDFEA8714642.gr7.us-west-2.eks.amazonaws.com/readyz&quot;</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="nv">COMMAND_ID</span><span class="o">=</span><span class="k">$(</span>aws<span class="w"> </span>ssm<span class="w"> </span>send-command<span class="w"> </span>--region<span class="w"> </span>us-west-2<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">   </span>--document-name<span class="w"> </span><span class="s2">&quot;AWS-RunShellScript&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">   </span>--parameters<span class="w"> </span><span class="s2">&quot;commands=[</span><span class="nv">$COMMAND</span><span class="s2">]&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">   </span>--targets<span class="w"> </span><span class="s2">&quot;Key=instanceids,Values=i-0a45eff73ba408575&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">   </span>--query<span class="w"> </span><span class="s1">&#39;Command.CommandId&#39;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">   </span>--output<span class="w"> </span>text<span class="k">)</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>aws<span class="w"> </span>ssm<span class="w"> </span>get-command-invocation<span class="w"> </span>--region<span class="w"> </span>us-west-2<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">   </span>--command-id<span class="w"> </span><span class="nv">$COMMAND_ID</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">   </span>--instance-id<span class="w"> </span>i-0a45eff73ba408575<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="w">   </span>--query<span class="w"> </span><span class="s1">&#39;StandardOutputContent&#39;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">   </span>--output<span class="w"> </span>text
 </span></code></pre></div>
-</li>
-<li>
-<p>Test by listing all the nodes running currently; the <code>INTERNAL-IP</code> should be an IPv6 address.</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>kubectl<span class="w"> </span>nodes<span class="w"> </span>-A<span class="w"> </span>-o<span class="w"> </span>wide
+<h2 id="test-access-to-eks-kubernetes-api-with-kubectl">Test access to EKS Kubernetes API with <code>kubectl</code><a class="headerlink" href="#test-access-to-eks-kubernetes-api-with-kubectl" title="Permanent link">&para;</a></h2>
+<p>Perform the following steps to access the cluster with <code>kubectl</code> from the
+provided Client EC2 instance.</p>
+<h3 id="log-into-the-client-ec2-instance">Log into the Client EC2 instance<a class="headerlink" href="#log-into-the-client-ec2-instance" title="Permanent link">&para;</a></h3>
+<p>Start a new SSM session on the Client EC2 instance using the provided
+<code>ssm_start_session</code> output value. It should look similar to the snippet
+shown below. Copy the output value and paste it into your terminal to execute.
+Your terminal will now be connected to the Client EC2 instance.</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>aws<span class="w"> </span>ssm<span class="w"> </span>start-session<span class="w"> </span>--region<span class="w"> </span>us-west-2<span class="w"> </span>--target<span class="w"> </span>i-0280cf604085f4a44
 </span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a># Output should look like below
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>NAME                                        STATUS   ROLES    AGE     VERSION               INTERNAL-IP                              EXTERNAL-IP   OS-IMAGE         KERNEL-VERSION                 CONTAINER-RUNTIME
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>ip-10-0-10-183.us-west-2.compute.internal   Ready    &lt;none&gt;   4m57s   v1.24.7-eks-fb459a0   2600:1f13:6c4:a703:ecf8:3ac1:76b0:9303   &lt;none&gt;        Amazon Linux 2   5.4.226-129.415.amzn2.x86_64   containerd://1.6.6
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>ip-10-0-12-188.us-west-2.compute.internal   Ready    &lt;none&gt;   4m57s   v1.24.7-eks-fb459a0   2600:1f13:6c4:a705:a929:f8d4:9350:1b20   &lt;none&gt;        Amazon Linux 2   5.4.226-129.415.amzn2.x86_64   containerd://1.6.6
+<h3 id="update-kubeconfig">Update Kubeconfig<a class="headerlink" href="#update-kubeconfig" title="Permanent link">&para;</a></h3>
+<p>On the Client EC2 machine, run the following command to update the local
+<code>~/.kube/config</code> file to enable access to the cluster:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>aws<span class="w"> </span>eks<span class="w"> </span>update-kubeconfig<span class="w"> </span>--region<span class="w"> </span>us-west-2<span class="w"> </span>--name<span class="w"> </span>privatelink-access
 </span></code></pre></div>
-</li>
-</ol>
+<h3 id="test-complete-access-with-kubectl">Test complete access with <code>kubectl</code><a class="headerlink" href="#test-complete-access-with-kubectl" title="Permanent link">&para;</a></h3>
+<p>Test access by listing the pods running on the cluster:</p>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>kubectl<span class="w"> </span>get<span class="w"> </span>pods<span class="w"> </span>-A
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>NAMESPACE     NAME                       READY   STATUS    RESTARTS   AGE
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>kube-system   aws-node-4f8g8             1/1     Running   0          1m
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>kube-system   coredns-6ff9c46cd8-59sqp   1/1     Running   0          1m
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>kube-system   coredns-6ff9c46cd8-1npb   1/1     Running   0          2m
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>kube-system   kube-proxy-mm2zc           1/1     Running   0          1m
+</span></code></pre></div>
 <h2 id="destroy">Destroy<a class="headerlink" href="#destroy" title="Permanent link">&para;</a></h2>
 <!-- BEGIN INCLUDE ../../docs/_partials/destroy.md -->
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints_addons&quot;</span><span class="w"> </span>-auto-approve
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks&quot;</span><span class="w"> </span>-auto-approve
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks_blueprints_addons&quot;</span><span class="w"> </span>-auto-approve
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-target<span class="o">=</span><span class="s2">&quot;module.eks&quot;</span><span class="w"> </span>-auto-approve
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>terraform<span class="w"> </span>destroy<span class="w"> </span>-auto-approve
 </span></code></pre></div>
 <p>See <a href="https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#destroy">here</a> for more details on cleaning up the resources created.</p>
 <!-- END INCLUDE -->
@@ -1462,10 +1659,10 @@
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["navigation.tabs.sticky"], "search": "../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.tabs.sticky"], "search": "../../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.a7c05c9e.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.a7c05c9e.min.js"></script>
       
     
   </body>
