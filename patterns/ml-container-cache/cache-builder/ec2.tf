@@ -60,15 +60,15 @@ module "ec2" {
     crictl pull nvcr.io/nvidia/tritonserver:24.07-vllm-python-py3         # 12.6 Gb
 
     yum install rsync -y
-    rsync /var/lib/containerd/ /cache/var/lib/containerd/
-    rsync /var/lib/kubelet/ /cache/var/lib/kubelet/
+    cd / && rsync -a /var/lib/containerd/ /cache/var/lib/containerd
+    cd / && rsync -a /var/lib/kubelet/ /cache/var/lib/kubelet
   EOT
 
   root_block_device = [
     # Need to increase root volume for pulling images
     {
-      volume_type = "gp3"
       volume_size = 256
+      volume_type = "gp3"
     },
   ]
 
