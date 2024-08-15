@@ -22,7 +22,7 @@ module "ec2" {
     AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
   }
 
-  instance_type = "m5n.large"
+  instance_type = "c6in.16xlarge"
 
   user_data_replace_on_change = true
   user_data                   = <<-EOT
@@ -61,7 +61,9 @@ module "ec2" {
 
     yum install rsync -y
     cd / && rsync -a /var/lib/containerd/ /cache/var/lib/containerd
+    echo 'synced /var/lib/containerd'
     cd / && rsync -a /var/lib/kubelet/ /cache/var/lib/kubelet
+    echo 'synced /var/lib/kubelet'
   EOT
 
   root_block_device = [
@@ -69,6 +71,8 @@ module "ec2" {
     {
       volume_size = 256
       volume_type = "gp3"
+      iops        = 6000
+      throughput  = 500
     },
   ]
 
@@ -78,6 +82,8 @@ module "ec2" {
       device_name           = "/dev/xvdb"
       volume_size           = 256
       volume_type           = "gp3"
+      iops                  = 6000
+      throughput            = 500
       delete_on_termination = false
     }
   ]
