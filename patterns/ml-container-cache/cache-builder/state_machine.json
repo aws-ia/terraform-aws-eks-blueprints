@@ -1,0 +1,273 @@
+{
+  "Comment": "ML container image EBS cache builder",
+  "StartAt": "Define Defaults",
+  "States": {
+    "Define Defaults": {
+      "Type": "Pass",
+      "Next": "Apply Defaults",
+      "ResultPath": "$.InputDefaults",
+      "Parameters": {
+        "InstanceType": "c6in.16xlarge",
+        "Iops": 6000,
+        "Throughput": 500,
+        "VolumeSize": 256
+      }
+    },
+    "Apply Defaults": {
+      "Type": "Pass",
+      "Next": "RunInstance",
+      "ResultPath": "$.withDefaults",
+      "OutputPath": "$.withDefaults.args",
+      "Parameters": {
+        "args.$": "States.JsonMerge($.InputDefaults, $$.Execution.Input, false)"
+      }
+    },
+    "RunInstance": {
+      "Type": "Task",
+      "Parameters": {
+        "BlockDeviceMappings": [
+          {
+            "DeviceName": "/dev/xvda",
+            "Ebs": {
+              "DeleteOnTermination": true,
+              "Iops.$": "$.Iops",
+              "Throughput.$": "$.Throughput",
+              "VolumeSize.$": "$.VolumeSize",
+              "VolumeType": "gp3"
+            }
+          },
+          {
+            "DeviceName": "/dev/xvdb",
+            "Ebs": {
+              "DeleteOnTermination": true,
+              "Iops.$": "$.Iops",
+              "Throughput.$": "$.Throughput",
+              "VolumeSize.$": "$.VolumeSize",
+              "VolumeType": "gp3"
+            }
+          }
+        ],
+        "EbsOptimized": true,
+        "IamInstanceProfile": {
+          "Arn": "${iam_instance_profile_arn}"
+        },
+        "ImageId": "${ami_id}",
+        "InstanceType.$": "$.InstanceType",
+        "MaxCount": 1,
+        "MinCount": 1,
+        "MetadataOptions": {
+          "HttpEndpoint": "enabled",
+          "HttpPutResponseHopLimit": 2,
+          "HttpTokens": "required"
+        },
+        "NetworkInterfaces": [
+          {
+            "AssociatePublicIpAddress": true,
+            "DeviceIndex": 0,
+            "Groups": [
+              "${security_group_id}"
+            ],
+            "SubnetId": "${subnet_id}"
+          }
+        ],
+        "UserData": "${base64_encoded_user_data}"
+      },
+      "Resource": "arn:aws:states:::aws-sdk:ec2:runInstances",
+      "Comment": "Create instance using EKS AMI",
+      "ResultSelector": {
+        "Id.$": "$.Instances[0].InstanceId"
+      },
+      "ResultPath": "$.Instance",
+      "Next": "DescribeInstance"
+    },
+    "DescribeInstance": {
+      "Type": "Task",
+      "Parameters": {
+        "InstanceIds.$": "States.Array($.Instance.Id)"
+      },
+      "Resource": "arn:aws:states:::aws-sdk:ec2:describeInstances",
+      "ResultSelector": {
+        "Id.$": "$.Reservations[0].Instances[0]InstanceId",
+        "State.$": "$.Reservations[0].Instances[0].State.Name"
+      },
+      "ResultPath": "$.Instance",
+      "Next": "InstanceState"
+    },
+    "InstanceState": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.Instance.State",
+          "StringEquals": "running",
+          "Next": "GetCloudInitStatus"
+        },
+        {
+          "Or": [
+            {
+              "Variable": "$.Instance.State",
+              "StringEquals": "shutting-down"
+            },
+            {
+              "Variable": "$.Instance.State",
+              "StringEquals": "stopping"
+            },
+            {
+              "Variable": "$.Instance.State",
+              "StringEquals": "stopped"
+            }
+          ],
+          "Next": "TerminateInstances"
+        }
+      ],
+      "Default": "WaitForInstanceState"
+    },
+    "WaitForInstanceState": {
+      "Type": "Wait",
+      "Seconds": 10,
+      "Next": "DescribeInstance",
+      "Comment": "Wait for the instance to be running"
+    },
+    "GetCloudInitStatus": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::aws-sdk:ssm:sendCommand",
+      "Parameters": {
+        "DocumentName": "AWS-RunShellScript",
+        "Parameters": {
+          "commands": [
+            "sudo cloud-init status"
+          ]
+        },
+        "Targets": [
+          {
+            "Key": "InstanceIds",
+            "Values.$": "States.Array($.Instance.Id)"
+          }
+        ]
+      },
+      "Comment": "Get cloud-init status",
+      "Next": "GetCloudInitStatusResults",
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "BackoffRate": 2,
+          "IntervalSeconds": 10,
+          "MaxAttempts": 10,
+          "JitterStrategy": "FULL"
+        }
+      ],
+      "ResultSelector": {
+        "Id.$": "$.Command.CommandId"
+      },
+      "ResultPath": "$.Command"
+    },
+    "GetCloudInitStatusResults": {
+      "Type": "Task",
+      "Parameters": {
+        "CommandId.$": "$.Command.Id",
+        "InstanceId.$": "$.Instance.Id"
+      },
+      "Resource": "arn:aws:states:::aws-sdk:ssm:getCommandInvocation",
+      "Next": "CommandStatus",
+      "ResultSelector": {
+        "Id.$": "$.CommandId",
+        "Status.$": "$.Status",
+        "StandardOutputContent.$": "$.StandardOutputContent"
+      },
+      "ResultPath": "$.Command"
+    },
+    "CommandStatus": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.Command.Status",
+          "StringEquals": "Success",
+          "Next": "CloudInitStatus"
+        }
+      ],
+      "Default": "CommandStatusWait"
+    },
+    "CommandStatusWait": {
+      "Type": "Wait",
+      "Seconds": 15,
+      "Next": "GetCloudInitStatusResults"
+    },
+    "CloudInitStatus": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.Command.StandardOutputContent",
+          "StringEquals": "status: done\n",
+          "Next": "DescribeInstances"
+        },
+        {
+          "Or": [
+            {
+              "Variable": "$.Command.StandardOutputContent",
+              "StringEquals": "status: running\n"
+            },
+            {
+              "Variable": "$.Command.StandardOutputContent",
+              "StringEquals": "status: not started\n"
+            }
+          ],
+          "Next": "CloudInitWait"
+        }
+      ],
+      "Default": "TerminateInstances"
+    },
+    "TerminateInstances": {
+      "Type": "Task",
+      "Parameters": {
+        "InstanceIds.$": "States.Array($.Instance.Id)"
+      },
+      "Resource": "arn:aws:states:::aws-sdk:ec2:terminateInstances",
+      "End": true
+    },
+    "DescribeInstances": {
+      "Type": "Task",
+      "Parameters": {
+        "InstanceIds.$": "States.Array($.Instance.Id)"
+      },
+      "Resource": "arn:aws:states:::aws-sdk:ec2:describeInstances",
+      "Comment": "Get volume ID to snapshot",
+      "Next": "CreateSnapshot",
+      "ResultSelector": {
+        "Id.$": "$.Reservations[0].Instances[0]InstanceId",
+        "State.$": "$.Reservations[0].Instances[0].State.Name",
+        "VolumeId.$": "$.Reservations[0].Instances[0].BlockDeviceMappings[1].Ebs.VolumeId"
+      },
+      "ResultPath": "$.Instance"
+    },
+    "CreateSnapshot": {
+      "Type": "Task",
+      "Parameters": {
+        "VolumeId.$": "$.Instance.VolumeId"
+      },
+      "Resource": "arn:aws:states:::aws-sdk:ec2:createSnapshot",
+      "Comment": "Create snapshot of cache volume",
+      "Next": "UpdateSnapshotSsmParameter",
+      "ResultSelector": {
+        "Id.$": "$.SnapshotId"
+      },
+      "ResultPath": "$.Snapshot"
+    },
+    "UpdateSnapshotSsmParameter": {
+      "Type": "Task",
+      "Parameters": {
+        "Name": "${ssm_parameter_name}",
+        "Value.$": "$.Snapshot.Id"
+      },
+      "Resource": "arn:aws:states:::aws-sdk:ssm:putParameter",
+      "End": true,
+      "Comment": "Update SSM parameter with new snapshot ID"
+    },
+    "CloudInitWait": {
+      "Type": "Wait",
+      "Seconds": 60,
+      "Next": "GetCloudInitStatus",
+      "Comment": "Wait for cloud-init status to return 'done'"
+    }
+  }
+}

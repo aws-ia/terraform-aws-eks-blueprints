@@ -11,7 +11,8 @@ module "ec2" {
   source  = "terraform-aws-modules/ec2-instance/aws"
   version = "~> 5.5"
 
-  name = local.name
+  name   = local.name
+  create = false
 
   ami = data.aws_ssm_parameter.eks_ami.value
 
