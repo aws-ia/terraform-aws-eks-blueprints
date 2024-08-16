@@ -1,29 +1,35 @@
 {
   "Comment": "ML container image EBS cache builder",
-  "StartAt": "Define Defaults",
+  "StartAt": "DefineDefaultValues",
   "States": {
-    "Define Defaults": {
+    "DefineDefaultValues": {
       "Type": "Pass",
-      "Next": "Apply Defaults",
-      "ResultPath": "$.InputDefaults",
+      "Comment": "Define default values used when input values are not provided",
       "Parameters": {
         "InstanceType": "c6in.16xlarge",
         "Iops": 6000,
         "Throughput": 500,
-        "VolumeSize": 256
-      }
+        "VolumeSize": 256,
+        "SnapshotName": "ml-container-cache",
+        "SnapshotDescription": "ML container image cache"
+      },
+      "ResultPath": "$.InputDefaults",
+      "Next": "MergeDefaultValues"
     },
-    "Apply Defaults": {
+    "MergeDefaultValues": {
       "Type": "Pass",
-      "Next": "RunInstance",
-      "ResultPath": "$.withDefaults",
-      "OutputPath": "$.withDefaults.args",
+      "Comment": "Merge default values with input values, input values take precedence",
       "Parameters": {
         "args.$": "States.JsonMerge($.InputDefaults, $$.Execution.Input, false)"
-      }
+      },
+      "OutputPath": "$.withDefaults.args",
+      "ResultPath": "$.withDefaults",
+      "Next": "RunInstance"
     },
     "RunInstance": {
       "Type": "Task",
+      "Comment": "Create instance using EKS AMI",
+      "Resource": "arn:aws:states:::aws-sdk:ec2:runInstances",
       "Parameters": {
         "BlockDeviceMappings": [
           {
@@ -72,8 +78,6 @@
         ],
         "UserData": "${base64_encoded_user_data}"
       },
-      "Resource": "arn:aws:states:::aws-sdk:ec2:runInstances",
-      "Comment": "Create instance using EKS AMI",
       "ResultSelector": {
         "Id.$": "$.Instances[0].InstanceId"
       },
@@ -82,10 +86,11 @@
     },
     "DescribeInstance": {
       "Type": "Task",
+      "Comment": "Get the state of the instance",
+      "Resource": "arn:aws:states:::aws-sdk:ec2:describeInstances",
       "Parameters": {
         "InstanceIds.$": "States.Array($.Instance.Id)"
       },
-      "Resource": "arn:aws:states:::aws-sdk:ec2:describeInstances",
       "ResultSelector": {
         "Id.$": "$.Reservations[0].Instances[0]InstanceId",
         "State.$": "$.Reservations[0].Instances[0].State.Name"
@@ -116,19 +121,20 @@
               "StringEquals": "stopped"
             }
           ],
-          "Next": "TerminateInstances"
+          "Next": "TerminateInstance"
         }
       ],
       "Default": "WaitForInstanceState"
     },
     "WaitForInstanceState": {
       "Type": "Wait",
+      "Comment": "Wait for the instance to be running",
       "Seconds": 10,
-      "Next": "DescribeInstance",
-      "Comment": "Wait for the instance to be running"
+      "Next": "DescribeInstance"
     },
     "GetCloudInitStatus": {
       "Type": "Task",
+      "Comment": "Get cloud-init status - proxy signal to determine if user-data has completed",
       "Resource": "arn:aws:states:::aws-sdk:ssm:sendCommand",
       "Parameters": {
         "DocumentName": "AWS-RunShellScript",
@@ -144,8 +150,6 @@
           }
         ]
       },
-      "Comment": "Get cloud-init status",
-      "Next": "GetCloudInitStatusResults",
       "Retry": [
         {
           "ErrorEquals": [
@@ -160,22 +164,24 @@
       "ResultSelector": {
         "Id.$": "$.Command.CommandId"
       },
-      "ResultPath": "$.Command"
+      "ResultPath": "$.Command",
+      "Next": "GetCloudInitStatusResults"
     },
     "GetCloudInitStatusResults": {
       "Type": "Task",
+      "Comment": "Get cloud-init status results (text output from SSM command invocation)",
+      "Resource": "arn:aws:states:::aws-sdk:ssm:getCommandInvocation",
       "Parameters": {
         "CommandId.$": "$.Command.Id",
         "InstanceId.$": "$.Instance.Id"
       },
-      "Resource": "arn:aws:states:::aws-sdk:ssm:getCommandInvocation",
-      "Next": "CommandStatus",
       "ResultSelector": {
         "Id.$": "$.CommandId",
         "Status.$": "$.Status",
         "StandardOutputContent.$": "$.StandardOutputContent"
       },
-      "ResultPath": "$.Command"
+      "ResultPath": "$.Command",
+      "Next": "CommandStatus"
     },
     "CommandStatus": {
       "Type": "Choice",
@@ -199,7 +205,7 @@
         {
           "Variable": "$.Command.StandardOutputContent",
           "StringEquals": "status: done\n",
-          "Next": "DescribeInstances"
+          "Next": "GetCacheVolume"
         },
         {
           "Or": [
@@ -215,59 +221,112 @@
           "Next": "CloudInitWait"
         }
       ],
-      "Default": "TerminateInstances"
+      "Default": "TerminateInstance"
     },
-    "TerminateInstances": {
-      "Type": "Task",
-      "Parameters": {
-        "InstanceIds.$": "States.Array($.Instance.Id)"
-      },
-      "Resource": "arn:aws:states:::aws-sdk:ec2:terminateInstances",
-      "End": true
+    "CloudInitWait": {
+      "Type": "Wait",
+      "Comment": "Wait for cloud-init status to return 'done'",
+      "Seconds": 60,
+      "Next": "GetCloudInitStatus"
     },
-    "DescribeInstances": {
+    "GetCacheVolume": {
       "Type": "Task",
-      "Parameters": {
-        "InstanceIds.$": "States.Array($.Instance.Id)"
-      },
+      "Comment": "Get volume ID to create snapshot",
       "Resource": "arn:aws:states:::aws-sdk:ec2:describeInstances",
-      "Comment": "Get volume ID to snapshot",
-      "Next": "CreateSnapshot",
+      "Parameters": {
+        "InstanceIds.$": "States.Array($.Instance.Id)"
+      },
       "ResultSelector": {
         "Id.$": "$.Reservations[0].Instances[0]InstanceId",
         "State.$": "$.Reservations[0].Instances[0].State.Name",
         "VolumeId.$": "$.Reservations[0].Instances[0].BlockDeviceMappings[1].Ebs.VolumeId"
       },
-      "ResultPath": "$.Instance"
+      "ResultPath": "$.Instance",
+      "Next": "CreateSnapshot"
     },
     "CreateSnapshot": {
       "Type": "Task",
+      "Comment": "Create a snapshot of the cache volume",
+      "Resource": "arn:aws:states:::aws-sdk:ec2:createSnapshot",
       "Parameters": {
+        "Description.$": "$.SnapshotDescription",
+        "TagSpecifications": [
+          {
+            "ResourceType": "snapshot",
+            "Tags": [
+              {
+                "Key": "Name",
+                "Value.$": "$.SnapshotName"
+              }
+            ]
+          }
+        ],
         "VolumeId.$": "$.Instance.VolumeId"
       },
-      "Resource": "arn:aws:states:::aws-sdk:ec2:createSnapshot",
-      "Comment": "Create snapshot of cache volume",
-      "Next": "UpdateSnapshotSsmParameter",
       "ResultSelector": {
         "Id.$": "$.SnapshotId"
       },
-      "ResultPath": "$.Snapshot"
+      "ResultPath": "$.Snapshot",
+      "Next": "DescribeSnapshot"
+    },
+    "DescribeSnapshot": {
+      "Type": "Task",
+      "Comment": "Get the state of the snapshot",
+      "Resource": "arn:aws:states:::aws-sdk:ec2:describeSnapshots",
+      "Parameters": {
+        "SnapshotIds.$": "States.Array($.Snapshot.Id)"
+      },
+      "ResultSelector": {
+        "Id.$": "$.Snapshots[0].SnapshotId",
+        "State.$": "$.Snapshots[0].State"
+      },
+      "ResultPath": "$.Snapshot",
+      "Next": "SnapshotState"
+    },
+    "SnapshotState": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.Snapshot.State",
+          "StringEquals": "completed",
+          "Next": "UpdateSnapshotSsmParameter"
+        },
+        {
+          "Variable": "$.Snapshot.State",
+          "StringEquals": "pending",
+          "Next": "SnapshotStateWait"
+        }
+      ],
+      "Default": "TerminateInstance"
+    },
+    "SnapshotStateWait": {
+      "Type": "Wait",
+      "Comment": "Wait for the snapshot to complete and be ready for use",
+      "Seconds": 30,
+      "Next": "DescribeSnapshot"
     },
     "UpdateSnapshotSsmParameter": {
       "Type": "Task",
+      "Comment": "Update SSM parameter with new snapshot ID",
+      "Resource": "arn:aws:states:::aws-sdk:ssm:putParameter",
       "Parameters": {
         "Name": "${ssm_parameter_name}",
+        "Overwrite": true,
         "Value.$": "$.Snapshot.Id"
       },
-      "Resource": "arn:aws:states:::aws-sdk:ssm:putParameter",
-      "End": true,
-      "Comment": "Update SSM parameter with new snapshot ID"
+      "ResultSelector": {
+        "Version.$": "$.Version"
+      },
+      "ResultPath": "$.SsmParameter",
+      "Next": "TerminateInstance"
     },
-    "CloudInitWait": {
-      "Type": "Wait",
-      "Seconds": 60,
-      "Next": "GetCloudInitStatus",
-      "Comment": "Wait for cloud-init status to return 'done'"
+    "TerminateInstance": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::aws-sdk:ec2:terminateInstances",
+      "Parameters": {
+        "InstanceIds.$": "States.Array($.Instance.Id)"
+      },
+      "End": true
     }
   }
 }
