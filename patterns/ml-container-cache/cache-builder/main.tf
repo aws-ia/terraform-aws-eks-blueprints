@@ -12,7 +12,7 @@ terraform {
   # backend "s3" {
   #   bucket = "terraform-ssp-github-actions-state"
   #   region = "us-west-2"
-  #   key    = "e2e/ml-container-cache-build/terraform.tfstate"
+  #   key    = "e2e/ml-container-cache-builder/terraform.tfstate"
   # }
 }
 

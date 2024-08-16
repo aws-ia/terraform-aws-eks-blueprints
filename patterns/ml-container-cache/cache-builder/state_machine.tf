@@ -15,6 +15,7 @@ module "state_machine" {
   definition = templatefile("${path.module}/state_machine.json", {
     ami_id = data.aws_ssm_parameter.eks_ami.value
     base64_encoded_user_data = base64encode(templatefile("${path.module}/user_data.sh", {
+      # Update `ecr_images` and/or `public_images` as needed for your use case
       ecr_images = []
       public_images = [
         "nvcr.io/nvidia/k8s-device-plugin:v0.16.2",                 # 120 Mb
@@ -37,21 +38,21 @@ module "state_machine" {
 }
 
 data "aws_iam_policy_document" "state_machine" {
+  # EKS AMI SSM parameter
   statement {
-    sid     = "SSMGetParameter"
-    actions = ["ssm:GetParameter"]
-    resources = [
-      # EKS SSM param
-      "arn:aws:ssm:${local.region}::parameter/aws/service/eks/optimized-ami/*",
-    ]
+    sid       = "SSMGetParameter"
+    actions   = ["ssm:GetParameter"]
+    resources = ["arn:aws:ssm:${local.region}::parameter/aws/service/eks/optimized-ami/*"]
   }
 
+  # State machine pass IAM role to EC2
   statement {
     sid       = "PassRole"
     actions   = ["iam:PassRole"]
     resources = [aws_iam_role.ec2.arn]
   }
 
+  # State machine EC2 API calls to create/terminate instances and snapshots
   statement {
     sid = "Instance"
     actions = [
@@ -71,6 +72,7 @@ data "aws_iam_policy_document" "state_machine" {
     ]
   }
 
+  # State machine EC2 API calls to check instance/snapshot state
   statement {
     sid = "DescribeInstance"
     actions = [
@@ -80,6 +82,7 @@ data "aws_iam_policy_document" "state_machine" {
     resources = ["*"]
   }
 
+  # State machine SSM API calls to check cloud-init status
   statement {
     sid = "SendSSMCaommand"
     actions = [
@@ -89,6 +92,7 @@ data "aws_iam_policy_document" "state_machine" {
     resources = ["*"]
   }
 
+  # State machine SSM API call to update the snapshot ID parameter
   statement {
     sid     = "SSMPutParameter"
     actions = ["ssm:PutParameter"]
@@ -124,7 +128,7 @@ output "start_execution_command" {
 resource "aws_ssm_parameter" "snapshot_id" {
   name  = "/${local.name}/snapshot_id"
   type  = "String"
-  value = "todo"
+  value = "xxx"
 
   lifecycle {
     # The state machine will be responsible for the value after creation

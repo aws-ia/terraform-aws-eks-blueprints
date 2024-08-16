@@ -9,7 +9,6 @@ mkdir /cache
 mount /dev/xvdb /cache
 
 mkdir -p /cache/var/lib/containerd
-mkdir -p /cache/var/lib/kubelet
 
 # containerd needs to be running to pull images
 systemctl start containerd
@@ -31,5 +30,3 @@ crictl pull "${img}"
 yum install rsync -y
 cd / && rsync -a /var/lib/containerd/ /cache/var/lib/containerd
 echo 'synced /var/lib/containerd'
-cd / && rsync -a /var/lib/kubelet/ /cache/var/lib/kubelet
-echo 'synced /var/lib/kubelet'

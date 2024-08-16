@@ -1,3 +1,7 @@
+locals {
+  dev_name = "xvdb"
+}
+
 ################################################################################
 # Cluster
 ################################################################################
@@ -29,14 +33,39 @@ module "eks" {
       # The EKS AL2 GPU AMI provides all of the necessary components
       # for accelerated workloads w/ EFA
       ami_type       = "AL2_x86_64_GPU"
-      instance_types = ["p5.48xlarge"]
+      instance_types = ["g6.xlarge"]
 
       min_size     = 1
       max_size     = 1
       desired_size = 1
 
+      pre_bootstrap_user_data = <<-EOT
+        # Mount the second volume for containerd persistent data
+        # This volume contains the cached images and layers
+
+        systemctl stop containerd
+        mkfs -t xfs /dev/${local.dev_name}
+        rm -rf /var/lib/containerd/*
+        mount /dev/${local.dev_name} /var/lib/containerd/
+        systemctl start containerd
+
+      EOT
+
+      block_device_mappings = {
+        (local.dev_name) = {
+          device_name = "/dev/${local.dev_name}"
+          ebs = {
+            # Snapshot ID from the cache builder
+            snapshot_id = data.aws_ssm_parameter.snapshot_id.value
+            volume_size = 256
+            volume_type = "gp3"
+          }
+        }
+      }
+
       labels = {
         "nvidia.com/gpu.present" = "true"
+        "ml-container-cache"     = "true"
       }
 
       taints = {
