@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: example
+  name: cached
 spec:
   containers:
     - name: example
