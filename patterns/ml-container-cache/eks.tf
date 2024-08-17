@@ -2,6 +2,10 @@ locals {
   dev_name = "xvdb"
 }
 
+data "aws_ssm_parameter" "snapshot_id" {
+  name = "/cache-builder/snapshot_id"
+}
+
 ################################################################################
 # Cluster
 ################################################################################
@@ -33,7 +37,7 @@ module "eks" {
       # The EKS AL2 GPU AMI provides all of the necessary components
       # for accelerated workloads w/ EFA
       ami_type       = "AL2_x86_64_GPU"
-      instance_types = ["g6.xlarge"]
+      instance_types = ["g6e.xlarge"]
 
       min_size     = 1
       max_size     = 1
@@ -56,7 +60,7 @@ module "eks" {
           device_name = "/dev/${local.dev_name}"
           ebs = {
             # Snapshot ID from the cache builder
-            snapshot_id = data.aws_ssm_parameter.snapshot_id.value
+            snapshot_id = nonsensitive(data.aws_ssm_parameter.snapshot_id.value)
             volume_size = 256
             volume_type = "gp3"
           }
@@ -85,6 +89,16 @@ module "eks" {
       min_size     = 1
       max_size     = 2
       desired_size = 2
+
+      block_device_mappings = {
+        "xvda" = {
+          device_name = "/dev/xvda"
+          ebs = {
+            volume_size = 64
+            volume_type = "gp3"
+          }
+        }
+      }
     }
   }
 

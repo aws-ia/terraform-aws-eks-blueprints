@@ -1,0 +1,21 @@
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2024-08-17T03:24:17Z"
+    status: "True"
+    type: PodReadyToStartContainers
+  - lastProbeTime: null
+    lastTransitionTime: "2024-08-17T03:23:45Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2024-08-17T03:24:17Z"
+    status: "True"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2024-08-17T03:24:17Z"
+    status: "True"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2024-08-17T03:23:45Z"
+    status: "True"
+    type: PodScheduled

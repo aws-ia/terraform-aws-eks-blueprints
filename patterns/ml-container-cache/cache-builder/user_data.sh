@@ -1,14 +1,21 @@
 #!/usr/bin/env bash
 
+systemctl stop kubelet
+systemctl stop containerd
+
 # Ensure the root volume partition size is expanded
 growpart $(lsblk --noheadings --paths --output PKNAME /dev/xvda | xargs | cut -d " " -f 1) 1
 
+# Move images pulled as part of AMI creation process
+yum install rsync -y
+mkdir -p /tmp/containerd
+cd / && rsync -a /var/lib/containerd/ /tmp/containerd
+
 # Mount the 2nd volume
 mkfs -t xfs /dev/xvdb
-mkdir /cache
-mount /dev/xvdb /cache
-
-mkdir -p /cache/var/lib/containerd
+rm -rf /var/lib/containerd/*
+mount /dev/xvdb /var/lib/containerd/
+cd / && rsync -a /tmp/containerd/ /var/lib/containerd
 
 # containerd needs to be running to pull images
 systemctl start containerd
@@ -19,14 +26,10 @@ export IMAGE_SERVICE_ENDPOINT='unix:///run/containerd/containerd.sock'
 # ECR images
 ECR_PASSWORD=$(aws ecr get-login-password --region "${region}")
 %{ for img in ecr_images ~}
-crictl pull --creds "AWS:$${ECR_PASSWORD}" "${img}"
+ctr -n k8s.io images pull --label io.cri-containerd.pinned=pinned --label io.cri-containerd.image=managed --platform amd64 --creds "AWS:$${ECR_PASSWORD}" "${img}"
 %{ endfor ~}
 
 # Public images
 %{ for img in public_images ~}
-crictl pull "${img}"
+ctr -n k8s.io images pull --label io.cri-containerd.pinned=pinned --label io.cri-containerd.image=managed --platform amd64 "${img}"
 %{ endfor ~}
-
-yum install rsync -y
-cd / && rsync -a /var/lib/containerd/ /cache/var/lib/containerd
-echo 'synced /var/lib/containerd'

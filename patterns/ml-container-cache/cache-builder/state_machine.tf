@@ -12,7 +12,7 @@ module "state_machine" {
   version = "~> 4.2"
 
   name = local.name
-  definition = templatefile("${path.module}/state_machine.json", {
+  definition = nonsensitive(templatefile("${path.module}/state_machine.json", {
     ami_id = data.aws_ssm_parameter.eks_ami.value
     base64_encoded_user_data = base64encode(templatefile("${path.module}/user_data.sh", {
       # Update `ecr_images` and/or `public_images` as needed for your use case
@@ -29,7 +29,7 @@ module "state_machine" {
     security_group_id        = module.security_group.security_group_id
     subnet_id                = one(module.vpc.public_subnets)
     ssm_parameter_name       = aws_ssm_parameter.snapshot_id.name
-  })
+  }))
 
   attach_policy_json = true
   policy_json        = data.aws_iam_policy_document.state_machine.json
