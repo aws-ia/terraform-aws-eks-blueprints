@@ -14,7 +14,7 @@ spec:
         ]
       resources:
         limits:
-          nvidia.com/gpu: 1
+          nvidia.com/gpu: '1'
   nodeSelector:
     ml-container-cache: 'true'
   tolerations:

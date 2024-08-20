@@ -4,7 +4,17 @@ TODO
 
 The following components are demonstrated in this pattern:
 
-- TODO
+### Cached
+
+<p align="center">
+  <img src="assets/cached.svg" alt="cached image startup time">
+</p>
+
+### Uncached
+
+<p align="center">
+  <img src="assets/uncached.svg" alt="uncached image startup time">
+</p>
 
 ## Code
 
