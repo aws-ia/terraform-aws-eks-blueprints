@@ -25,6 +25,7 @@ module "state_machine" {
       ]
       region = local.region
     }))
+    availability_zones       = join("\",\"", slice(data.aws_availability_zones.available.names, 0, 3))
     iam_instance_profile_arn = aws_iam_instance_profile.ec2.arn
     security_group_id        = module.security_group.security_group_id
     subnet_id                = one(module.vpc.public_subnets)
@@ -60,6 +61,7 @@ data "aws_iam_policy_document" "state_machine" {
       "ec2:RunInstances",
       "ec2:TerminateInstances",
       "ec2:CreateSnapshot",
+      "ec2:EnableFastSnapshotRestores",
     ]
     resources = [
       "arn:aws:ec2:*::image/*",

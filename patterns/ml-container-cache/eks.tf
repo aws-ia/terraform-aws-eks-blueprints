@@ -34,6 +34,8 @@ module "eks" {
 
   eks_managed_node_groups = {
     gpu = {
+      create = false
+
       # The EKS AL2 GPU AMI provides all of the necessary components
       # for accelerated workloads w/ EFA
       ami_type       = "AL2_x86_64_GPU"
@@ -48,7 +50,7 @@ module "eks" {
         # This volume contains the cached images and layers
 
         systemctl stop containerd
-        mkfs -t xfs /dev/${local.dev_name}
+
         rm -rf /var/lib/containerd/*
         mount /dev/${local.dev_name} /var/lib/containerd/
         systemctl start containerd

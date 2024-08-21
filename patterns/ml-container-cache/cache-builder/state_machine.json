@@ -6,6 +6,7 @@
       "Type": "Pass",
       "Comment": "Define default values used when input values are not provided",
       "Parameters": {
+        "EnableFastSnapshotRestore": true,
         "InstanceType": "c6in.16xlarge",
         "Iops": 6000,
         "Throughput": 500,
@@ -318,6 +319,30 @@
         "Version.$": "$.Version"
       },
       "ResultPath": "$.SsmParameter",
+      "Next": "EnableFastSnapshotRestore"
+    },
+    "EnableFastSnapshotRestore": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.EnableFastSnapshotRestore",
+          "BooleanEquals": true,
+          "Next": "EnableFastSnapshotRestores"
+        }
+      ],
+      "Default": "TerminateInstance"
+    },
+    "EnableFastSnapshotRestores": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::aws-sdk:ec2:enableFastSnapshotRestores",
+      "Parameters": {
+        "AvailabilityZones": ["${availability_zones}"],
+        "SourceSnapshotIds.$": "States.Array($.Snapshot.Id)"
+      },
+      "ResultSelector": {
+        "Successful.$": "$.Successful"
+      },
+      "ResultPath": "$.FastSnapshotRestore",
       "Next": "TerminateInstance"
     },
     "TerminateInstance": {
