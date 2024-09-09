@@ -55,7 +55,7 @@ jobs:
           restore-keys: ${{ runner.os }}-terraform-
 
       - name: Pre-commit Terraform ${{ steps.minMax.outputs.minVersion }}
-        uses: clowdhaus/terraform-composite-actions/pre-commit@v1.9.0
+        uses: clowdhaus/terraform-composite-actions/pre-commit@v1.10.0
         if: steps.changes.outputs.src== 'true'
         with:
           terraform-version: ${{ env.TERRAFORM_VERSION }}
