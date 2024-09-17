@@ -7,13 +7,13 @@ The following components are demonstrated in this pattern:
 ### Cached
 
 <p align="center">
-  <img src="assets/cached.svg" alt="cached image startup time">
+  <img src="assets/cached.svg" alt="cached image startup time" width="70%">
 </p>
 
 ### Uncached
 
 <p align="center">
-  <img src="assets/uncached.svg" alt="uncached image startup time">
+  <img src="assets/uncached.svg" alt="uncached image startup time" width="70%">
 </p>
 
 ## Code

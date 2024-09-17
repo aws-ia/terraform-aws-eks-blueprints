@@ -18,10 +18,8 @@ module "state_machine" {
       # Update `ecr_images` and/or `public_images` as needed for your use case
       ecr_images = []
       public_images = [
-        "nvcr.io/nvidia/k8s-device-plugin:v0.16.2",                 # 120 Mb
-        "nvcr.io/nvidia/k8s/dcgm-exporter:3.3.7-3.5.0-ubuntu22.04", # 629 Mb
-        "nvcr.io/nvidia/pytorch:24.07-py3",                         # 9.3 Gb
-        "nvcr.io/nvidia/tritonserver:24.07-vllm-python-py3",        # 12.6 Gb
+        "nvcr.io/nvidia/k8s-device-plugin:v0.16.2", # 120 Mb compressed / 351 Mb uncompressed
+        "nvcr.io/nvidia/pytorch:24.08-py3",         # 9.5 Gb compressed / 20.4 Gb uncompressed
       ]
       region = local.region
     }))

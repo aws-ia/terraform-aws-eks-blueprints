@@ -10,7 +10,7 @@
         "InstanceType": "c6in.16xlarge",
         "Iops": 6000,
         "Throughput": 500,
-        "VolumeSize": 256,
+        "VolumeSize": 64,
         "SnapshotName": "ml-container-cache",
         "SnapshotDescription": "ML container image cache"
       },
@@ -191,6 +191,11 @@
           "Variable": "$.Command.Status",
           "StringEquals": "Success",
           "Next": "CloudInitStatus"
+        },
+        {
+          "Variable": "$.Command.Status",
+          "StringEquals": "Failed",
+          "Next": "TerminateInstance"
         }
       ],
       "Default": "CommandStatusWait"

@@ -34,8 +34,6 @@ module "eks" {
 
   eks_managed_node_groups = {
     gpu = {
-      create = false
-
       # The EKS AL2 GPU AMI provides all of the necessary components
       # for accelerated workloads w/ EFA
       ami_type       = "AL2_x86_64_GPU"
@@ -49,11 +47,13 @@ module "eks" {
         # Mount the second volume for containerd persistent data
         # This volume contains the cached images and layers
 
-        systemctl stop containerd
+        systemctl stop containerd kubelet
 
         rm -rf /var/lib/containerd/*
-        mount /dev/${local.dev_name} /var/lib/containerd/
-        systemctl start containerd
+        echo '/dev/${local.dev_name} /var/lib/containerd xfs defaults 0 0' >> /etc/fstab
+        mount -a
+
+        systemctl restart containerd kubelet
 
       EOT
 
@@ -63,7 +63,7 @@ module "eks" {
           ebs = {
             # Snapshot ID from the cache builder
             snapshot_id = nonsensitive(data.aws_ssm_parameter.snapshot_id.value)
-            volume_size = 256
+            volume_size = 64
             volume_type = "gp3"
           }
         }

@@ -14,7 +14,8 @@ cd / && rsync -a /var/lib/containerd/ /tmp/containerd
 # Mount the 2nd volume
 mkfs -t xfs /dev/xvdb
 rm -rf /var/lib/containerd/*
-mount /dev/xvdb /var/lib/containerd/
+echo '/dev/xvdb /var/lib/containerd xfs defaults 0 2' >> /etc/fstab
+mount -a
 cd / && rsync -a /tmp/containerd/ /var/lib/containerd
 
 # containerd needs to be running to pull images
