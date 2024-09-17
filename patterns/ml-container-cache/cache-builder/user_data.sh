@@ -6,7 +6,7 @@ systemctl stop containerd
 # Ensure the root volume partition size is expanded
 growpart $(lsblk --noheadings --paths --output PKNAME /dev/xvda | xargs | cut -d " " -f 1) 1
 
-# Move images pulled as part of AMI creation process
+# Preserve images pulled as part of the EKS AMI creation process
 yum install rsync -y
 mkdir -p /tmp/containerd
 cd / && rsync -a /var/lib/containerd/ /tmp/containerd

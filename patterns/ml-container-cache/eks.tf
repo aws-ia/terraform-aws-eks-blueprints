@@ -2,6 +2,8 @@ locals {
   dev_name = "xvdb"
 }
 
+# SSM parameter where the `cache-builder` stores the generated snapshot ID
+# This will be used to reference the snapshot when creating the EKS node group
 data "aws_ssm_parameter" "snapshot_id" {
   name = "/cache-builder/snapshot_id"
 }
@@ -12,7 +14,7 @@ data "aws_ssm_parameter" "snapshot_id" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 20.17"
+  version = "~> 20.24"
 
   cluster_name    = local.name
   cluster_version = "1.30"
@@ -57,6 +59,8 @@ module "eks" {
 
       EOT
 
+      # Mount a second volume for containerd persistent data
+      # using the snapshot that contains the cached images and layers
       block_device_mappings = {
         (local.dev_name) = {
           device_name = "/dev/${local.dev_name}"
@@ -92,6 +96,8 @@ module "eks" {
       max_size     = 2
       desired_size = 2
 
+      # Not required - increased to demonstrate pulling the un-cached
+      # image but the default volume size is too small for the image used
       block_device_mappings = {
         "xvda" = {
           device_name = "/dev/xvda"
