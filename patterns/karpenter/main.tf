@@ -2,7 +2,7 @@ provider "aws" {
   region = local.region
 }
 
-# This provider is required for ECR to autheticate with public repos. Please note ECR authetication requires us-east-1 as region hence its hardcoded below.
+# This provider is required for ECR to authenticate with public repos. Please note ECR authetication requires us-east-1 as region hence its hardcoded below.
 # If your region is same as us-east-1 then you can just use one aws provider
 provider "aws" {
   alias  = "ecr"
