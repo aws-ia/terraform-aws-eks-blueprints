@@ -1,10 +1,12 @@
 acmpca
 acmca_arn
 addrs
+adduser
 adot
 agones
 akuity
 alekc
+alertmanager
 algbw
 ALLOWVOLUMEEXPANSION
 amazonlinux
@@ -56,6 +58,7 @@ daemonset
 datasource
 dcgm
 distro
+dockerhub
 ecrpublic
 ecsdemo
 ecsfrontend
@@ -108,6 +111,7 @@ mktemp
 mountpoint
 mpijob
 mpijobs
+mpirun
 mtls
 nccl
 netcat
@@ -115,12 +119,17 @@ nics
 nodeadm
 nodegroup
 nodeport
+nopasswd
 nvme
 odcr
 oidc
+openmpi
+openpolicyagent
 persistentvolume
 pkce
 pubkey
+pullthroughcache
+ecrpullthroughcache
 privateca
 privatelink
 prometheusservice
