@@ -4,7 +4,7 @@ module "secrets_manager" {
 
   name                    = "ecr-pullthroughcache/docker"
   secret_string           = jsonencode(var.docker_secret)
-  recovery_window_in_days = 0 # Set to 0 for testing purposes, this will immediatly delete the secret. This action is irreversible. https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_DeleteSecret.html
+  recovery_window_in_days = 0 # Set to 0 for testing purposes, this will immediately delete the secret. This action is irreversible. https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_DeleteSecret.html
 }
 
 module "ecr" {
