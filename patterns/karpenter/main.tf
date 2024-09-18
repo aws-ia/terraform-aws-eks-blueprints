@@ -169,6 +169,16 @@ resource "aws_eks_access_entry" "karpenter_node_access_entry" {
   principal_arn     = module.eks_blueprints_addons.karpenter.node_iam_role_arn
   kubernetes_groups = []
   type              = "EC2_LINUX"
+
+  # EKS automatically adds the 'system:nodes' group to kubernetes_groups.
+  # Terraform detects this auto-added group and attempts to remove it.
+  # To prevent this, we ignore changes to kubernetes_groups.
+  # This avoids unnecessary drift between Terraform state and actual EKS state.
+  lifecycle {
+    ignore_changes = [
+      kubernetes_groups
+    ]
+  }
 }
 
 ################################################################################
