@@ -1,27 +1,30 @@
+data "aws_ecrpublic_authorization_token" "token" {
+  provider = aws.ecr
+}
+
 ################################################################################
 # Helm charts
 ################################################################################
 
-resource "helm_release" "nvidia_device_plugin" {
-  name             = "nvidia-device-plugin"
-  repository       = "https://nvidia.github.io/k8s-device-plugin"
-  chart            = "nvidia-device-plugin"
-  version          = "0.14.5"
-  namespace        = "nvidia-device-plugin"
+resource "helm_release" "neuron" {
+  name             = "neuron"
+  repository       = "oci://public.ecr.aws/neuron/neuron-helm-chart"
+  chart            = "neuron-helm-chart"
+  version          = "1.0.0"
+  namespace        = "neuron"
   create_namespace = true
   wait             = false
 
+  # Public ECR
+  repository_username = data.aws_ecrpublic_authorization_token.token.user_name
+  repository_password = data.aws_ecrpublic_authorization_token.token.password
+
   values = [
     <<-EOT
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: 'nvidia.com/gpu.present'
-                operator: In
-                values:
-                - 'true'
+      nodeSelector:
+        aws.amazon.com/neuron.present: 'true'
+      npd:
+        enabled: false
     EOT
   ]
 }
@@ -30,7 +33,7 @@ resource "helm_release" "aws_efa_device_plugin" {
   name       = "aws-efa-k8s-device-plugin"
   repository = "https://aws.github.io/eks-charts"
   chart      = "aws-efa-k8s-device-plugin"
-  version    = "v0.5.2"
+  version    = "v0.5.4"
   namespace  = "kube-system"
   wait       = false
 
@@ -39,7 +42,7 @@ resource "helm_release" "aws_efa_device_plugin" {
       nodeSelector:
         vpc.amazonaws.com/efa.present: 'true'
       tolerations:
-        - key: nvidia.com/gpu
+        - key: aws.amazon.com/neuron
           operator: Exists
           effect: NoSchedule
     EOT

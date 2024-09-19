@@ -4,7 +4,7 @@
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 20.17"
+  version = "~> 20.24"
 
   cluster_name    = local.name
   cluster_version = "1.30"
@@ -29,11 +29,11 @@ module "eks" {
   subnet_ids = module.vpc.private_subnets
 
   eks_managed_node_groups = {
-    nvidia-efa = {
+    neuron-efa = {
       # The EKS AL2 GPU AMI provides all of the necessary components
       # for accelerated workloads w/ EFA
       ami_type       = "AL2_x86_64_GPU"
-      instance_types = ["p5.48xlarge"]
+      instance_types = ["trn1n.32xlarge"]
 
       pre_bootstrap_user_data = <<-EOT
         # Mount instance store volumes in RAID-0 for kubelet and containerd
@@ -53,13 +53,13 @@ module "eks" {
 
       labels = {
         "vpc.amazonaws.com/efa.present" = "true"
-        "nvidia.com/gpu.present"        = "true"
+        "aws.amazon.com/neuron.present" = "true"
       }
 
       taints = {
-        # Ensure only GPU workloads are scheduled on this node group
+        # Ensure only Neuron workloads are scheduled on this node group
         gpu = {
-          key    = "nvidia.com/gpu"
+          key    = "aws.amazon.com/neuron"
           value  = "true"
           effect = "NO_SCHEDULE"
         }

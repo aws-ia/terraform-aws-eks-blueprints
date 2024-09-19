@@ -16,12 +16,19 @@ terraform {
   # backend "s3" {
   #   bucket = "terraform-ssp-github-actions-state"
   #   region = "us-west-2"
-  #   key    = "e2e/nvidia-gpu-efa/terraform.tfstate"
+  #   key    = "e2e/aws-neuron-efa/terraform.tfstate"
   # }
 }
 
 provider "aws" {
   region = local.region
+}
+
+# This provider is required for Public ECR. Public ECR is only available in us-east-1
+# If your region is same as us-east-1 then you can just use one aws provider
+provider "aws" {
+  alias  = "ecr"
+  region = "us-east-1"
 }
 
 provider "helm" {

@@ -1,28 +1,28 @@
-# EKS Cluster w/ NVIDIA GPUs and EFA for Machine Learning
+# EKS Cluster w/ AWS Neuron Devices and EFA for Machine Learning
 
-This pattern demonstrates an Amazon EKS Cluster with an EFA-enabled nodegroup that utilizes `p5.48xlarge` instances with H100 NVIDIA GPUs used in distributed, multi-node machine learning.
+This pattern demonstrates an Amazon EKS Cluster with an EFA-enabled nodegroup that utilizes `trn1n.32xlarge` instances that are used in distributed, multi-node machine learning.
 
 The following components are demonstrated in this pattern:
 
-- A "default" node group that supports addons and components that do not require GPUs nor EFA devices. Any pods that do not tolerate the taints of the GPU node group will be scheduled on instances within this node group.
-- A node group of `p5.48xlarge` instances with
-  - all x32 [EFA network interfaces](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/efa.html) enabled
+- A "default" node group that supports addons and components that do not require AWS Neuron nor EFA devices. Any pods that do not tolerate the taints of the Neuron node group will be scheduled on instances within this node group.
+- A node group of `trn1n.32xlarge` instances with
+  - all x16 [EFA network interfaces](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/efa.html) enabled
   - provisioned within a placement group so that the instances are provisioned close to one another in a single availability zone that supports the instance type.
-  - a common NVIDIA taint of `"nvidia.com/gpu:NoSchedule"` to ensure only the intended applications are allowed to run on the nodes created
-  - two labels to identify that this nodegroup supports NVIDIA GPUs and EFA devices and allow pods to use node selectors with these labels
-  - the NVME instance store volumes are mounted in a RAID-0 array to provide a single, large, high-performance storage volume for the GPU workloads
+  - a common Neuron taint of `"aws.amazon.com/neuron:NoSchedule"` to ensure only the intended applications are permitted to run on the nodes created
+  - two labels to identify that this nodegroup supports AWS Neuron and EFA devices and allow pods to use node selectors with these labels
+  - the NVME instance store volumes are mounted in a RAID-0 array to provide a single, large, high-performance storage volume for the Neuron workloads
   - kubelet and containerd are configured to utilize the RAID-0 volume, allowing kubelet to discover the additional storage as ephemeral storage that can be utilized by pods
-- A Helm chart deployment for the [NVIDIA device plugin](https://github.com/NVIDIA/k8s-device-plugin) to expose and mount the GPUs provided by the instances to the pods that request them
-- A Helm chart deployment for the EFA device plugin to expose and mount the EFA network interfaces provided by the instances to the pods that request them. Since the EFA network interfaces are only found on the instances that provide NVIDIA GPUs in this pattern, we do not apply an additional taint for the EFA network interfaces to avoid over-constraining.
+- A Helm chart deployment for the [Neuron device plugin](https://github.com/aws-neuron/neuron-helm-charts/tree/main/charts/neuron-helm-chart) to expose and mount the Neuron devices provided by the instances to the pods that request them
+- A Helm chart deployment for the EFA device plugin to expose and mount the EFA network interfaces provided by the instances to the pods that request them. Since the EFA network interfaces are only found on the instances that provide AWS Neuron devices in this pattern, we do not apply an additional taint for the EFA network interfaces to avoid over-constraining.
 
 ## Code
 
 ```terraform hl_lines="24-26 32-67"
-{% include  "../../patterns/nvidia-gpu-efa/eks.tf" %}
+{% include  "../../patterns/aws-neuron-efa/eks.tf" %}
 ```
 
 ```terraform hl_lines="5-47"
-{% include  "../../patterns/nvidia-gpu-efa/helm.tf" %}
+{% include  "../../patterns/aws-neuron-efa/helm.tf" %}
 ```
 
 ## Deploy
@@ -30,14 +30,6 @@ The following components are demonstrated in this pattern:
 See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#prerequisites) for the prerequisites and steps to deploy this pattern.
 
 ## Validate
-
-!!! note
-
-    Desired instance type can be specified in [eks.tf](eks.tf#L36).
-    Values shown below will change based on the instance type selected (i.e. - `p5.48xlarge` has 8 GPUs and 32 EFA interfaces).
-    A list of EFA-enabled instance types is available [here](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/efa.html#efa-instance-types).
-    If you are using an on-demand capacity reservation (ODCR) for your instance type, please uncomment the `capacity_reservation_specification` block in `eks.tf`
-    and specify a capacity_reservation_id. Please ensure that the region and availability zone of your ODCR match the ones used in `main.tf`.
 
 1. List the nodes and their instance type:
 
@@ -47,14 +39,14 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
 
     ```text
     NAME                                        STATUS   ROLES    AGE   VERSION               INSTANCE-TYPE
-    ip-10-0-1-16.us-east-2.compute.internal     Ready    <none>   12h   v1.29.3-eks-ae9a62a   p5.48xlarge
-    ip-10-0-12-113.us-east-2.compute.internal   Ready    <none>   14h   v1.29.3-eks-ae9a62a   m5.large
-    ip-10-0-12-201.us-east-2.compute.internal   Ready    <none>   12h   v1.29.3-eks-ae9a62a   p5.48xlarge
-    ip-10-0-46-217.us-east-2.compute.internal   Ready    <none>   14h   v1.29.3-eks-ae9a62a   m5.large
+    ip-10-0-1-16.us-east-2.compute.internal     Ready    <none>   12h   v1.30.1-eks-ae9a62a   trn1n.32xlarge
+    ip-10-0-12-113.us-east-2.compute.internal   Ready    <none>   14h   v1.30.1-eks-ae9a62a   m5.large
+    ip-10-0-12-201.us-east-2.compute.internal   Ready    <none>   12h   v1.30.1-eks-ae9a62a   trn1n.32xlarge
+    ip-10-0-46-217.us-east-2.compute.internal   Ready    <none>   14h   v1.30.1-eks-ae9a62a   m5.large
 
     ```
 
-    You should see two EFA-enabled (in this example `p5.48xlarge`) nodes in the list.
+    You should see two EFA-enabled (in this example `trn1n.32xlarge`) nodes in the list.
 
 2. Deploy Kubeflow MPI Operator
 
@@ -62,7 +54,7 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
     To deploy the MPI operator execute the following:
 
     ```sh
-    kubectl apply -f https://raw.githubusercontent.com/kubeflow/mpi-operator/v0.4.0/deploy/v2beta1/mpi-operator.yaml
+    kubectl apply -f https://raw.githubusercontent.com/kubeflow/mpi-operator/v0.5.0/deploy/v2beta1/mpi-operator.yaml
     ```
 
     ```text
