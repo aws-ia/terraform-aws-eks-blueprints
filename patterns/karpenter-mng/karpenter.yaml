@@ -1,10 +1,11 @@
 ---
-apiVersion: karpenter.k8s.aws/v1beta1
+apiVersion: karpenter.k8s.aws/v1
 kind: EC2NodeClass
 metadata:
   name: default
 spec:
-  amiFamily: AL2
+  amiSelectorTerms:
+    - alias: bottlerocket@latest
   role: ex-karpenter-mng
   subnetSelectorTerms:
     - tags:
@@ -15,7 +16,7 @@ spec:
   tags:
     karpenter.sh/discovery: ex-karpenter-mng
 ---
-apiVersion: karpenter.sh/v1beta1
+apiVersion: karpenter.sh/v1
 kind: NodePool
 metadata:
   name: default
@@ -23,6 +24,8 @@ spec:
   template:
     spec:
       nodeClassRef:
+        group: karpenter.k8s.aws
+        kind: EC2NodeClass
         name: default
       requirements:
         - key: "karpenter.k8s.aws/instance-category"

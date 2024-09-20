@@ -15,19 +15,8 @@ module "eks" {
   cluster_endpoint_public_access           = true
 
   cluster_addons = {
-    coredns = {
-      configuration_values = jsonencode({
-        tolerations = [
-          # Allow CoreDNS to run on the same nodes as the Karpenter controller
-          # for use during cluster creation when Karpenter nodes do not yet exist
-          {
-            key    = "karpenter.sh/controller"
-            value  = "true"
-            effect = "NoSchedule"
-          }
-        ]
-      })
-    }
+    # Enable after creation to run on Karpenter managed nodes
+    # coredns                = {}
     eks-pod-identity-agent = {}
     kube-proxy             = {}
     vpc-cni                = {}
@@ -36,40 +25,25 @@ module "eks" {
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
-  eks_managed_node_groups = {
+  # Fargate profiles use the cluster primary security group
+  # Therefore these are not used and can be skipped
+  create_cluster_security_group = false
+  create_node_security_group    = false
+
+  fargate_profiles = {
     karpenter = {
-      ami_type       = "BOTTLEROCKET_x86_64"
-      instance_types = ["m5.large"]
-
-      min_size     = 2
-      max_size     = 3
-      desired_size = 2
-
-      labels = {
-        # Used to ensure Karpenter runs on nodes that it does not manage
-        "karpenter.sh/controller" = "true"
-      }
-
-      taints = {
-        # The pods that do not tolerate this taint should run on nodes
-        # created by Karpenter
-        karpenter = {
-          key    = "karpenter.sh/controller"
-          value  = "true"
-          effect = "NO_SCHEDULE"
-        }
-      }
+      selectors = [
+        { namespace = "karpenter" }
+      ]
     }
   }
 
-  node_security_group_tags = merge(local.tags, {
+  tags = merge(local.tags, {
     # NOTE - if creating multiple security groups with this module, only tag the
     # security group that Karpenter should utilize with the following tag
     # (i.e. - at most, only one security group should have this tag in your account)
     "karpenter.sh/discovery" = local.name
   })
-
-  tags = local.tags
 }
 
 output "configure_kubectl" {
