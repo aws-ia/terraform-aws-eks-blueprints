@@ -11,22 +11,28 @@ This pattern demonstrates how to provision Karpenter on an EKS managed node grou
 
 ## Code
 
-The areas of significance related to this pattern are highlighted in the code provided below:
+The areas of significance related to this pattern are highlighted in the code provided below.
 
-```terraform hl_lines="20-28 31 49-62 67-70 89-92 102-126"
+### Cluster
+
+```terraform hl_lines="20-28 47-50 52-60 64-69"
 {% include  "../../patterns/karpenter-mng/eks.tf" %}
+```
+
+### Karpenter Resources
+
+```terraform hl_lines="2 14-15 17-20 42-55"
+{% include  "../../patterns/karpenter-mng/karpenter.tf" %}
+```
+
+```yaml hl_lines="9-17 28-29"
+{% include  "../../patterns/karpenter-mng/karpenter.yaml" %}
 ```
 
 ### VPC
 
 ```terraform hl_lines="21-22"
 {% include  "../../patterns/karpenter-mng/vpc.tf" %}
-```
-
-### EC2NodeClass and NodePool
-
-```yaml hl_lines="8-16"
-{% include  "../../patterns/karpenter-mng/karpenter.yaml" %}
 ```
 
 ## Deploy
@@ -40,9 +46,9 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
     ```sh
     kubectl get nodes
 
-    NAME                                      STATUS   ROLES    AGE     VERSION
-    ip-10-0-38-5.us-west-2.compute.internal   Ready    <none>   2m40s   v1.29.3-eks-ae9a62a
-    ip-10-0-9-38.us-west-2.compute.internal   Ready    <none>   2m35s   v1.29.3-eks-ae9a62a
+    NAME                                        STATUS   ROLES    AGE     VERSION
+    ip-10-0-23-32.us-west-2.compute.internal    Ready    <none>   10m     v1.30.4-eks-a737599
+    ip-10-0-6-222.us-west-2.compute.internal    Ready    <none>   10m     v1.30.4-eks-a737599
     ```
 
 2. Provision the Karpenter `EC2NodeClass` and `NodePool` resources which provide Karpenter the necessary configurations to provision EC2 resources:
@@ -69,9 +75,9 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
     kubectl get nodes
 
     NAME                                        STATUS   ROLES    AGE     VERSION
-    ip-10-0-38-109.us-west-2.compute.internal   Ready    <none>   11s     v1.29.3-eks-ae9a62a # <== EC2 created by Karpenter
-    ip-10-0-38-5.us-west-2.compute.internal     Ready    <none>   3m54s   v1.29.3-eks-ae9a62a
-    ip-10-0-9-38.us-west-2.compute.internal     Ready    <none>   3m49s   v1.29.3-eks-ae9a62a
+    ip-10-0-23-32.us-west-2.compute.internal    Ready    <none>   10m     v1.30.4-eks-a737599
+    ip-10-0-46-239.us-west-2.compute.internal   Ready    <none>   20s     v1.30.1-eks-e564799 # <== EC2 created by Karpenter
+    ip-10-0-6-222.us-west-2.compute.internal    Ready    <none>   10m     v1.30.4-eks-a737599
     ```
 
 ## Destroy
@@ -80,6 +86,12 @@ Scale down the deployment to de-provision Karpenter created resources first:
 
 ```sh
 kubectl delete -f example.yaml
+```
+
+Remove the Karpenter Helm chart:
+
+```sh
+terraform destroy -target=helm_release.karpenter --auto-approve
 ```
 
 {%

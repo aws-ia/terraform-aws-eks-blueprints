@@ -2,22 +2,46 @@
 
 This pattern demonstrates how to provision Karpenter on a serverless cluster (serverless data plane) using Fargate Profiles.
 
+## Code
+
+The areas of significance related to this pattern are highlighted in the code provided below.
+
+### Cluster
+
+```terraform hl_lines="18-19 28-31 34-38 42-45"
+{% include  "../../patterns/karpenter/eks.tf" %}
+```
+
+### Karpenter Resources
+
+```terraform hl_lines="2 14-15 17-19 21-24 46-55"
+{% include  "../../patterns/karpenter/karpenter.tf" %}
+```
+
+```yaml hl_lines="9-17 28-29"
+{% include  "../../patterns/karpenter/karpenter.yaml" %}
+```
+
+### VPC
+
+```terraform hl_lines="21-22"
+{% include  "../../patterns/karpenter/vpc.tf" %}
+```
+
 ## Deploy
 
 See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#prerequisites) for the prerequisites and steps to deploy this pattern.
 
 ## Validate
 
-1. Test by listing the nodes in the cluster. You should see four Fargate nodes in the cluster:
+1. Test by listing the nodes in the cluster. You should see two Fargate nodes in the cluster:
 
     ```sh
     kubectl get nodes
 
-    NAME                                                STATUS   ROLES    AGE     VERSION
-    fargate-ip-10-0-11-195.us-west-2.compute.internal   Ready    <none>   5m20s   v1.28.2-eks-f8587cb
-    fargate-ip-10-0-27-183.us-west-2.compute.internal   Ready    <none>   5m2s    v1.28.2-eks-f8587cb
-    fargate-ip-10-0-4-169.us-west-2.compute.internal    Ready    <none>   5m3s    v1.28.2-eks-f8587cb
-    fargate-ip-10-0-44-106.us-west-2.compute.internal   Ready    <none>   5m12s   v1.28.2-eks-f8587cb
+    NAME                                               STATUS   ROLES    AGE    VERSION
+    fargate-ip-10-0-16-92.us-west-2.compute.internal   Ready    <none>   2m3s   v1.30.0-eks-404b9c6
+    fargate-ip-10-0-8-95.us-west-2.compute.internal    Ready    <none>   2m3s   v1.30.0-eks-404b9c6
     ```
 
 2. Provision the Karpenter `EC2NodeClass` and `NodePool` resources which provide Karpenter the necessary configurations to provision EC2 resources:
@@ -43,12 +67,10 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
     ```sh
     kubectl get nodes
 
-    NAME                                                STATUS   ROLES    AGE   VERSION
-    fargate-ip-10-0-11-195.us-west-2.compute.internal   Ready    <none>   13m   v1.28.2-eks-f8587cb
-    fargate-ip-10-0-27-183.us-west-2.compute.internal   Ready    <none>   12m   v1.28.2-eks-f8587cb
-    fargate-ip-10-0-4-169.us-west-2.compute.internal    Ready    <none>   12m   v1.28.2-eks-f8587cb
-    fargate-ip-10-0-44-106.us-west-2.compute.internal   Ready    <none>   13m   v1.28.2-eks-f8587cb
-    ip-10-0-32-199.us-west-2.compute.internal           Ready    <none>   29s   v1.28.2-eks-a5df82a # <== EC2 created by Karpenter
+    NAME                                               STATUS   ROLES    AGE    VERSION
+    fargate-ip-10-0-16-92.us-west-2.compute.internal   Ready    <none>   2m3s   v1.30.0-eks-404b9c6
+    fargate-ip-10-0-8-95.us-west-2.compute.internal    Ready    <none>   2m3s   v1.30.0-eks-404b9c6
+    ip-10-0-21-175.us-west-2.compute.internal          Ready    <none>   88s    v1.30.1-eks-e564799 # <== EC2 created by Karpenter
     ```
 
 ## Destroy
@@ -57,6 +79,12 @@ Scale down the deployment to de-provision Karpenter created resources first:
 
 ```sh
 kubectl delete -f example.yaml
+```
+
+Remove the Karpenter Helm chart:
+
+```sh
+terraform destroy -target=helm_release.karpenter --auto-approve
 ```
 
 {%
