@@ -104,19 +104,16 @@ data "aws_iam_policy_document" "state_machine" {
 output "start_execution_command" {
   description = "Example awscli command to start the state machine execution"
   value = <<-EOT
-    aws stepfunctions start-execution \
-      --region ${local.region} \
-      --state-machine-arn ${module.state_machine.state_machine_arn} \
-      --input ${jsonencode(jsonencode(
+    aws stepfunctions start-execution --region ${local.region} --state-machine-arn ${module.state_machine.state_machine_arn} --input ${jsonencode(
   {
     InstanceType        = "c6in.24xlarge"
     Iops                = 10000
     Throughput          = 1000
     VolumeSize          = 128
     SnapshotName        = "ml-container-cache"
-    SnapshotDescription = "ML container image cache"
+    //SnapshotDescription = "ML container image cache"
   }
-))}
+)}
   EOT
 }
 
