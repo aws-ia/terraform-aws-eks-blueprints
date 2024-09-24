@@ -18,8 +18,7 @@ module "state_machine" {
       # Update `ecr_images` and/or `public_images` as needed for your use case
       ecr_images = []
       public_images = [
-        "nvcr.io/nvidia/k8s-device-plugin:v0.16.2", # 120 MB compressed / 351 MB decompressed
-        "nvcr.io/nvidia/pytorch:24.08-py3",         # 9.5 GB compressed / 20.4 GB decompressed
+        "public.ecr.aws/data-on-eks/vllm-ray2.32.0-inf2-llama3:latest",
       ]
       region = local.region
     }))
