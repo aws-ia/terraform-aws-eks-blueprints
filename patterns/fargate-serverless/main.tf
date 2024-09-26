@@ -240,8 +240,8 @@ resource "kubernetes_deployment_v1" "this" {
         }
         toleration {
           effect = "NoSchedule"
-          key = "eks.amazonaws.com/compute-type"
-          value = "fargate"
+          key    = "eks.amazonaws.com/compute-type"
+          value  = "fargate"
         }
       }
     }
