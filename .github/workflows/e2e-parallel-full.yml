@@ -32,7 +32,7 @@ jobs:
           egress-policy: audit
 
       - name: Checkout
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+        uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938
 
       - name: Auth AWS
         uses: aws-actions/configure-aws-credentials@v4.0.2
@@ -74,7 +74,7 @@ jobs:
           egress-policy: audit
 
       - name: Checkout
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+        uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938
 
       - name: Setup backend
         # Un-comment remote backend for use in workflow
@@ -167,7 +167,7 @@ jobs:
           egress-policy: audit
 
       - name: Checkout
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
+        uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938
 
       - name: Configure AWS credentials from Test account
         uses: aws-actions/configure-aws-credentials@v4.0.2
