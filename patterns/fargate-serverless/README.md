@@ -52,31 +52,42 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
     apiVersion: v1
     data:
       filters.conf: |
-        [FILTER]
-          Name parser
-          Match *
-          Key_Name log
-          Parser regex
-          Preserve_Key True
-          Reserve_Data True
-      flb_log_cw: "true"
-      output.conf: |
-        [OUTPUT]
-          Name cloudwatch_logs
-          Match *
-          region us-west-2
-          log_group_name /fargate-serverless/fargate-fluentbit-logs20230509014113352200000006
-          log_stream_prefix fargate-logs-
-          auto_create_group true
-      parsers.conf: |
-        [PARSER]
-          Name regex
-          Format regex
-          Regex ^(?<time>[^ ]+) (?<stream>[^ ]+) (?<logtag>[^ ]+) (?<message>.+)$
-          Time_Key time
-          Time_Format %Y-%m-%dT%H:%M:%S.%L%z
-          Time_Keep On
-          Decode_Field_As json message
+          [FILTER]
+            Name parser
+            Match *
+            Key_name log
+            Parser crio
+          [FILTER]
+            Name kubernetes
+            Match kube.*
+            Merge_Log On
+            Keep_Log Off
+            Buffer_Size 0
+            Kube_Meta_Cache_TTL 300s
+        flb_log_cw: "true"
+        output.conf: |
+          [OUTPUT]
+            Name cloudwatch
+            Match kube.*
+            region us-west-2
+            log_group_name /fargate-serverless/fargate-fluentbit-logs2024091817475518540000000a
+            log_stream_prefix fargate-logs-
+            auto_create_group true
+          [OUTPUT]
+            Name cloudwatch_logs
+            Match *
+            region us-west-2
+            log_group_name /fargate-serverless/fargate-fluentbit-logs2024091817475518540000000a
+            log_stream_prefix fluent-bit-logs-
+            auto_create_group true
+        parsers.conf: |
+          [PARSER]
+            Name crio
+            Format Regex
+            Regex ^(?<time>[^ ]+) (?<stream>stdout|stderr) (?<logtag>P|F) (?<log>.*)$
+            Time_Key    time
+            Time_Format %Y-%m-%dT%H:%M:%S.%L%z
+            Time_Keep On
     immutable: false
     kind: ConfigMap
     metadata:

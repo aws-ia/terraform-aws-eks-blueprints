@@ -101,8 +101,9 @@ module "eks" {
 ################################################################################
 
 module "eks_blueprints_addons" {
-  source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "~> 1.16"
+  source = "/Users/bersr/Documents/Code/Terraform/aws-ia/Blueprints/terraform-aws-eks-blueprints-addons"
+  # source  = "aws-ia/eks-blueprints-addons/aws"
+  # version = "~> 1.16"
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
@@ -143,7 +144,7 @@ module "eks_blueprints_addons" {
     kube-proxy = {}
   }
 
-  # Enable Fargate logging
+  # Enable Fargate logging this may generate a large ammount of logs, disable it if not explicitly required
   enable_fargate_fluentbit = true
   fargate_fluentbit = {
     flb_log_cw = true
@@ -236,6 +237,11 @@ resource "kubernetes_deployment_v1" "this" {
           port {
             container_port = 80
           }
+        }
+        toleration {
+          effect = "NoSchedule"
+          key = "eks.amazonaws.com/compute-type"
+          value = "fargate"
         }
       }
     }
