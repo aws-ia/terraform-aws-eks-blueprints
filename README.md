@@ -19,7 +19,7 @@ open-source tools and AWS services as well as expertise in AWS and Kubernetes.
 
 AWS customers have asked for patterns that demonstrate how to integrate the landscape of Kubernetes
 tools and make it easy for them to provision complete, opinionated EKS clusters that meet specific
-application requirements. Customers can utilize EKS Blueprints to configure and deploy purpose built
+application requirements. Customers can utilize EKS Blueprints to configure and deploy purpose-built
 EKS clusters, and start onboarding workloads in days, rather than months.
 
 ## Consumption
@@ -43,7 +43,7 @@ Terraform will not expose variables and outputs in the same manner that Terrafor
 order to avoid confusion around the consumption model.
 
 However, we do have a number of Terraform modules that were created to support
-EKS Blueprints in addition to the community hosted modules. Please see the respective projects for more
+EKS Blueprints in addition to the community-hosted modules. Please see the respective projects for more
 details on the modules constructed to support EKS Blueprints for Terraform; those projects are listed
 [below](https://aws-ia.github.io/terraform-aws-eks-blueprints/#related-projects).
 
@@ -68,7 +68,7 @@ related projects that users should be aware of:
     - [`terraform-aws-eks-ack-addons`](https://github.com/aws-ia/terraform-aws-eks-ack-addons) -
   Terraform module to deploy ACK controllers onto EKS clusters
     - [`crossplane-on-eks`](https://github.com/awslabs/crossplane-on-eks) - Crossplane Blueprints
-    is an open source repo to bootstrap Amazon EKS clusters and provision AWS resources using a
+    is an open-source repo to bootstrap Amazon EKS clusters and provision AWS resources using a
     library of Crossplane Compositions (XRs) with Composite Resource Definitions (XRDs).
 
 2. Data on EKS
@@ -87,7 +87,7 @@ related projects that users should be aware of:
 
 4. Karpenter Blueprints
    - [`karpenter-blueprints`](https://github.com/aws-samples/karpenter-blueprints) - includes a list of common workload scenarios,
-   some of them go in depth with the explanation of why configuring Karpenter and Kubernetes objects in such a way is important.
+   some of which go in depth with the explanation of why configuring Karpenter and Kubernetes objects in such a way is important.
 
 ## Terraform Caveats
 
@@ -105,21 +105,21 @@ has been tested and validated.
 , which means that the cluster configuration should be defined in a workspace separate from the resources
 deployed onto the cluster (i.e. - addons). However, to simplify the pattern experience, we have defined
 everything in one workspace and provided instructions to provision the patterns using a targeted
-apply approach. Users are encouraged to investigate a Terraform project structure that suites their needs;
+apply approach. Users are encouraged to investigate a Terraform project structure that suits their needs;
 EKS Blueprints for Terraform does not have an opinion in this matter and will defer to Hashicorp's guidance.
 
 3. Patterns are not intended to be consumed in-place in the same manner that one would consume a module.
 Therefore, we do not provide variables and outputs to expose various levels of configuration for the examples.
-Users can modify the pattern locally after cloning to suite their requirements.
+Users can modify the pattern locally after cloning to suit their requirements.
 
 4. Please see the [FAQ section](https://aws-ia.github.io/terraform-aws-eks-blueprints/faq/#provider-authentication)
-on authenticating Kubernetes based providers (`kubernetes`, `helm`, `kubectl`) to Amazon EKS clusters
+on authenticating Kubernetes-based providers (`kubernetes`, `helm`, `kubectl`) to Amazon EKS clusters
 regarding the use of static tokens versus dynamic tokens using the `awscli`.
 
 ## Support & Feedback
 
 EKS Blueprints for Terraform is maintained by AWS Solution Architects. It is not part of an AWS
-service and support is provided as a best-effort by the EKS Blueprints community. To provide feedback,
+service and support is provided as a best effort by the EKS Blueprints community. To provide feedback,
 please use the [issues templates](https://github.com/aws-ia/terraform-aws-eks-blueprints/issues)
 provided. If you are interested in contributing to EKS Blueprints, see the
 [Contribution guide](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/CONTRIBUTING.md).
