@@ -45,46 +45,12 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
 3. Validate the `aws-logging` configMap for Fargate Fluentbit was created:
 
     ```sh
-    kubectl -n aws-observability get configmap aws-logging -o yaml
+    kubectl -n aws-observability get configmap aws-logging 
     ```
 
     ```yaml
-    apiVersion: v1
-    data:
-      filters.conf: |
-        [FILTER]
-          Name parser
-          Match *
-          Key_Name log
-          Parser regex
-          Preserve_Key True
-          Reserve_Data True
-      flb_log_cw: "true"
-      output.conf: |
-        [OUTPUT]
-          Name cloudwatch_logs
-          Match *
-          region us-west-2
-          log_group_name /fargate-serverless/fargate-fluentbit-logs20230509014113352200000006
-          log_stream_prefix fargate-logs-
-          auto_create_group true
-      parsers.conf: |
-        [PARSER]
-          Name regex
-          Format regex
-          Regex ^(?<time>[^ ]+) (?<stream>[^ ]+) (?<logtag>[^ ]+) (?<message>.+)$
-          Time_Key time
-          Time_Format %Y-%m-%dT%H:%M:%S.%L%z
-          Time_Keep On
-          Decode_Field_As json message
-    immutable: false
-    kind: ConfigMap
-    metadata:
-      creationTimestamp: "2023-05-08T21:14:52Z"
-      name: aws-logging
-      namespace: aws-observability
-      resourceVersion: "1795"
-      uid: d822bcf5-a441-4996-857e-7fb1357bc07e
+    NAME               DATA   AGE
+    aws-logging        4      20m
     ```
 
     You can also validate if the CloudWatch LogGroup was created accordingly, and LogStreams were populated:
