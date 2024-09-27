@@ -44,25 +44,33 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
     fargate-ip-10-0-8-95.us-west-2.compute.internal    Ready    <none>   2m3s   v1.30.0-eks-404b9c6
     ```
 
-2. Provision the Karpenter `EC2NodeClass` and `NodePool` resources which provide Karpenter the necessary configurations to provision EC2 resources:
+2. Before applying the Karpenter resources, you need to create the AWS Spot service-linked role. Run the following command:
+
+    ```sh
+    aws iam create-service-linked-role --aws-service-name spot.amazonaws.com
+    ```
+
+   This step is necessary to allow Karpenter to launch and manage Spot Instances.
+
+3. Provision the Karpenter `EC2NodeClass` and `NodePool` resources which provide Karpenter the necessary configurations to provision EC2 resources:
 
     ```sh
     kubectl apply -f karpenter.yaml
     ```
 
-3. Once the Karpenter resources are in place, Karpenter will provision the necessary EC2 resources to satisfy any pending pods in the scheduler's queue. You can demonstrate this with the example deployment provided. First deploy the example deployment which has the initial number replicas set to 0:
+4. Once the Karpenter resources are in place, Karpenter will provision the necessary EC2 resources to satisfy any pending pods in the scheduler's queue. You can demonstrate this with the example deployment provided. First deploy the example deployment which has the initial number replicas set to 0:
 
     ```sh
     kubectl apply -f example.yaml
     ```
 
-4. When you scale the example deployment, you should see Karpenter respond by quickly provisioning EC2 resources to satisfy those pending pod requests:
+5. When you scale the example deployment, you should see Karpenter respond by quickly provisioning EC2 resources to satisfy those pending pod requests:
 
     ```sh
     kubectl scale deployment inflate --replicas=3
     ```
 
-5. Listing the nodes should now show some EC2 compute that Karpenter has created for the example deployment:
+6. Listing the nodes should now show some EC2 compute that Karpenter has created for the example deployment:
 
     ```sh
     kubectl get nodes
