@@ -37,6 +37,14 @@ When the PyTorch image is not present on the EBS volume, it takes roughly 6 minu
 
 ## Code
 
+### Cache Builder
+
+```terraform hl_lines="7-11 13-14"
+{% include  "../../patterns/ml-container-cache/cache_builder.tf" %}
+```
+
+### Cluster
+
 ```terraform hl_lines="5-9 48-60 62-74"
 {% include  "../../patterns/ml-container-cache/eks.tf" %}
 ```
@@ -45,12 +53,11 @@ When the PyTorch image is not present on the EBS volume, it takes roughly 6 minu
 
 See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#prerequisites) for the prerequisites and steps to deploy this pattern.
 
-1. Navigate to the `cache-builder/` directory in order to deploy the Step Function state machine that will create the EBS volume snapshots with the cached images.
+1. First, deploy the Step Function state machine that will create the EBS volume snapshots with the cached images.
 
     ```sh
-    cd cache-builder
     terraform init
-    terraform apply --auto-approve
+    terraform apply -target=module.ebs_snapshot_builder -target=module.vpc --auto-approve
     ```
 
 2. Once the cache builder resources have been provisioned, execute the state machine by either navigating to the state machine within the AWS console and clicking `Start execution` (with the defaults or by passing in values to override the default values), or by using the provided output from the Terraform output value `start_execution_command` to start the state machine using the awscli. For example, the output looks similar to the following:
@@ -60,16 +67,14 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
     aws stepfunctions start-execution \
       --region us-west-2 \
       --state-machine-arn arn:aws:states:us-west-2:111111111111:stateMachine:cache-builder \
-      --input "{\"InstanceType\":\"c6in.24xlarge\",\"Iops\":10000,\"SnapshotDescription\":\"ML container image cache\",\"SnapshotName\":\"ml-container-cache\",\"Throughput\":1000,\"VolumeSize\":128}"
+      --input "{\"SnapshotDescription\":\"ML container image cache\",\"SnapshotName\":\"ml-container-cache\"}"
 
     EOT
     ```
 
-3. Once the state machine execution has completed successfully and created an EBS snapshot volume, navigate back up to the root directory of the pattern to provision the cluster and node group that will utilize the cached images.
+3. Once the state machine execution has completed successfully and created an EBS snapshot volume, provision the cluster and node group that will utilize the cached images.
 
     ```sh
-    cd ..
-    terraform init
     terraform apply --auto-approve
     ```
 
@@ -95,17 +100,6 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
 
 ## Destroy
 
-To remove the resources that were created, the destroy steps should be executed in the reverse order of the deployment steps:
-
-1. Deprovision the cluster resources:
-
-    ```sh
-    terraform destroy --auto-approve
-    ```
-
-2. Navigate to the `cache-builder/` directory to deprovision the Step Function state machine:
-
-    ```sh
-    cd cache-builder
-    terraform destroy --auto-approve
-    ```
+```sh
+terraform destroy --auto-approve
+```

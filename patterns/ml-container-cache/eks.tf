@@ -5,7 +5,7 @@ locals {
 # SSM parameter where the `cache-builder` stores the generated snapshot ID
 # This will be used to reference the snapshot when creating the EKS node group
 data "aws_ssm_parameter" "snapshot_id" {
-  name = "/cache-builder/snapshot_id"
+  name = module.ebs_snapshot_builder.ssm_parameter_name
 }
 
 ################################################################################
@@ -17,7 +17,7 @@ module "eks" {
   version = "~> 20.24"
 
   cluster_name    = local.name
-  cluster_version = "1.30"
+  cluster_version = "1.31"
 
   # Give the Terraform identity admin access to the cluster
   # which will allow it to deploy resources into the cluster
