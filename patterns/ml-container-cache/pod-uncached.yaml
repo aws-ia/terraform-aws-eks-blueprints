@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: uncached
+spec:
+  containers:
+    - name: example
+      image: nvcr.io/nvidia/pytorch:24.08-py3
+      imagePullPolicy: IfNotPresent
+      command: ['python3']
+      args: ['-c', 'import torch; print(torch.cuda.is_available()); print(torch.cuda.device_count())']
