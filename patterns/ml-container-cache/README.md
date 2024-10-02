@@ -45,7 +45,7 @@ When the PyTorch image is not present on the EBS volume, it takes roughly 6 minu
 
 ### Cluster
 
-```terraform hl_lines="5-9 48-60 62-74"
+```terraform hl_lines="5-9 52-64 66-78"
 {% include  "../../patterns/ml-container-cache/eks.tf" %}
 ```
 

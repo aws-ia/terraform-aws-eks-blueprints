@@ -34,6 +34,10 @@ module "eks" {
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
+  eks_managed_node_group_defaults = {
+    ebs_optimized = true
+  }
+
   eks_managed_node_groups = {
     gpu = {
       # The EKS AL2 GPU AMI provides all of the necessary components
@@ -97,7 +101,7 @@ module "eks" {
       desired_size = 2
 
       # Not required - increased to demonstrate pulling the un-cached
-      # image but the default volume size is too small for the image used
+      # image since the default volume size is too small for the image used
       block_device_mappings = {
         "xvda" = {
           device_name = "/dev/xvda"
