@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/streetsidesoftware/cspell-cli
-    rev: v8.13.3
+    rev: v8.15.1
     hooks:
       - id: cspell
         args: [--exclude, 'ADOPTERS.md', --exclude, '.pre-commit-config.yaml', --exclude, '.gitignore', --exclude, '*.drawio', --exclude, 'mkdocs.yml', --exclude, '.helmignore', --exclude, '.github/workflows/*', --exclude, 'patterns/istio-multi-cluster/*', --exclude, 'patterns/blue-green-upgrade/*', --exclude, '/patterns/vpc-lattice/cross-cluster-pod-communication/*', --exclude, 'patterns/bottlerocket/*', --exclude, 'patterns/nvidia-gpu-efa/generate-efa-nccl-test.sh']
@@ -10,7 +10,7 @@ repos:
       - id: pretty-format-yaml
         args: [--autofix, --indent, '2', --offset, '2', --preserve-quotes]
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer

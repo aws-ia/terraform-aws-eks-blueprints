@@ -45,7 +45,7 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
 3. Validate the `aws-logging` configMap for Fargate Fluentbit was created:
 
     ```sh
-    kubectl -n aws-observability get configmap aws-logging 
+    kubectl -n aws-observability get configmap aws-logging
     ```
 
     ```yaml
