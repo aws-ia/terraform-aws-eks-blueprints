@@ -16,7 +16,7 @@ resource "helm_release" "aws_efa_device_plugin" {
   name       = "aws-efa-k8s-device-plugin"
   repository = "https://aws.github.io/eks-charts"
   chart      = "aws-efa-k8s-device-plugin"
-  version    = "v0.5.4"
+  version    = "v0.5.5"
   namespace  = "kube-system"
   wait       = false
 
