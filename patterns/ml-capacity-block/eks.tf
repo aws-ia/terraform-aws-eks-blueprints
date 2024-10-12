@@ -47,7 +47,7 @@ module "eks" {
       # The EKS AL2023 NVIDIA AMI provides all of the necessary components
       # for accelerated workloads w/ EFA
       ami_type       = "AL2023_x86_64_NVIDIA"
-      instance_types = ["p5.48xlarge"]
+      instance_types = ["p5e.48xlarge"]
 
       # Mount instance store volumes in RAID-0 for kubelet and containerd
       # https://github.com/awslabs/amazon-eks-ami/blob/master/doc/USER_GUIDE.md#raid-0-for-kubelet-and-containerd-raid0
@@ -110,7 +110,7 @@ module "eks" {
     default = {
       instance_types = ["m5.large"]
 
-      min_size     = 1
+      min_size     = 2
       max_size     = 2
       desired_size = 2
     }
@@ -124,8 +124,8 @@ module "eks" {
     cbr2 = {
       # The EKS AL2023 NVIDIA AMI provides all of the necessary components
       # for accelerated workloads w/ EFA
-      ami_type       = "AL2023_x86_64_NVIDIA"
-      instance_types = ["p5.48xlarge"]
+      ami_type      = "AL2023_x86_64_NVIDIA"
+      instance_type = "p5e.48xlarge"
 
       # Mount instance store volumes in RAID-0 for kubelet and containerd
       # https://github.com/awslabs/amazon-eks-ami/blob/master/doc/USER_GUIDE.md#raid-0-for-kubelet-and-containerd-raid0
@@ -141,9 +141,9 @@ module "eks" {
                 localStorage:
                   strategy: RAID0
               kubelet:
-                -flags:
-                  - "--node-labels=vpc.amazonaws.com/efa.present=true,nvidia.com/gpu.present=true"
-                  - "--register-with-taints=nvidia.com/gpu=true:NoSchedule"
+                flags:
+                  - --node-labels=vpc.amazonaws.com/efa.present=true,nvidia.com/gpu.present=true
+                  - --register-with-taints=nvidia.com/gpu=true:NoSchedule
           EOT
         }
       ]
