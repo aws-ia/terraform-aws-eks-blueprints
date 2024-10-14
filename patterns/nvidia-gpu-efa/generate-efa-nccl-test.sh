@@ -2,7 +2,7 @@
 
 export MPI_JOB_NAME=efa-nccl-test
 export IMAGE_URI=public.ecr.aws/hpc-cloud/nccl-tests:latest
-export INSTANCE_TYPE=p5.48xlarge
+export INSTANCE_TYPE=p5e.48xlarge
 export NUM_WORKERS=2
 export GPU_PER_WORKER=8
 export EFA_PER_WORKER=32

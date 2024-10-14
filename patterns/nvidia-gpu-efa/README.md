@@ -17,11 +17,11 @@ The following components are demonstrated in this pattern:
 
 ## Code
 
-```terraform hl_lines="24-26 32-67"
+```terraform hl_lines="26-28 34-80"
 {% include  "../../patterns/nvidia-gpu-efa/eks.tf" %}
 ```
 
-```terraform hl_lines="5-47"
+```terraform hl_lines="5-33"
 {% include  "../../patterns/nvidia-gpu-efa/helm.tf" %}
 ```
 

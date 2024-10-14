@@ -16,10 +16,10 @@ variable "capacity_reservation_id" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 20.17"
+  version = "~> 20.26"
 
   cluster_name    = local.name
-  cluster_version = "1.30"
+  cluster_version = "1.31"
 
   # Give the Terraform identity admin access to the cluster
   # which will allow it to deploy resources into the cluster
@@ -30,7 +30,9 @@ module "eks" {
     coredns                = {}
     eks-pod-identity-agent = {}
     kube-proxy             = {}
-    vpc-cni                = {}
+    vpc-cni = {
+      most_recent = true
+    }
   }
 
   # Add security group rules on the node group security group to
@@ -42,16 +44,27 @@ module "eks" {
 
   eks_managed_node_groups = {
     cbr = {
-      # The EKS AL2 GPU AMI provides all of the necessary components
+      # The EKS AL2023 NVIDIA AMI provides all of the necessary components
       # for accelerated workloads w/ EFA
-      ami_type       = "AL2_x86_64_GPU"
-      instance_types = ["p5.48xlarge"]
+      ami_type       = "AL2023_x86_64_NVIDIA"
+      instance_types = ["p5e.48xlarge"]
 
-      pre_bootstrap_user_data = <<-EOT
-        # Mount instance store volumes in RAID-0 for kubelet and containerd
-        # https://github.com/awslabs/amazon-eks-ami/blob/master/doc/USER_GUIDE.md#raid-0-for-kubelet-and-containerd-raid0
-        /bin/setup-local-disks raid0
-      EOT
+      # Mount instance store volumes in RAID-0 for kubelet and containerd
+      # https://github.com/awslabs/amazon-eks-ami/blob/master/doc/USER_GUIDE.md#raid-0-for-kubelet-and-containerd-raid0
+      cloudinit_pre_nodeadm = [
+        {
+          content_type = "application/node.eks.aws"
+          content      = <<-EOT
+            ---
+            apiVersion: node.eks.aws/v1alpha1
+            kind: NodeConfig
+            spec:
+              instance:
+                localStorage:
+                  strategy: RAID0
+          EOT
+        }
+      ]
 
       min_size     = 2
       max_size     = 2
@@ -97,7 +110,7 @@ module "eks" {
     default = {
       instance_types = ["m5.large"]
 
-      min_size     = 1
+      min_size     = 2
       max_size     = 2
       desired_size = 2
     }
@@ -109,21 +122,31 @@ module "eks" {
   # the one that works for their use case.
   self_managed_node_groups = {
     cbr2 = {
-      # The EKS AL2 GPU AMI provides all of the necessary components
+      # The EKS AL2023 NVIDIA AMI provides all of the necessary components
       # for accelerated workloads w/ EFA
-      ami_type      = "AL2_x86_64_GPU"
-      instance_type = "p5.48xlarge"
+      ami_type      = "AL2023_x86_64_NVIDIA"
+      instance_type = "p5e.48xlarge"
 
-      pre_bootstrap_user_data = <<-EOT
-        # Mount instance store volumes in RAID-0 for kubelet and containerd
-        # https://github.com/awslabs/amazon-eks-ami/blob/master/doc/USER_GUIDE.md#raid-0-for-kubelet-and-containerd-raid0
-        /bin/setup-local-disks raid0
-
-        # Ensure only GPU workloads are scheduled on this node group
-        export KUBELET_EXTRA_ARGS='--node-labels=vpc.amazonaws.com/efa.present=true,nvidia.com/gpu.present=true \
-          --register-with-taints=nvidia.com/gpu=true:NoSchedule'
-
-      EOT
+      # Mount instance store volumes in RAID-0 for kubelet and containerd
+      # https://github.com/awslabs/amazon-eks-ami/blob/master/doc/USER_GUIDE.md#raid-0-for-kubelet-and-containerd-raid0
+      cloudinit_pre_nodeadm = [
+        {
+          content_type = "application/node.eks.aws"
+          content      = <<-EOT
+            ---
+            apiVersion: node.eks.aws/v1alpha1
+            kind: NodeConfig
+            spec:
+              instance:
+                localStorage:
+                  strategy: RAID0
+              kubelet:
+                flags:
+                  - --node-labels=vpc.amazonaws.com/efa.present=true,nvidia.com/gpu.present=true
+                  - --register-with-taints=nvidia.com/gpu=true:NoSchedule
+          EOT
+        }
+      ]
 
       min_size     = 2
       max_size     = 2
