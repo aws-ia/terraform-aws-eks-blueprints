@@ -137,10 +137,6 @@
          <lastmod>2024-10-15</lastmod>
     </url>
     <url>
-         <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/network/vpc-lattice/</loc>
-         <lastmod>2024-10-15</lastmod>
-    </url>
-    <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/network/wireguard-with-cilium/</loc>
          <lastmod>2024-10-15</lastmod>
     </url>
