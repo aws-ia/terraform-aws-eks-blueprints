@@ -17,9 +17,13 @@ The following components are demonstrated in this pattern:
 
 ## Code
 
+### Cluster
+
 ```terraform hl_lines="26-28 34-80"
 {% include  "../../patterns/aws-neuron-efa/eks.tf" %}
 ```
+
+### Device Plugins
 
 ```terraform hl_lines="9-50"
 {% include  "../../patterns/aws-neuron-efa/helm.tf" %}
