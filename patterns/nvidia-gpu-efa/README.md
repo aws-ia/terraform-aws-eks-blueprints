@@ -5,21 +5,25 @@ This pattern demonstrates an Amazon EKS Cluster with an EFA-enabled nodegroup th
 The following components are demonstrated in this pattern:
 
 - A "default" node group that supports addons and components that do not require GPUs nor EFA devices. Any pods that do not tolerate the taints of the GPU node group will be scheduled on instances within this node group.
-- A node group of `p5.48xlarge` instances with
-  - all x32 [EFA network interfaces](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/efa.html) enabled
-  - provisioned within a placement group so that the instances are provisioned close to one another in a single availability zone that supports the instance type.
-  - a common NVIDIA taint of `"nvidia.com/gpu:NoSchedule"` to ensure only the intended applications are allowed to run on the nodes created
-  - two labels to identify that this nodegroup supports NVIDIA GPUs and EFA devices and allow pods to use node selectors with these labels
-  - the NVME instance store volumes are mounted in a RAID-0 array to provide a single, large, high-performance storage volume for the GPU workloads
-  - kubelet and containerd are configured to utilize the RAID-0 volume, allowing kubelet to discover the additional storage as ephemeral storage that can be utilized by pods
+- A node group of `p5.48xlarge` instances with:
+    - all x32 [EFA network interfaces](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/efa.html) enabled
+    - provisioned within a placement group so that the instances are provisioned close to one another in a single availability zone that supports the instance type
+    - a common NVIDIA taint of `"nvidia.com/gpu:NoSchedule"` to ensure only the intended applications are allowed to run on the nodes created
+    - two labels to identify that this nodegroup supports NVIDIA GPUs and EFA devices and allow pods to use node selectors with these labels
+    - the NVME instance store volumes are mounted in a RAID-0 array to provide a single, large, high-performance storage volume for the GPU workloads
+    - kubelet and containerd are configured to utilize the RAID-0 volume, allowing kubelet to discover the additional storage as ephemeral storage that can be utilized by pods
 - A Helm chart deployment for the [NVIDIA device plugin](https://github.com/NVIDIA/k8s-device-plugin) to expose and mount the GPUs provided by the instances to the pods that request them
 - A Helm chart deployment for the EFA device plugin to expose and mount the EFA network interfaces provided by the instances to the pods that request them. Since the EFA network interfaces are only found on the instances that provide NVIDIA GPUs in this pattern, we do not apply an additional taint for the EFA network interfaces to avoid over-constraining.
 
 ## Code
 
+### Cluster
+
 ```terraform hl_lines="26-28 34-80"
 {% include  "../../patterns/nvidia-gpu-efa/eks.tf" %}
 ```
+
+### Device Plugins
 
 ```terraform hl_lines="5-33"
 {% include  "../../patterns/nvidia-gpu-efa/helm.tf" %}
@@ -201,41 +205,40 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
     [1,0]<stdout>:#                                                              out-of-place                       in-place
     [1,0]<stdout>:#       size         count      type   redop    root     time   algbw   busbw #wrong     time   algbw   busbw #wrong
     [1,0]<stdout>:#        (B)    (elements)                               (us)  (GB/s)  (GB/s)            (us)  (GB/s)  (GB/s)
-    [1,0]<stdout>:           0             0     float     sum      -1     0.13    0.00    0.00      0     0.12    0.00    0.00      0
-    [1,0]<stdout>:           0             0     float     sum      -1     0.12    0.00    0.00      0     0.12    0.00    0.00      0
-    [1,0]<stdout>:           4             1     float     sum      -1    65.43    0.00    0.00      0    65.82    0.00    0.00      0
-    [1,0]<stdout>:           8             2     float     sum      -1    64.86    0.00    0.00      0    65.67    0.00    0.00      0
-    [1,0]<stdout>:          16             4     float     sum      -1    64.72    0.00    0.00      0    64.83    0.00    0.00      0
-    [1,0]<stdout>:          32             8     float     sum      -1    65.47    0.00    0.00      0    65.16    0.00    0.00      0
-    [1,0]<stdout>:          64            16     float     sum      -1    65.34    0.00    0.00      0    65.58    0.00    0.00      0
-    [1,0]<stdout>:         128            32     float     sum      -1    65.99    0.00    0.00      0    66.28    0.00    0.00      0
-    [1,0]<stdout>:         256            64     float     sum      -1    75.81    0.00    0.01      0    66.76    0.00    0.01      0
-    [1,0]<stdout>:         512           128     float     sum      -1    69.43    0.01    0.01      0    67.18    0.01    0.01      0
-    [1,0]<stdout>:        1024           256     float     sum      -1    82.35    0.01    0.02      0    69.03    0.01    0.03      0
-    [1,0]<stdout>:        2048           512     float     sum      -1    72.49    0.03    0.05      0    71.37    0.03    0.05      0
-    [1,0]<stdout>:        4096          1024     float     sum      -1    77.47    0.05    0.10      0    77.42    0.05    0.10      0
-    [1,0]<stdout>:        8192          2048     float     sum      -1    78.10    0.10    0.20      0    78.01    0.11    0.20      0
-    [1,0]<stdout>:       16384          4096     float     sum      -1    93.35    0.18    0.33      0    80.11    0.20    0.38      0
-    [1,0]<stdout>:       32768          8192     float     sum      -1    106.6    0.31    0.58      0    96.22    0.34    0.64      0
-    [1,0]<stdout>:       65536         16384     float     sum      -1    120.6    0.54    1.02      0    89.06    0.74    1.38      0
-    [1,0]<stdout>:      131072         32768     float     sum      -1    93.62    1.40    2.62      0    106.3    1.23    2.31      0
-    [1,0]<stdout>:      262144         65536     float     sum      -1    111.5    2.35    4.41      0    111.6    2.35    4.41      0
-    [1,0]<stdout>:      524288        131072     float     sum      -1    121.2    4.33    8.11      0    109.9    4.77    8.94      0
-    [1,0]<stdout>:     1048576        262144     float     sum      -1    119.7    8.76   16.43      0    118.7    8.83   16.56      0
-    [1,0]<stdout>:     2097152        524288     float     sum      -1    143.9   14.58   27.33      0    144.2   14.55   27.28      0
-    [1,0]<stdout>:     4194304       1048576     float     sum      -1    163.7   25.62   48.03      0    163.6   25.64   48.08      0
-    [1,0]<stdout>:     8388608       2097152     float     sum      -1    195.3   42.95   80.54      0    194.9   43.03   80.69      0
-    [1,0]<stdout>:    16777216       4194304     float     sum      -1    278.6   60.22  112.91      0    279.9   59.94  112.38      0
-    [1,0]<stdout>:    33554432       8388608     float     sum      -1    459.7   73.00  136.87      0    433.9   77.34  145.01      0
-    [1,0]<stdout>:    67108864      16777216     float     sum      -1    587.2  114.29  214.29      0    587.1  114.31  214.34      0
-    [1,0]<stdout>:   134217728      33554432     float     sum      -1    926.6  144.85  271.60      0    851.5  157.63  295.55      0
-    [1,0]<stdout>:   268435456      67108864     float     sum      -1   1497.8  179.22  336.03      0   1496.0  179.44  336.45      0
-    [1,0]<stdout>:   536870912     134217728     float     sum      -1   2558.6  209.83  393.42      0   2560.8  209.65  393.10      0
-    [1,0]<stdout>:  1073741824     268435456     float     sum      -1   4553.6  235.80  442.13      0   4553.0  235.83  442.19      0
-    [1,0]<stdout>:  2147483648     536870912     float     sum      -1   9062.5  236.96  444.31      0   9060.4  237.02  444.41      0
+    [1,0]<stdout>:           8             2     float     sum      -1    87.96    0.00    0.00      0    78.05    0.00    0.00      0
+    [1,0]<stdout>:          16             4     float     sum      -1    76.83    0.00    0.00      0    77.15    0.00    0.00      0
+    [1,0]<stdout>:          32             8     float     sum      -1    77.37    0.00    0.00      0    75.38    0.00    0.00      0
+    [1,0]<stdout>:          64            16     float     sum      -1    77.60    0.00    0.00      0    79.80    0.00    0.00      0
+    [1,0]<stdout>:         128            32     float     sum      -1    77.20    0.00    0.00      0    77.78    0.00    0.00      0
+    [1,0]<stdout>:         256            64     float     sum      -1    78.46    0.00    0.01      0    80.39    0.00    0.01      0
+    [1,0]<stdout>:         512           128     float     sum      -1    77.56    0.01    0.01      0    78.00    0.01    0.01      0
+    [1,0]<stdout>:        1024           256     float     sum      -1    76.98    0.01    0.02      0    78.52    0.01    0.02      0
+    [1,0]<stdout>:        2048           512     float     sum      -1    77.92    0.03    0.05      0    78.64    0.03    0.05      0
+    [1,0]<stdout>:        4096          1024     float     sum      -1    83.26    0.05    0.09      0    83.16    0.05    0.09      0
+    [1,0]<stdout>:        8192          2048     float     sum      -1    88.46    0.09    0.17      0    86.32    0.09    0.18      0
+    [1,0]<stdout>:       16384          4096     float     sum      -1    97.22    0.17    0.32      0    94.82    0.17    0.32      0
+    [1,0]<stdout>:       32768          8192     float     sum      -1    98.84    0.33    0.62      0    99.85    0.33    0.62      0
+    [1,0]<stdout>:       65536         16384     float     sum      -1    101.1    0.65    1.22      0    96.80    0.68    1.27      0
+    [1,0]<stdout>:      131072         32768     float     sum      -1    100.5    1.30    2.44      0    99.13    1.32    2.48      0
+    [1,0]<stdout>:      262144         65536     float     sum      -1    104.5    2.51    4.70      0    102.2    2.57    4.81      0
+    [1,0]<stdout>:      524288        131072     float     sum      -1    108.8    4.82    9.04      0    109.8    4.78    8.96      0
+    [1,0]<stdout>:     1048576        262144     float     sum      -1    119.1    8.81   16.51      0    121.5    8.63   16.18      0
+    [1,0]<stdout>:     2097152        524288     float     sum      -1    145.8   14.39   26.97      0    144.7   14.49   27.17      0
+    [1,0]<stdout>:     4194304       1048576     float     sum      -1    163.2   25.70   48.19      0    162.4   25.82   48.42      0
+    [1,0]<stdout>:     8388608       2097152     float     sum      -1    197.9   42.38   79.46      0    197.9   42.39   79.48      0
+    [1,0]<stdout>:    16777216       4194304     float     sum      -1    282.3   59.43  111.43      0    290.3   57.79  108.35      0
+    [1,0]<stdout>:    33554432       8388608     float     sum      -1    442.8   75.77  142.07      0    417.4   80.39  150.73      0
+    [1,0]<stdout>:    67108864      16777216     float     sum      -1    597.4  112.34  210.64      0    591.6  113.43  212.68      0
+    [1,0]<stdout>:   134217728      33554432     float     sum      -1    872.0  153.92  288.60      0    872.8  153.78  288.34      0
+    [1,0]<stdout>:   268435456      67108864     float     sum      -1   1501.2  178.81  335.27      0   1503.1  178.59  334.86      0
+    [1,0]<stdout>:   536870912     134217728     float     sum      -1   2599.4  206.54  387.26      0   2553.0  210.29  394.29      0
+    [1,0]<stdout>:  1073741824     268435456     float     sum      -1   4556.5  235.65  441.85      0   5274.0  203.59  381.74      0
+    [1,0]<stdout>:  2147483648     536870912     float     sum      -1   9079.2  236.53  443.49      0   9128.1  235.26  441.11      0
+    [1,0]<stdout>:  4294967296    1073741824     float     sum      -1    17320  247.98  464.96      0    17270  248.70  466.31      0
+    [1,0]<stdout>:  8589934592    2147483648     float     sum      -1    33611  255.57  479.19      0    34474  249.17  467.20      0
+    [1,0]<stdout>: 17179869184    4294967296     float     sum      -1    66988  256.46  480.87      0    66717  257.50  482.82      0
     [1,0]<stdout>:# Out of bounds values : 0 OK
-    [1,0]<stdout>:# Avg bus bandwidth    : 79.9352
-    [1,0]<stdout>:#
+    [1,0]<stdout>:# Avg bus bandwidth    : 123.343
     ```
 
     Columns 9 and 13 in the output table show the in-place and out-of-place bus bandwidth calculated for the data size listed in column 2.
