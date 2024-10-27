@@ -47,13 +47,13 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
 2. Provision the Karpenter `EC2NodeClass` and `NodePool` resources which provide Karpenter the necessary configurations to provision EC2 resources:
 
     ```sh
-    kubectl apply -f karpenter.yaml
+    kubectl apply --server-side -f karpenter.yaml
     ```
 
 3. Once the Karpenter resources are in place, Karpenter will provision the necessary EC2 resources to satisfy any pending pods in the scheduler's queue. You can demonstrate this with the example deployment provided. First deploy the example deployment which has the initial number replicas set to 0:
 
     ```sh
-    kubectl apply -f example.yaml
+    kubectl apply --server-side -f example.yaml
     ```
 
 4. When you scale the example deployment, you should see Karpenter respond by quickly provisioning EC2 resources to satisfy those pending pod requests:

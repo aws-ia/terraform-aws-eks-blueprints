@@ -81,13 +81,13 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
 4. Once the EKS cluster and node group have been provisioned, you can deploy the provided example pod that will use a cached image to verify the time it takes for the pod to reach a ready state.
 
     ```sh
-    kubectl apply -f pod-cached.yaml
+    kubectl apply --server-side -f pod-cached.yaml
     ```
 
     You can contrast this with the time it takes for a pod that is not cached on a node by using the provided `pod-uncached.yaml` file. This works by simply using a pod that doesn't have a toleration for nodes that contain NVIDIA GPUs, which is where the cached images are provided in this example.
 
     ```sh
-    kubectl apply -f pod-uncached.yaml
+    kubectl apply --server-side -f pod-uncached.yaml
     ```
 
     You can also do the same steps above but using the small, utility CLI [ktime](https://github.com/clowdhaus/ktime) which can either collect the pod events to measure the time duration to reach a ready state, or it can deploy a pod manifest and return the same:

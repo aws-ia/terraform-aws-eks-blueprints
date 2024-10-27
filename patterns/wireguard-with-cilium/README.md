@@ -20,7 +20,7 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
 1. Deploy the example pods:
 
     ```sh
-    kubectl apply -f example.yaml
+    kubectl apply --server-side -f example.yaml
     ```
 
     ```text
@@ -100,7 +100,7 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
 
     ```sh
     kubectl create ns cilium-test
-    kubectl apply -n cilium-test -f https://raw.githubusercontent.com/cilium/cilium/v1.14.1/examples/kubernetes/connectivity-check/connectivity-check.yaml
+    kubectl apply --server-side -n cilium-test -f https://raw.githubusercontent.com/cilium/cilium/v1.14.1/examples/kubernetes/connectivity-check/connectivity-check.yaml
     ```
 
     ```text

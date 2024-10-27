@@ -117,7 +117,7 @@ The output looks like the following:
 Bootstrap the addons using ArgoCD:
 
 ```shell
-kubectl apply -f bootstrap/addons.yaml
+kubectl apply --server-side -f bootstrap/addons.yaml
 ```
 
 ### Monitor GitOps Progress for Addons
@@ -188,7 +188,7 @@ echo "ArgoCD URL: https://$(kubectl get svc -n argocd argo-cd-argocd-server -o j
 Deploy a sample application located in [k8s/game-2048.yaml](k8s/game-2048.yaml) using ArgoCD:
 
 ```shell
-kubectl apply -f bootstrap/workloads.yaml
+kubectl apply --server-side -f bootstrap/workloads.yaml
 ```
 
 ### Monitor GitOps Progress for Workloads
