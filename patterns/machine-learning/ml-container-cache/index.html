@@ -1806,10 +1806,10 @@
 </li>
 <li>
 <p>Once the EKS cluster and node group have been provisioned, you can deploy the provided example pod that will use a cached image to verify the time it takes for the pod to reach a ready state.</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>pod-cached.yaml
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>--server-side<span class="w"> </span>-f<span class="w"> </span>pod-cached.yaml
 </span></code></pre></div>
 <p>You can contrast this with the time it takes for a pod that is not cached on a node by using the provided <code>pod-uncached.yaml</code> file. This works by simply using a pod that doesn't have a toleration for nodes that contain NVIDIA GPUs, which is where the cached images are provided in this example.</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>pod-uncached.yaml
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>--server-side<span class="w"> </span>-f<span class="w"> </span>pod-uncached.yaml
 </span></code></pre></div>
 <p>You can also do the same steps above but using the small, utility CLI <a href="https://github.com/clowdhaus/ktime">ktime</a> which can either collect the pod events to measure the time duration to reach a ready state, or it can deploy a pod manifest and return the same:</p>
 <div class="language-sh highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>ktime<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>pod-cached.yaml

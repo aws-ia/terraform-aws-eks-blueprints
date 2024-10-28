@@ -1805,7 +1805,7 @@ The annotations contain metadata for the addons' Helm charts and ArgoCD Applicat
 </span></code></pre></div>
 <h2 id="deploy-the-addons">Deploy the Addons<a class="headerlink" href="#deploy-the-addons" title="Permanent link">&para;</a></h2>
 <p>Bootstrap the addons using ArgoCD:</p>
-<div class="language-shell highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>bootstrap/addons.yaml
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>--server-side<span class="w"> </span>-f<span class="w"> </span>bootstrap/addons.yaml
 </span></code></pre></div>
 <h3 id="monitor-gitops-progress-for-addons">Monitor GitOps Progress for Addons<a class="headerlink" href="#monitor-gitops-progress-for-addons" title="Permanent link">&para;</a></h3>
 <p>Wait until all the ArgoCD applications' <code>HEALTH STATUS</code> is <code>Healthy</code>.
@@ -1851,7 +1851,7 @@ the URL, username, password to login into ArgoCD UI or CLI.</p>
 </span></code></pre></div>
 <h2 id="deploy-the-workloads">Deploy the Workloads<a class="headerlink" href="#deploy-the-workloads" title="Permanent link">&para;</a></h2>
 <p>Deploy a sample application located in <a href="../../../patterns/gitops/getting-started-argocd/k8s/game-2048.yaml">k8s/game-2048.yaml</a> using ArgoCD:</p>
-<div class="language-shell highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>bootstrap/workloads.yaml
+<div class="language-shell highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>--server-side<span class="w"> </span>-f<span class="w"> </span>bootstrap/workloads.yaml
 </span></code></pre></div>
 <h3 id="monitor-gitops-progress-for-workloads">Monitor GitOps Progress for Workloads<a class="headerlink" href="#monitor-gitops-progress-for-workloads" title="Permanent link">&para;</a></h3>
 <p>Wait until all the ArgoCD applications' <code>HEALTH STATUS</code> is <code>Healthy</code>.
