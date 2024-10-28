@@ -36,8 +36,7 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
 ## Validate
 
 !!! note
-
-    Desired instance type can be specified in [eks.tf](eks.tf#L36).
+    Desired instance type can be specified in [eks.tf](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/d5ddd10afef9b4fd3e0cbba865645f0f522992ac/patterns/nvidia-gpu-efa/eks.tf#L38).
     Values shown below will change based on the instance type selected (i.e. - `p5.48xlarge` has 8 GPUs and 32 EFA interfaces).
     A list of EFA-enabled instance types is available [here](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/efa.html#efa-instance-types).
     If you are using an on-demand capacity reservation (ODCR) for your instance type, please uncomment the `capacity_reservation_specification` block in `eks.tf`
@@ -66,36 +65,25 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
     To deploy the MPI operator execute the following:
 
     ```sh
-    kubectl apply -f https://raw.githubusercontent.com/kubeflow/mpi-operator/v0.4.0/deploy/v2beta1/mpi-operator.yaml
+    kubectl apply --server-side -f https://raw.githubusercontent.com/kubeflow/mpi-operator/v0.6.0/deploy/v2beta1/mpi-operator.yaml
     ```
 
     ```text
-    namespace/mpi-operator created
-    customresourcedefinition.apiextensions.k8s.io/mpijobs.kubeflow.org created
-    serviceaccount/mpi-operator created
-    clusterrole.rbac.authorization.k8s.io/kubeflow-mpijobs-admin created
-    clusterrole.rbac.authorization.k8s.io/kubeflow-mpijobs-edit created
-    clusterrole.rbac.authorization.k8s.io/kubeflow-mpijobs-view created
-    clusterrole.rbac.authorization.k8s.io/mpi-operator created
-    clusterrolebinding.rbac.authorization.k8s.io/mpi-operator created
-    deployment.apps/mpi-operator created
-    ```
-
-    In addition to deploying the operator, please apply a patch to the mpi-operator clusterrole
-    to allow the mpi-operator service account access to `leases` resources in the `coordination.k8s.io` apiGroup.
-
-    ```sh
-    kubectl apply -f https://raw.githubusercontent.com/aws-samples/aws-do-eks/main/Container-Root/eks/deployment/kubeflow/mpi-operator/clusterrole-mpi-operator.yaml
-    ```
-
-    ```text
-    clusterrole.rbac.authorization.k8s.io/mpi-operator configured
+    namespace/mpi-operator serverside-applied
+    customresourcedefinition.apiextensions.k8s.io/mpijobs.kubeflow.org serverside-applied
+    serviceaccount/mpi-operator serverside-applied
+    clusterrole.rbac.authorization.k8s.io/kubeflow-mpijobs-admin serverside-applied
+    clusterrole.rbac.authorization.k8s.io/kubeflow-mpijobs-edit serverside-applied
+    clusterrole.rbac.authorization.k8s.io/kubeflow-mpijobs-view serverside-applied
+    clusterrole.rbac.authorization.k8s.io/mpi-operator serverside-applied
+    clusterrolebinding.rbac.authorization.k8s.io/mpi-operator serverside-applied
+    deployment.apps/mpi-operator serverside-applied
     ```
 
 3. EFA info test
 
     This test prints a list of available EFA interfaces by using the `/opt/amazon/efa/bin/fi_info` utility.
-    The script [generate-efa-info-test.sh](generate-efa-info-test.sh) creates an MPIJob manifest file named `efa-info-test.yaml`. It assumes that there are two cluster nodes with 8 GPU's per node and 32 EFA adapters. If you are not using `p5.48xlarge` instances in your cluster, you may adjust the settings in the script prior to running it.
+    The script [generate-efa-info-test.sh](https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/patterns/nvidia-gpu-efa/generate-efa-info-test.sh) creates an MPIJob manifest file named `efa-info-test.yaml`. It assumes that there are two cluster nodes with 8 GPU's per node and 32 EFA adapters. If you are not using `p5.48xlarge` instances in your cluster, you may adjust the settings in the script prior to running it.
 
     `NUM_WORKERS` - number of nodes you want to run the test on
     `GPU_PER_WORKER` - number of GPUs available on each node
@@ -108,7 +96,7 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
     To start the test apply the generated manifest to the cluster:
 
     ```sh
-    kubectl apply -f ./efa-info-test.yaml
+    kubectl apply --server-side -f ./efa-info-test.yaml
     ```
 
     ```text
@@ -186,7 +174,7 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
     This script creates a file named `efa-nccl-test.yaml`. Apply the manifest to start the EFA nccl test.
 
     ```sh
-    kubectl apply -f ./efa-nccl-test.yaml
+    kubectl apply --server-side -f ./efa-nccl-test.yaml
 
     ```text
     mpijob.kubeflow.org/efa-nccl-test created

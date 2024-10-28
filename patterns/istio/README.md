@@ -36,7 +36,7 @@ cluster with deployed Istio.
 for ADDON in kiali jaeger prometheus grafana
 do
     ADDON_URL="https://raw.githubusercontent.com/istio/istio/release-1.20/samples/addons/$ADDON.yaml"
-    kubectl apply -f $ADDON_URL
+    kubectl apply --server-side -f $ADDON_URL
 done
 ```
 
@@ -177,7 +177,7 @@ kubectl port-forward svc/jaeger 16686:16686 -n istio-system
             - containerPort: 5000
     EOF
 
-    kubectl apply -f helloworld.yaml -n sample
+    kubectl apply --server-side -f helloworld.yaml -n sample
     ```
 
     ```text
@@ -239,7 +239,7 @@ kubectl port-forward svc/jaeger 16686:16686 -n istio-system
               optional: true
     EOF
 
-    kubectl apply -f sleep.yaml -n sample
+    kubectl apply --server-side -f sleep.yaml -n sample
     ```
 
     ```text

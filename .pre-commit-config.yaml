@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/streetsidesoftware/cspell-cli
-    rev: v8.15.1
+    rev: v8.15.2
     hooks:
       - id: cspell
         args: [--exclude, 'ADOPTERS.md', --exclude, '.pre-commit-config.yaml', --exclude, '.gitignore', --exclude, '*.drawio', --exclude, 'mkdocs.yml', --exclude, '.helmignore', --exclude, '.github/workflows/*', --exclude, 'patterns/istio-multi-cluster/*', --exclude, 'patterns/blue-green-upgrade/*', --exclude, '/patterns/vpc-lattice/cross-cluster-pod-communication/*', --exclude, 'patterns/bottlerocket/*', --exclude, 'patterns/nvidia-gpu-efa/generate-efa-nccl-test.sh']
