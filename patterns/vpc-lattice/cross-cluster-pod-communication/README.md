@@ -11,6 +11,33 @@ The cross-cluster communication will be established through Amazon VPC Lattice, 
 
 ![vpc-lattice-pattern-environment.png](https://raw.githubusercontent.com/aws-ia/terraform-aws-eks-blueprints/main/patterns/vpc-lattice/cross-cluster-pod-communication/assets/vpc-lattice-pattern-cross-cluster.png)
 
+1. HttpRoute Configuration
+  - Defines service exposure through VPC Lattice Gateway API
+  - Specifies routing rules, paths, and backend services
+2. Kyverno Policy Implementation
+  - Injects Envoy SigV4 proxy sidecar
+  - Automatically signs AWS API requests with AWS credentials
+  - Ensures secure authentication for service-to-service communication
+3. AWS Private Certificate Authority (PCA)
+  - Issues and manages private certificates
+  - Validates custom domain names within VPC Lattice
+  - Enables TLS encryption for internal communications
+4. IAM Authentication Policy
+  - Defines fine-grained access control rules
+  - Specifies which principals can access which services
+  - Implements least-privilege security model
+5. ExternalDNS Integration
+  - Monitors Gateway API Controller's DNSEndpoint resources
+  - Automatically creates and updates DNS records
+  - Maintains service discovery through Route 53
+6. App1 → App2 Communication Flow
+  - Routes through VPC Lattice service network
+  - Authenticated via IAM policies
+  - Encrypted using TLS certificates from Private CA
+7. App2 → App1 Communication Flow
+  - Utilizes bi-directional VPC Lattice connectivity
+  - Follows same security and authentication patterns
+  - Maintains consistent service mesh principles
 
 
 ## Deploy
