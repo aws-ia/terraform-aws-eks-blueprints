@@ -1564,10 +1564,42 @@
 
 <h1 id="amazon-vpc-lattice-multi-cluster-secure-communication">Amazon VPC Lattice - Multi-cluster secure communication<a class="headerlink" href="#amazon-vpc-lattice-multi-cluster-secure-communication" title="Permanent link">&para;</a></h1>
 <p>This pattern showcases secure multi-cluster communication between two EKS clusters in different VPCs using VPC Lattice with IAM authorization. It illustrates service discovery and highlights how VPC Lattice facilitates communication between services in EKS clusters with overlapping CIDRs, eliminating the need for networking constructs like private NAT Gateways and Transit Gateways.</p>
+<blockquote>
+<p>You can also find more informations in the <a href="https://aws.amazon.com/blogs/containers/secure-cross-cluster-communication-in-eks-with-vpc-lattice-and-pod-identity-iam-session-tags/">associated blog post</a></p>
+</blockquote>
 <h2 id="scenario">Scenario<a class="headerlink" href="#scenario" title="Permanent link">&para;</a></h2>
 <p>With this solution we showcase how to configure Amazon VPC Lattice using the AWS Gateway API Controller in order to manage Amazon VPC Lattice resources through native Kubernetes Gateway API objects. This pattern deploys two distinct VPCs each having it's own EKS cluster, which contain an application that will be used to demonstrate cross-cluster communication.</p>
 <p>The cross-cluster communication will be established through Amazon VPC Lattice, using a private Amazon Route53 domain name protected by a TLS Certificate issued by Certificate Manager (ACM) and supported by an AWS Private Certificate Authority.</p>
 <p><img alt="vpc-lattice-pattern-environment.png" src="https://raw.githubusercontent.com/aws-ia/terraform-aws-eks-blueprints/main/patterns/vpc-lattice/cross-cluster-pod-communication/assets/vpc-lattice-pattern-cross-cluster.png" /></p>
+<ol>
+<li>HttpRoute Configuration</li>
+<li>Defines service exposure through VPC Lattice Gateway API</li>
+<li>Specifies routing rules, paths, and backend services</li>
+<li>Kyverno Policy Implementation</li>
+<li>Injects Envoy SigV4 proxy sidecar</li>
+<li>Automatically signs AWS API requests with AWS credentials</li>
+<li>Ensures secure authentication for service-to-service communication</li>
+<li>AWS Private Certificate Authority (PCA)</li>
+<li>Issues and manages private certificates</li>
+<li>Validates custom domain names within VPC Lattice</li>
+<li>Enables TLS encryption for internal communications</li>
+<li>IAM Authentication Policy</li>
+<li>Defines fine-grained access control rules</li>
+<li>Specifies which principals can access which services</li>
+<li>Implements least-privilege security model</li>
+<li>ExternalDNS Integration</li>
+<li>Monitors Gateway API Controller's DNSEndpoint resources</li>
+<li>Automatically creates and updates DNS records</li>
+<li>Maintains service discovery through Route 53</li>
+<li>App1 → App2 Communication Flow</li>
+<li>Routes through VPC Lattice service network</li>
+<li>Authenticated via IAM policies</li>
+<li>Encrypted using TLS certificates from Private CA</li>
+<li>App2 → App1 Communication Flow</li>
+<li>Utilizes bi-directional VPC Lattice connectivity</li>
+<li>Follows same security and authentication patterns</li>
+<li>Maintains consistent service mesh principles</li>
+</ol>
 <h2 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h2>
 <p>This pattern is composed of 3 Terraform stacks, that needs to be deployed in order.</p>
 <h3 id="1-create-shared-environment">1. Create shared Environment<a class="headerlink" href="#1-create-shared-environment" title="Permanent link">&para;</a></h3>
