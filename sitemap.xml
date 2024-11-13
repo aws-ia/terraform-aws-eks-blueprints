@@ -2,170 +2,170 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/faq/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/_partials/destroy/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/internal/ci/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/agones-game-controller/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/blue-green-upgrade/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/bottlerocket/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/ecr-pull-through-cache/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/external-secrets/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/fargate-serverless/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/fully-private-cluster/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/istio/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/karpenter-mng/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/karpenter/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/kubecost/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/multi-tenancy-with-teams/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/sso-iam-identity-center/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/sso-okta/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/stateful/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/gitops/gitops-getting-started-argocd/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/gitops/gitops-multi-cluster-hub-spoke-argocd/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/machine-learning/aws-neuron-efa/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/machine-learning/ml-capacity-block/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/machine-learning/ml-container-cache/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/machine-learning/nvidia-gpu-efa/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/machine-learning/targeted-odcr/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/network/aws-vpc-cni-network-policy/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/network/client-server-communication/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/network/cross-cluster-pod-communication/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/network/ipv6-eks-cluster/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/network/private-public-ingress/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/network/privatelink-access/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/network/tls-with-aws-pca-issuer/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/patterns/network/wireguard-with-cilium/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/snippets/ipv4-prefix-delegation/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/snippets/vpc-cni-custom-networking/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/v4-to-v5/addons/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/v4-to-v5/cluster/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/v4-to-v5/motivation/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/v4-to-v5/teams/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
     <url>
          <loc>https://aws-ia.github.io/terraform-aws-eks-blueprints/v4-to-v5/example/</loc>
-         <lastmod>2024-11-12</lastmod>
+         <lastmod>2024-11-13</lastmod>
     </url>
 </urlset>
