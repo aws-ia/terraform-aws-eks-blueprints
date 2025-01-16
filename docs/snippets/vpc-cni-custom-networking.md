@@ -57,7 +57,7 @@ To enable VPC CNI custom networking, you must configuring the following componen
             env = {
                AWS_VPC_K8S_CNI_CUSTOM_NETWORK_CFG = "true"
                ENI_CONFIG_LABEL_DEF               = "topology.kubernetes.io/zone"
-            })
+            }})
          }
       }
 
