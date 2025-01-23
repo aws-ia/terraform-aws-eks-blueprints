@@ -46,14 +46,13 @@ module "eks" {
   }
 
   cluster_security_group_additional_rules = {
-    # Allow tcp/443 from the NLB IP addresses
-    for ip_addr in data.dns_a_record_set.nlb.addrs : "nlb_ingress_${replace(ip_addr, ".", "")}" => {
-      description = "Allow ingress from NLB"
-      type        = "ingress"
+    private_subnets = {
+      cidr_blocks = module.vpc.private_subnets_cidr_blocks
+      description = "Allow ingress from vpc private subnets"
       from_port   = 443
       to_port     = 443
       protocol    = "tcp"
-      cidr_blocks = ["${ip_addr}/32"]
+      type        = "ingress"
     }
   }
 

@@ -4,7 +4,7 @@
 
 module "nlb" {
   source  = "terraform-aws-modules/alb/aws"
-  version = "~> 8.6"
+  version = "~> 9.13"
 
   name               = local.name
   vpc_id             = module.vpc.vpc_id
@@ -12,30 +12,45 @@ module "nlb" {
   internal           = true
   load_balancer_type = "network"
 
-  target_groups = [{
-    name             = local.name
-    backend_protocol = "TCP"
-    backend_port     = 443
-    target_type      = "ip"
-    health_check = {
-      enabled  = true
-      path     = "/readyz"
-      protocol = "HTTPS"
-      matcher  = "200"
+  enforce_security_group_inbound_rules_on_private_link_traffic = "on"
+  security_group_ingress_rules = {
+    https_from_vpc = {
+      from_port   = 443
+      to_port     = 443
+      ip_protocol = "tcp"
+      description = "HTTPS web traffic from client VPC"
+      cidr_ipv4   = module.client_vpc.vpc_cidr_block
     }
-  }]
+  }
+  security_group_egress_rules = {
+    all = {
+      ip_protocol = "-1"
+      cidr_ipv4   = "0.0.0.0/0"
+    }
+  }
 
-  http_tcp_listeners = [{
-    port               = 443
-    protocol           = "TCP"
-    target_group_index = 0
-  }]
+  target_groups = {
+    eks_https = {
+      name              = local.name
+      protocol          = "TCP"
+      port              = 443
+      target_type       = "ip"
+      create_attachment = false # The attachment is managed by the create/destroy ENI lambdas dynamically
+      vpc_id            = module.vpc.vpc_id
+    }
+  }
+
+  listeners = {
+    https = {
+      port     = 443
+      protocol = "TCP"
+      forward = {
+        target_group_key = "eks_https"
+      }
+    }
+  }
 
   tags = local.tags
-}
-
-data "dns_a_record_set" "nlb" {
-  host = module.nlb.lb_dns_name
 }
 
 # VPC Endpoint Service that can be shared with other services in other VPCs.
@@ -43,7 +58,7 @@ data "dns_a_record_set" "nlb" {
 # VPC Endpoint will connect to this service to reach the cluster via AWS PrivateLink
 resource "aws_vpc_endpoint_service" "this" {
   acceptance_required        = true
-  network_load_balancer_arns = [module.nlb.lb_arn]
+  network_load_balancer_arns = [module.nlb.target_groups.eks_https.arn]
 
   tags = merge(local.tags,
     { Name = local.name },
@@ -138,7 +153,7 @@ resource "aws_route53_record" "client" {
 
 module "create_eni_lambda" {
   source  = "terraform-aws-modules/lambda/aws"
-  version = "~> 5.0"
+  version = "~> 7.2"
 
   function_name = "${local.name}-add-eni-ips"
   description   = "Add ENI IPs to NLB target group when EKS API endpoint is created"
@@ -157,14 +172,14 @@ module "create_eni_lambda" {
           "Action": [
             "elasticloadbalancing:RegisterTargets"
           ],
-          "Resource": ["${module.nlb.target_group_arns[0]}"]
+          "Resource": ["${module.nlb.target_groups.eks_https.arn}"]
         }
       ]
     }
   EOT
 
   environment_variables = {
-    TARGET_GROUP_ARN = module.nlb.target_group_arns[0]
+    TARGET_GROUP_ARN = module.nlb.target_groups.eks_https.arn
   }
 
   allowed_triggers = {
@@ -183,7 +198,7 @@ module "create_eni_lambda" {
 
 module "delete_eni_lambda" {
   source  = "terraform-aws-modules/lambda/aws"
-  version = "~> 5.0"
+  version = "~> 7.2"
 
   function_name = "${local.name}-delete-eni-ips"
   description   = "Deletes ENI IPs from NLB target group when EKS API endpoint is deleted"
@@ -210,14 +225,14 @@ module "delete_eni_lambda" {
           "Action": [
             "elasticloadbalancing:DeregisterTargets"
           ],
-          "Resource": ["${module.nlb.target_group_arns[0]}"]
+          "Resource": ["${module.nlb.target_groups.eks_https.arn}"]
         }
       ]
     }
   EOT
 
   environment_variables = {
-    TARGET_GROUP_ARN = module.nlb.target_group_arns[0]
+    TARGET_GROUP_ARN = module.nlb.target_groups.eks_https.arn
 
     # Passing local.name in lieu of module.eks.cluster_name to avoid dependency
     EKS_CLUSTER_NAME = local.name
@@ -239,7 +254,7 @@ module "delete_eni_lambda" {
 
 module "eventbridge" {
   source  = "terraform-aws-modules/eventbridge/aws"
-  version = "~> 2.0"
+  version = "~> 3.14"
 
   # Use the existing default event bus
   create_bus = false

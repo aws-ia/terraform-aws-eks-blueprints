@@ -11,7 +11,7 @@ locals {
 
 module "client_vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 5.0"
+  version = "~> 5.17"
 
   name = local.client_name
   cidr = local.vpc_cidr
@@ -94,7 +94,7 @@ resource "aws_iam_policy" "eks_full_access_policy" {
 
 module "client_security_group" {
   source  = "terraform-aws-modules/security-group/aws"
-  version = "~> 5.0"
+  version = "~> 5.3"
 
   name        = local.client_name
   description = "Security group for SSM access to private cluster"
