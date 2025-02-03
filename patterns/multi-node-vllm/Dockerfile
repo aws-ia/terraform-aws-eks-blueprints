@@ -77,7 +77,7 @@ COPY --from=efa-build /opt/aws-ofi-nccl /opt/aws-ofi-nccl
 COPY --from=efa-build /opt/nccl/lib /opt/nccl/lib
 COPY --from=efa-build /etc/ld.so.conf.d /etc/ld.so.conf.d
 
-ENV LD_PRELOAD /opt/nccl/lib/libnccl.so
+ENV LD_PRELOAD=/opt/nccl/lib/libnccl.so
 
 COPY ray_init.sh /vllm-workspace/ray_init.sh
 RUN chmod +x /vllm-workspace/ray_init.sh

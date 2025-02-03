@@ -8,9 +8,8 @@ module "ecr" {
 
   repository_name = local.name
 
-  create_lifecycle_policy         = false
-  repository_force_delete         = true
-  repository_image_tag_mutability = "MUTABLE"
+  create_lifecycle_policy = false
+  repository_force_delete = true
 
   tags = local.tags
 }

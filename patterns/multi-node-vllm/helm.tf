@@ -33,29 +33,7 @@ resource "helm_release" "aws_efa_device_plugin" {
 }
 
 ################################################################################
-# Kuberay (Ray.io)
-################################################################################
-
-resource "helm_release" "kuberay_operator" {
-  namespace        = "kuberay-operator"
-  create_namespace = true
-  name             = "kuberay-operator"
-  repository       = "https://ray-project.github.io/kuberay-helm/"
-  chart            = "kuberay-operator"
-  version          = "1.2.2"
-}
-
-resource "helm_release" "kuberay_cluster" {
-  namespace        = "ray-cluster"
-  create_namespace = true
-  name             = "ray-cluster"
-  repository       = "https://ray-project.github.io/kuberay-helm/"
-  chart            = "ray-cluster"
-  version          = "1.2.2"
-}
-
-################################################################################
-# LWS
+# LWS (LeaderWorkerSet)
 ################################################################################
 
 locals {

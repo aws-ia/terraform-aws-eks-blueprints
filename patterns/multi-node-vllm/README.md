@@ -16,20 +16,19 @@ The following components are demonstrated in this pattern:
         - kubelet and containerd are configured to utilize the RAID-0 volume, allowing kubelet to discover the additional storage as ephemeral storage that can be utilized by pods
 - A Helm chart deployment for the [NVIDIA device plugin](https://github.com/NVIDIA/k8s-device-plugin) to expose and mount the GPUs provided by the instances to the pods that request them
 - A Helm chart deployment for the EFA device plugin to expose and mount the EFA network interfaces provided by the instances to the pods that request them. Since the EFA network interfaces are only found on the instances that provide NVIDIA GPUs in this pattern, we do not apply an additional taint for the EFA network interfaces to avoid over-constraining.
-- Helm charts for [Kuberay and a Ray cluster](https://docs.ray.io/en/latest/cluster/kubernetes/index.html) as well as [lws (LeaderWorkerSet)](https://github.com/kubernetes-sigs/lws) to demonstrate multi-node inference using vLLM
 - A Dockerfile that demonstrates how to build a container image with the necessary collective communication libraries for multi-node inference with EFA. An ECR repository is created as part of the deployment to store the container image.
 
 ## Code
 
 ### Cluster
 
-```terraform hl_lines="32-34 52-94"
+```terraform hl_lines="30-32 50-97"
 {% include  "../../patterns/multi-node-vllm/eks.tf" %}
 ```
 
 ### Helm Charts
 
-```terraform
+```terraform hl_lines="39-56"
 {% include  "../../patterns/multi-node-vllm/helm.tf" %}
 ```
 
@@ -42,6 +41,11 @@ The following components are demonstrated in this pattern:
 ## Deploy
 
 See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started/#prerequisites) for the prerequisites and steps to deploy this pattern.
+
+!!! warning
+    This example provisions two `g6e.8xlarge` instances, which will require at lest 64 vCPU in the `Running On-Demand G and VT instances` EC2 service quota (Maximum number of vCPUs assigned to the Running On-Demand G and VT instances). If you fail to see the `g6e.8xlarge` instances provision, and the following error in the Autoscaling events log, please navigate to the Service Quotas section in the AWS console and request a quota increase for `Running On-Demand G and VT instances` to at least 64.
+
+    > Could not launch On-Demand Instances. VcpuLimitExceeded - You have requested more vCPU capacity than your current vCPU limit of 0 allows for the instance bucket that the specified instance type belongs to. Please visit http://aws.amazon.com/contact-us/ec2-request to request an adjustment to this limit. Launching EC2 instance failed.
 
 ## Validate
 
@@ -59,7 +63,7 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
     ip-10-0-40-21.us-east-2.compute.internal    Ready    <none>   12m    v1.31.4-eks-aeac579   m7a.xlarge
     ```
 
-2. Verify that the kuberay-operator, Ray cluster, lws, EFA device plugin, and NVIDIA device plugin pods are running:
+2. Verify that the lws, EFA device plugin, and NVIDIA device plugin pods are running:
 
     ```sh
     kubectl get pods -A
@@ -79,13 +83,10 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
     kube-system            kube-proxy-bkzmz                               1/1     Running   0          2m
     kube-system            kube-proxy-brpt5                               1/1     Running   0          2m
     kube-system            kube-proxy-f9qvw                               1/1     Running   0          2m
-    kuberay-operator       kuberay-operator-5dd6779f94-nqflv              1/1     Running   0          2m
     lws-system             lws-controller-manager-fbb6489f9-hrltq         1/1     Running   0          2m
     lws-system             lws-controller-manager-fbb6489f9-hxdpj         1/1     Running   0          2m
     nvidia-device-plugin   nvidia-device-plugin-g5lwg                     1/1     Running   0          2m
     nvidia-device-plugin   nvidia-device-plugin-v6gkj                     1/1     Running   0          2m
-    ray-cluster            ray-cluster-kuberay-head-4knnz                 1/1     Running   0          2m
-    ray-cluster            ray-cluster-kuberay-workergroup-worker-h5brb   1/1     Running   0          2m
     ```
 
 3. Build and push the provided Dockerfile as a container image into ECR (the `build.sh` file is created as part of `terraform apply`):
@@ -93,6 +94,9 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
     ```sh
     ./build.sh
     ```
+
+!!! danger
+    Building and pushing the Docker image will take a considerable amount of resources and time. Building and pushing this image took a little over 1 hour and 10 minutes on a system without any prior images/layers cached; this was on an AMD Ryzen Threadripper 1900X 8-core 4.2 GHz CPU with 128GB of RAM and a 500GB NVMe SSD. The resultant image is roughly 16.7GB in size (unpacked).
 
 4. Update the provided `lws.yaml` file with your HuggingFace token that will be used to pull down the `meta-llama/Llama-3.1-8B-Instruct` model used in this example.
 

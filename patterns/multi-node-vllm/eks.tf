@@ -9,12 +9,10 @@ module "eks" {
   cluster_name    = local.name
   cluster_version = "1.31"
 
-  # To facilitate easier interaction for demonstration purposes
-  cluster_endpoint_public_access = true
-
   # Gives Terraform identity admin access to cluster which will
   # allow deploying resources into the cluster
   enable_cluster_creator_admin_permissions = true
+  cluster_endpoint_public_access           = true
 
   # These will become the default in the next major version of the module
   bootstrap_self_managed_addons   = false
@@ -50,6 +48,8 @@ module "eks" {
       desired_size = 2
     }
     g6 = {
+      # The EKS AL2023 NVIDIA AMI provides all of the necessary components
+      # for accelerated workloads w/ EFA
       ami_type       = "AL2023_x86_64_NVIDIA"
       instance_types = ["g6e.8xlarge"]
 
@@ -57,6 +57,8 @@ module "eks" {
       max_size     = 5
       desired_size = 2
 
+      # Mount instance store volumes in RAID-0 for kubelet and containerd
+      # https://github.com/awslabs/amazon-eks-ami/blob/master/doc/USER_GUIDE.md#raid-0-for-kubelet-and-containerd-raid0
       cloudinit_pre_nodeadm = [
         {
           content_type = "application/node.eks.aws"
@@ -77,6 +79,7 @@ module "eks" {
       # 2. Ignore subnets that reside in AZs that do not support the instance type
       # 3. Expose all of the available EFA interfaces on the launch template
       enable_efa_support = true
+      subnet_ids         = [element(module.vpc.private_subnets, 2)]
 
       labels = {
         "vpc.amazonaws.com/efa.present" = "true"
