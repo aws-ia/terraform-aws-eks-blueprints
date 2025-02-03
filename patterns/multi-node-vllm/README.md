@@ -95,7 +95,7 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
     ./build.sh
     ```
 
-!!! danger
+!!! warning
     Building and pushing the Docker image will take a considerable amount of resources and time. Building and pushing this image took a little over 1 hour and 10 minutes on a system without any prior images/layers cached; this was on an AMD Ryzen Threadripper 1900X 8-core 4.2 GHz CPU with 128GB of RAM and a 500GB NVMe SSD. The resultant image is roughly 16.7GB in size (unpacked).
 
 4. Update the provided `lws.yaml` file with your HuggingFace token that will be used to pull down the `meta-llama/Llama-3.1-8B-Instruct` model used in this example.
