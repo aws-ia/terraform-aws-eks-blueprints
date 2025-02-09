@@ -1,6 +1,6 @@
 # Multi-Node Inference w/ vLLM
 
-This pattern demonstrates an Amazon EKS Cluster with an EFA-enabled nodegroup that support multi-node inference using vLLM, kuberay, and lws (LeaderWorkerSet).
+This pattern demonstrates an Amazon EKS Cluster with an EFA-enabled nodegroup that support multi-node inference using vLLM, and lws (LeaderWorkerSet).
 
 This example is based off the LWS example found [here](https://github.com/kubernetes-sigs/lws/tree/main/docs/examples/vllm/GPU)
 
