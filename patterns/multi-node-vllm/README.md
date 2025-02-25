@@ -70,23 +70,31 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
     ```
 
     ```text
-    NAMESPACE              NAME                                           READY   STATUS    RESTARTS   AGE
-    kube-system            aws-efa-k8s-device-plugin-4b4jh                1/1     Running   0          2m
-    kube-system            aws-efa-k8s-device-plugin-h2vqn                1/1     Running   0          2m
-    kube-system            aws-node-rdx66                                 2/2     Running   0          2m
-    kube-system            aws-node-w9d8t                                 2/2     Running   0          2m
-    kube-system            aws-node-xs7wv                                 2/2     Running   0          2m
-    kube-system            aws-node-xtslm                                 2/2     Running   0          2m
-    kube-system            coredns-6b94694fcb-kct65                       1/1     Running   0          2m
-    kube-system            coredns-6b94694fcb-tzg25                       1/1     Running   0          2m
-    kube-system            kube-proxy-4znrq                               1/1     Running   0          2m
-    kube-system            kube-proxy-bkzmz                               1/1     Running   0          2m
-    kube-system            kube-proxy-brpt5                               1/1     Running   0          2m
-    kube-system            kube-proxy-f9qvw                               1/1     Running   0          2m
-    lws-system             lws-controller-manager-fbb6489f9-hrltq         1/1     Running   0          2m
-    lws-system             lws-controller-manager-fbb6489f9-hxdpj         1/1     Running   0          2m
-    nvidia-device-plugin   nvidia-device-plugin-g5lwg                     1/1     Running   0          2m
-    nvidia-device-plugin   nvidia-device-plugin-v6gkj                     1/1     Running   0          2m
+    NAMESPACE              NAME                                     READY   STATUS    RESTARTS   AGE
+    kube-system            aws-efa-k8s-device-plugin-9jxp9          1/1     Running   0          56m
+    kube-system            aws-efa-k8s-device-plugin-hrwfm          1/1     Running   0          6h34m
+    kube-system            aws-efa-k8s-device-plugin-lzpfs          1/1     Running   0          6h34m
+    kube-system            aws-efa-k8s-device-plugin-z5j46          1/1     Running   0          56m
+    kube-system            aws-node-9hph2                           2/2     Running   0          7h6m
+    kube-system            aws-node-ddwr5                           2/2     Running   0          7h5m
+    kube-system            aws-node-g9zgq                           2/2     Running   0          7h6m
+    kube-system            aws-node-ldtsd                           2/2     Running   0          56m
+    kube-system            aws-node-w7mwb                           2/2     Running   0          56m
+    kube-system            aws-node-xlxnw                           2/2     Running   0          7h5m
+    kube-system            coredns-6b94694fcb-88wzs                 1/1     Running   0          7h5m
+    kube-system            coredns-6b94694fcb-zw4wt                 1/1     Running   0          7h5m
+    kube-system            kube-proxy-h6p9k                         1/1     Running   0          7h5m
+    kube-system            kube-proxy-j4q5f                         1/1     Running   0          7h5m
+    kube-system            kube-proxy-r7rq4                         1/1     Running   0          7h5m
+    kube-system            kube-proxy-t8rp4                         1/1     Running   0          56m
+    kube-system            kube-proxy-vtd9k                         1/1     Running   0          56m
+    kube-system            kube-proxy-whdws                         1/1     Running   0          7h5m
+    lws-system             lws-controller-manager-fbb6489f9-9n98v   1/1     Running   0          7h7m
+    lws-system             lws-controller-manager-fbb6489f9-z8x4k   1/1     Running   0          7h7m
+    nvidia-device-plugin   nvidia-device-plugin-pjt52               1/1     Running   0          56m
+    nvidia-device-plugin   nvidia-device-plugin-s9pt5               1/1     Running   0          6h34m
+    nvidia-device-plugin   nvidia-device-plugin-sv2qg               1/1     Running   0          56m
+    nvidia-device-plugin   nvidia-device-plugin-xqbv8               1/1     Running   0          6h34m
     ```
 
 3. Build and push the provided Dockerfile as a container image into ECR (the `build.sh` file is created as part of `terraform apply`):
@@ -95,23 +103,24 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
     ./build.sh
     ```
 
-!!! warning
-    Building and pushing the Docker image will take a considerable amount of resources and time. Building and pushing this image took a little over 1 hour and 10 minutes on a system without any prior images/layers cached; this was on an AMD Ryzen Threadripper 1900X 8-core 4.2 GHz CPU with 128GB of RAM and a 500GB NVMe SSD. The resultant image is roughly 16.7GB in size (unpacked).
+    !!! warning
+        Building and pushing the Docker image will take a considerable amount of resources and time. Building and pushing this image took 26 minutes on a system without any prior images/layers cached; this was on an AMD Ryzen Threadripper 1900X 8-core 4.2 GHz CPU with 128GB of RAM and a 500GB NVMe SSD. The resultant image is roughly 7.6GB in size (unpacked).
 
-4. Update the provided `lws.yaml` file with your HuggingFace token that will be used to pull down the `meta-llama/Llama-3.1-8B-Instruct` model used in this example.
+4. Update the provided `lws.yaml` file with your HuggingFace token that will be used to pull down the `meta-llama/Llama-3.3-70B-Instruct` model used in this example.
 
 5. Deploy the LeaderWorkerSet and its associated K8s service:
 
     ```sh
     kubectl apply -f lws.yaml
-    kubectl apply -f service.yaml
     kubectl get pods
     ```
 
     ```text
     NAME       READY   STATUS    RESTARTS   AGE
-    vllm-0     1/1     Running   0          1m
-    vllm-0-1   1/1     Running   0          1m
+    vllm-0     1/1     Running   0          24m
+    vllm-0-1   1/1     Running   0          24m
+    vllm-0-2   1/1     Running   0          24m
+    vllm-0-3   1/1     Running   0          24m
     ```
 
 6. Verify that the distributed tensor-parallel inference works:
@@ -123,8 +132,8 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
     Should get an output similar to this:
 
     ```text
-    INFO 01-30 11:53:52 model_runner.py:1115] Loading model weights took 7.5100 GB
-    (RayWorkerWrapper pid=263, ip=10.0.16.95) INFO 01-30 11:53:53 model_runner.py:1115] Loading model weights took 7.5100 GB
+    INFO 03-10 22:53:24 model_runner.py:1115] Loading model weights took 33.8639 GB
+    (RayWorkerWrapper pid=208, ip=10.0.45.39) INFO 03-10 22:53:10 model_runner.py:1115] Loading model weights took 33.8639 GB
     ```
 
 7. Use kubectl port-forward to forward local port 8080:
@@ -139,7 +148,7 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
     curl -s http://localhost:8080/v1/completions \
     -H "Content-Type: application/json" \
     -d '{
-        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "model": "meta-llama/Llama-3.3-70B-Instruct",
         "prompt": "San Francisco is a",
         "max_tokens": 7,
         "temperature": 0
@@ -150,14 +159,14 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
 
     ```json
     {
-        "id": "cmpl-7b171b2a1a5b4f56805e721a60b923f4",
+        "id": "cmpl-48e678b2dacf4db9ac7f32dffa32c913",
         "object": "text_completion",
-        "created": 1738278714,
-        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "created": 1741483804,
+        "model": "meta-llama/Llama-3.3-70B-Instruct",
         "choices": [
             {
             "index": 0,
-            "text": " top tourist destination, and for good",
+            "text": " top destination for travelers, with its",
             "logprobs": null,
             "finish_reason": "length",
             "stop_reason": null,

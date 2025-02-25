@@ -1,3 +1,19 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vllm-leader
+spec:
+  ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    leaderworkerset.sigs.k8s.io/name: vllm
+    role: leader
+  type: ClusterIP
+---
 apiVersion: leaderworkerset.x-k8s.io/v1
 kind: LeaderWorkerSet
 metadata:
@@ -5,7 +21,7 @@ metadata:
 spec:
   replicas: 1
   leaderWorkerTemplate:
-    size: 2
+    size: 4
     restartPolicy: RecreateGroupOnPodRestart
     leaderTemplate:
       metadata:
@@ -17,21 +33,33 @@ spec:
             image: <image-built-from-dockerfile>
             imagePullPolicy: Always
             env:
+              - name: FI_PROVIDER
+                value: efa
               - name: HUGGING_FACE_HUB_TOKEN
                 value: <your-hf-token>
+              - name: HF_HUB_ENABLE_HF_TRANSFER
+                value: '1'
+              - name: NCCL_DEBUG
+                value: INFO
+              - name: NCCL_NET_GDR_LEVEL
+                value: '0'
+              - name: NCCL_NVLS_ENABLE
+                value: '0'
               - name: NCCL_SHM_USE_CUDA_MEMCPY
                 value: '1'
             command:
               - sh
               - -c
-              - '/vllm-workspace/ray_init.sh leader --ray_cluster_size=$(LWS_GROUP_SIZE); python3 -m vllm.entrypoints.openai.api_server --port 8080 --model meta-llama/Llama-3.1-8B-Instruct --tensor-parallel-size 1 --pipeline_parallel_size 2'
+              - '/vllm-workspace/ray_init.sh leader --ray_cluster_size=$(LWS_GROUP_SIZE); python3 -m vllm.entrypoints.openai.api_server --port 8080 --model meta-llama/Llama-3.3-70B-Instruct --max-model-len 1024 --tensor-parallel-size 1 --pipeline-parallel-size 4'
             resources:
               limits:
                 nvidia.com/gpu: '1'
-                memory: 224Gi
-                ephemeral-storage: 400Gi
+                vpc.amazonaws.com/efa: '1'
+                ephemeral-storage: 160Gi
               requests:
-                ephemeral-storage: 400Gi
+                nvidia.com/gpu: '1'
+                vpc.amazonaws.com/efa: '1'
+                ephemeral-storage: 160Gi
             ports:
               - containerPort: 8080
             readinessProbe:
@@ -64,13 +92,25 @@ spec:
             resources:
               limits:
                 nvidia.com/gpu: '1'
-                memory: 224Gi
-                ephemeral-storage: 400Gi
+                vpc.amazonaws.com/efa: '1'
+                ephemeral-storage: 160Gi
               requests:
-                ephemeral-storage: 400Gi
+                nvidia.com/gpu: '1'
+                vpc.amazonaws.com/efa: '1'
+                ephemeral-storage: 160Gi
             env:
+              - name: FI_PROVIDER
+                value: efa
               - name: HUGGING_FACE_HUB_TOKEN
                 value: <your-hf-token>
+              - name: HF_HUB_ENABLE_HF_TRANSFER
+                value: '1'
+              - name: NCCL_DEBUG
+                value: INFO
+              - name: NCCL_NET_GDR_LEVEL
+                value: '0'
+              - name: NCCL_NVLS_ENABLE
+                value: '0'
               - name: NCCL_SHM_USE_CUDA_MEMCPY
                 value: '1'
             volumeMounts:
@@ -84,4 +124,3 @@ spec:
           - name: dshm
             emptyDir:
               medium: Memory
-              sizeLimit: 15Gi
