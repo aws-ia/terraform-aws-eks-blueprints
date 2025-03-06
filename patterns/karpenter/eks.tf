@@ -33,7 +33,7 @@ module "eks" {
   fargate_profiles = {
     karpenter = {
       selectors = [
-        { namespace = "karpenter" }
+        { namespace = local.namespace }
       ]
     }
   }
