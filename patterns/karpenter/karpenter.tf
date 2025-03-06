@@ -1,5 +1,6 @@
 locals {
-  namespace = "karpenter"
+  namespace            = "karpenter"
+  service_account_name = "karpenter"
 }
 
 ################################################################################
@@ -22,6 +23,9 @@ module "karpenter" {
   create_pod_identity_association = false
   enable_irsa                     = true
   irsa_oidc_provider_arn          = module.eks.oidc_provider_arn
+  irsa_namespace_service_accounts = [
+    "${local.namespace}:${local.service_account_name}"
+  ]
 
   tags = local.tags
 }
@@ -51,6 +55,7 @@ resource "helm_release" "karpenter" {
     serviceAccount:
       annotations:
         eks.amazonaws.com/role-arn: ${module.karpenter.iam_role_arn}
+      name: ${local.service_account_name}
     webhook:
       enabled: false
     EOT
