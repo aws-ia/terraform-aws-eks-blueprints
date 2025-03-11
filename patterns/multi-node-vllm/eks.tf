@@ -43,9 +43,9 @@ module "eks" {
         "m7i.xlarge",
       ]
 
-      min_size     = 2
-      max_size     = 3
-      desired_size = 2
+      min_size     = 4
+      max_size     = 8
+      desired_size = 4
     }
     g6 = {
       # The EKS AL2023 NVIDIA AMI provides all of the necessary components
