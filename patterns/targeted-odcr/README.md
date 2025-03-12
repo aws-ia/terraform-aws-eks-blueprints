@@ -18,7 +18,7 @@ This pattern demonstrates how to consume/utilize on-demand capacity reservations
 
 ## Code
 
-```terraform hl_lines="5-8 100-110 130-153"
+```terraform hl_lines="5-8 109-119 139-162"
 {% include  "../../patterns/targeted-odcr/eks.tf" %}
 ```
 

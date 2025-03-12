@@ -22,7 +22,7 @@ The following components are demonstrated in this pattern:
 
 ### Cluster
 
-```terraform hl_lines="32-34 52-99"
+```terraform hl_lines="35-37 49-96"
 {% include  "../../patterns/multi-node-vllm/eks.tf" %}
 ```
 
