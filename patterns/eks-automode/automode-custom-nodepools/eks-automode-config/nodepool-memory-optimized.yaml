@@ -1,0 +1,40 @@
+apiVersion: karpenter.sh/v1
+kind: NodePool
+metadata:
+  name: memory-optimized
+spec:
+  template:
+    metadata:
+      labels:
+        type: karpenter
+        provisioner: memory-optimized
+        NodeGroupType: MemoryOptimized
+    spec:
+      taints:
+        - key: memory-optimized
+          effect: NoSchedule
+      requirements:
+        - key: "karpenter.sh/capacity-type"
+          operator: In
+          values: ["on-demand"]
+        - key: "kubernetes.io/arch"
+          operator: In
+          values: ["amd64"]
+        - key: "eks.amazonaws.com/instance-category"
+          operator: In
+          values: ["r"]
+        - key: "eks.amazonaws.com/instance-cpu"
+          operator: In
+          values: ["8", "16", "36"]
+        - key: "eks.amazonaws.com/instance-hypervisor"
+          operator: In
+          values: ["nitro"]
+        - key: "eks.amazonaws.com/instance-generation"
+          operator: Gt
+          values: ["2"]
+      nodeClassRef:
+        name: ebs-optimized
+        group: eks.amazonaws.com
+        kind: NodeClass
+  limits:
+    cpu: 1000
