@@ -19,7 +19,7 @@ The following components are demonstrated in this pattern:
 
 ### Cluster
 
-```terraform hl_lines="26-28 34-80"
+```terraform hl_lines="32-35 40-86"
 {% include  "../../patterns/nvidia-gpu-efa/eks.tf" %}
 ```
 
@@ -50,10 +50,10 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
 
     ```text
     NAME                                        STATUS   ROLES    AGE   VERSION               INSTANCE-TYPE
-    ip-10-0-1-16.us-east-2.compute.internal     Ready    <none>   12h   v1.29.3-eks-ae9a62a   p5.48xlarge
-    ip-10-0-12-113.us-east-2.compute.internal   Ready    <none>   14h   v1.29.3-eks-ae9a62a   m5.large
-    ip-10-0-12-201.us-east-2.compute.internal   Ready    <none>   12h   v1.29.3-eks-ae9a62a   p5.48xlarge
-    ip-10-0-46-217.us-east-2.compute.internal   Ready    <none>   14h   v1.29.3-eks-ae9a62a   m5.large
+    ip-10-0-1-16.us-east-2.compute.internal     Ready    <none>   12h   v1.32.0-eks-ae9a62a   p5.48xlarge
+    ip-10-0-12-113.us-east-2.compute.internal   Ready    <none>   14h   v1.32.0-eks-ae9a62a   m5.large
+    ip-10-0-12-201.us-east-2.compute.internal   Ready    <none>   12h   v1.32.0-eks-ae9a62a   p5.48xlarge
+    ip-10-0-46-217.us-east-2.compute.internal   Ready    <none>   14h   v1.32.0-eks-ae9a62a   m5.large
 
     ```
 

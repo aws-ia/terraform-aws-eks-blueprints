@@ -6,7 +6,7 @@ resource "helm_release" "nvidia_device_plugin" {
   name             = "nvidia-device-plugin"
   repository       = "https://nvidia.github.io/k8s-device-plugin"
   chart            = "nvidia-device-plugin"
-  version          = "0.17.0"
+  version          = "0.17.1"
   namespace        = "nvidia-device-plugin"
   create_namespace = true
   wait             = false
@@ -37,7 +37,7 @@ resource "helm_release" "aws_efa_device_plugin" {
 ################################################################################
 
 locals {
-  lws_version = "v0.5.0"
+  lws_version = "v0.5.1"
 }
 
 data "http" "lws" {

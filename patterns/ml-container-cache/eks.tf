@@ -14,29 +14,33 @@ data "aws_ssm_parameter" "snapshot_id" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 20.24"
+  version = "~> 20.34"
 
   cluster_name    = local.name
-  cluster_version = "1.31"
+  cluster_version = "1.32"
 
   # Give the Terraform identity admin access to the cluster
   # which will allow it to deploy resources into the cluster
   enable_cluster_creator_admin_permissions = true
   cluster_endpoint_public_access           = true
 
+  # These will become the default in the next major version of the module
+  bootstrap_self_managed_addons   = false
+  enable_irsa                     = false
+  enable_security_groups_for_pods = false
+
   cluster_addons = {
     coredns                = {}
     eks-pod-identity-agent = {}
     kube-proxy             = {}
-    vpc-cni                = {}
+    vpc-cni = {
+      most_recent    = true
+      before_compute = true
+    }
   }
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
-
-  eks_managed_node_group_defaults = {
-    ebs_optimized = true
-  }
 
   eks_managed_node_groups = {
     gpu = {
