@@ -19,7 +19,7 @@ The following components are demonstrated in this pattern:
 
 ### Cluster
 
-```terraform hl_lines="32-35 40-86"
+```terraform hl_lines="35-37 49-95"
 {% include  "../../patterns/nvidia-gpu-efa/eks.tf" %}
 ```
 

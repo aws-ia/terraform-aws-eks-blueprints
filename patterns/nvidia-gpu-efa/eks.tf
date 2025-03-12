@@ -20,9 +20,12 @@ module "eks" {
   enable_security_groups_for_pods = false
 
   cluster_addons = {
-    coredns                = {}
-    eks-pod-identity-agent = {}
-    kube-proxy             = {}
+    coredns                   = {}
+    eks-node-monitoring-agent = {}
+    eks-pod-identity-agent = {
+      before_compute = true
+    }
+    kube-proxy = {}
     vpc-cni = {
       most_recent    = true
       before_compute = true
@@ -35,6 +38,12 @@ module "eks" {
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
+
+  eks_managed_node_group_defaults = {
+    node_repair_config = {
+      enabled = true
+    }
+  }
 
   eks_managed_node_groups = {
     nvidia-efa = {

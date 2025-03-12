@@ -20,9 +20,12 @@ module "eks" {
   enable_security_groups_for_pods = false
 
   cluster_addons = {
-    coredns                = {}
-    eks-pod-identity-agent = {}
-    kube-proxy             = {}
+    coredns                   = {}
+    eks-node-monitoring-agent = {}
+    eks-pod-identity-agent = {
+      before_compute = true
+    }
+    kube-proxy = {}
     vpc-cni = {
       most_recent    = true
       before_compute = true
@@ -36,20 +39,14 @@ module "eks" {
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
 
-  eks_managed_node_groups = {
-    # This node group is for core addons such as CoreDNS
-    default = {
-      ami_type = "AL2023_x86_64_STANDARD"
-      instance_types = [
-        "m7a.xlarge",
-        "m7i.xlarge",
-      ]
-
-      min_size     = 4
-      max_size     = 8
-      desired_size = 4
+  eks_managed_node_group_defaults = {
+    node_repair_config = {
+      enabled = true
     }
-    g6 = {
+  }
+
+  eks_managed_node_groups = {
+    g6e = {
       # The EKS AL2023 NVIDIA AMI provides all of the necessary components
       # for accelerated workloads w/ EFA
       ami_type       = "AL2023_x86_64_NVIDIA"
@@ -96,6 +93,15 @@ module "eks" {
           effect = "NO_SCHEDULE"
         }
       }
+    }
+
+    # This node group is for core addons such as CoreDNS
+    default = {
+      instance_types = ["m5.large"]
+
+      min_size     = 2
+      max_size     = 2
+      desired_size = 2
     }
   }
 
