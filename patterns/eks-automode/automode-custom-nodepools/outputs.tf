@@ -19,3 +19,8 @@ output "grafana_portforward" {
   description = "Port-forward grafana with command: "
   value       = "kubectl port-forward svc/kube-prometheus-stack-grafana 8080:80 -n kube-prometheus-stack"
 }
+
+output "kubecost_portforward" {
+  description = "Port-forward kubecost with command: "
+  value       = "kubectl port-forward --namespace kubecost deployment/kubecost-cost-analyzer 9090"
+}

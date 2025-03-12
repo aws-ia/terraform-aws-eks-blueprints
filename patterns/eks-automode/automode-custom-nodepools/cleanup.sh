@@ -1,5 +1,5 @@
 #!/bin/bash
-set -o errexit
+# set -o errexit
 set -o pipefail
 
 kubectl delete -f sample-app.yaml || echo "Sample App was deleted"

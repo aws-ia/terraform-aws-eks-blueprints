@@ -14,6 +14,13 @@ resource "aws_eks_addon" "cw_observability" {
     role_arn        = module.aws_cloudwatch_observability_pod_identity.iam_role_arn
     service_account = "cloudwatch-agent"
   }
+  depends_on = [
+    module.vpc,
+    module.eks,
+    resource.kubectl_manifest.custom_nodeClass,
+    resource.kubectl_manifest.custom_nodePool
+  ]
+  
 }
 
 # EKS Pod Identity for cloudwatch observability pods
@@ -35,18 +42,6 @@ module "aws_cloudwatch_observability_pod_identity" {
   # }
 }
 
-resource "aws_eks_addon" "metrics_server" {
-  cluster_name = module.eks.cluster_name
-  addon_name   = "metrics-server"
-  # Optional: preserve settings during addon updates
-  preserve = false
-  resolve_conflicts_on_create = "OVERWRITE"
-
-  depends_on = [
-    module.eks
-  ]
-}
-
 #---------------------------------------------------------------
 # EKS Blueprints Addons
 #---------------------------------------------------------------
@@ -64,6 +59,8 @@ module "eks_blueprints_addons" {
   cluster_endpoint  = module.eks.cluster_endpoint
   cluster_version   = module.eks.cluster_version
   oidc_provider_arn = module.eks.oidc_provider_arn
+
+  enable_metrics_server = true
 
   #---------------------------------------
   # AWS for FluentBit - DaemonSet
@@ -106,6 +103,12 @@ module "eks_blueprints_addons" {
   }
 
   tags = local.tags
+  depends_on = [
+    module.vpc,
+    module.eks,
+    resource.kubectl_manifest.custom_nodeClass,
+    resource.kubectl_manifest.custom_nodePool
+  ]
 }
 
 #---------------------------------------------------------------
@@ -139,5 +142,32 @@ resource "aws_secretsmanager_secret_version" "grafana" {
   secret_string = random_password.grafana.result
 }
 
+#---------------------------------------------------------------
+# Data on EKS Kubernetes Addons
+#---------------------------------------------------------------
+module "eks_data_addons" {
+  source  = "aws-ia/eks-data-addons/aws"
+  version = "1.33.0" # ensure to update this to the latest/desired version
 
+  oidc_provider_arn = module.eks.oidc_provider_arn
 
+  #---------------------------------------------------------------
+  # Kubecost Add-on
+  #---------------------------------------------------------------
+  # Note: Kubecost add-on depends on Kube Prometheus Stack add-on for storing the metrics
+  enable_kubecost = true
+  kubecost_helm_config = {
+    values              = [templatefile("${path.module}/helm-values/kubecost-values.yaml", {})]
+    version             = "1.104.5"
+    repository_username = data.aws_ecrpublic_authorization_token.token.user_name
+    repository_password = data.aws_ecrpublic_authorization_token.token.password
+  }
+
+  depends_on = [
+    module.vpc,
+    module.eks,
+    resource.kubectl_manifest.custom_nodeClass,
+    resource.kubectl_manifest.custom_nodePool
+  ]
+
+}

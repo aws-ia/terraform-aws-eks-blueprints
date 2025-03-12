@@ -41,6 +41,11 @@ resource "kubectl_manifest" "custom_nodeClass" {
     node_iam_role_name = aws_iam_role.custom_nodeclass_role.name
     cluster_name       = module.eks.cluster_name
   })
+
+  depends_on = [
+    aws_iam_role.custom_nodeclass_role,
+    resource.aws_eks_access_entry.custom_nodeclass
+  ]
 }
 
 # Apply custom nodePool objects
