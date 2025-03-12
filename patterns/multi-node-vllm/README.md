@@ -22,7 +22,7 @@ The following components are demonstrated in this pattern:
 
 ### Cluster
 
-```terraform hl_lines="30-32 50-97"
+```terraform hl_lines="32-34 52-99"
 {% include  "../../patterns/multi-node-vllm/eks.tf" %}
 ```
 
@@ -34,7 +34,7 @@ The following components are demonstrated in this pattern:
 
 ### Dockerfile
 
-```dockerfile hl_lines="6-69 75-80"
+```dockerfile hl_lines="44-45 48-120"
 {% include  "../../patterns/multi-node-vllm/Dockerfile" %}
 ```
 
@@ -57,10 +57,10 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
 
     ```text
     NAME                                        STATUS   ROLES    AGE    VERSION               INSTANCE-TYPE
-    ip-10-0-20-54.us-east-2.compute.internal    Ready    <none>   12m    v1.31.4-eks-aeac579   g6e.8xlarge
-    ip-10-0-23-209.us-east-2.compute.internal   Ready    <none>   12m    v1.31.4-eks-aeac579   g6e.8xlarge
-    ip-10-0-26-209.us-east-2.compute.internal   Ready    <none>   12m    v1.31.4-eks-aeac579   m7a.xlarge
-    ip-10-0-40-21.us-east-2.compute.internal    Ready    <none>   12m    v1.31.4-eks-aeac579   m7a.xlarge
+    ip-10-0-20-54.us-east-2.compute.internal    Ready    <none>   12m    v1.32.0-eks-aeac579   g6e.8xlarge
+    ip-10-0-23-209.us-east-2.compute.internal   Ready    <none>   12m    v1.32.0-eks-aeac579   g6e.8xlarge
+    ip-10-0-26-209.us-east-2.compute.internal   Ready    <none>   12m    v1.32.0-eks-aeac579   m7a.xlarge
+    ip-10-0-40-21.us-east-2.compute.internal    Ready    <none>   12m    v1.32.0-eks-aeac579   m7a.xlarge
     ```
 
 2. Verify that the lws, EFA device plugin, and NVIDIA device plugin pods are running:

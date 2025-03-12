@@ -25,14 +25,11 @@ RUN <<EOT
   rm -rf /var/{log,dpkg.log}
 EOT
 
-ARG PYTHON_MINOR_VERSION=11
-
 # vLLM requires python3-dev
-
 RUN <<EOT
   apt update
   apt install -y \
-    python3.${PYTHON_MINOR_VERSION} \
+    python3.11 \
     python3-dev \
     python3-pip \
     python-is-python3

@@ -4,10 +4,10 @@
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 20.33"
+  version = "~> 20.34"
 
   cluster_name    = local.name
-  cluster_version = "1.31"
+  cluster_version = "1.32"
 
   # Gives Terraform identity admin access to cluster which will
   # allow deploying resources into the cluster
@@ -20,9 +20,11 @@ module "eks" {
   enable_security_groups_for_pods = false
 
   cluster_addons = {
-    coredns    = {}
-    kube-proxy = {}
+    coredns                = {}
+    eks-pod-identity-agent = {}
+    kube-proxy             = {}
     vpc-cni = {
+      most_recent    = true
       before_compute = true
     }
   }

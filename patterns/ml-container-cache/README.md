@@ -15,7 +15,7 @@ The main benefit of caching, or pre-pulling, container images onto an EBS volume
 
 ## Results
 
-The following results use the PyTorch [nvcr.io/nvidia/pytorch:24.08-py3](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/pytorch/tags) image which is 9.5 GB compressed and 20.4 GB decompressed on disk.
+The following results use the PyTorch [nvcr.io/nvidia/pytorch:25.02-py3](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/pytorch/tags) image which is 9.5 GB compressed and 20.4 GB decompressed on disk.
 
 Pod start up time duration is captured via pod events using [ktime](https://github.com/clowdhaus/ktime).
 
@@ -45,7 +45,7 @@ When the PyTorch image is not present on the EBS volume, it takes roughly 6 minu
 
 ### Cluster
 
-```terraform hl_lines="5-9 52-64 66-78"
+```terraform hl_lines="5-9 56-68 70-82"
 {% include  "../../patterns/ml-container-cache/eks.tf" %}
 ```
 

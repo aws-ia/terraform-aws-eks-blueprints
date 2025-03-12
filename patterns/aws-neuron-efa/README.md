@@ -19,7 +19,7 @@ The following components are demonstrated in this pattern:
 
 ### Cluster
 
-```terraform hl_lines="26-28 34-80"
+```terraform hl_lines="32-34 40-86"
 {% include  "../../patterns/aws-neuron-efa/eks.tf" %}
 ```
 
@@ -43,10 +43,10 @@ See [here](https://aws-ia.github.io/terraform-aws-eks-blueprints/getting-started
 
     ```text
     NAME                                        STATUS   ROLES    AGE   VERSION               INSTANCE-TYPE
-    ip-10-0-12-200.us-east-2.compute.internal   Ready    <none>   82m   v1.31.0-eks-a737599   m5.large
-    ip-10-0-24-248.us-east-2.compute.internal   Ready    <none>   82m   v1.31.0-eks-a737599   m5.large
-    ip-10-0-39-213.us-east-2.compute.internal   Ready    <none>   75m   v1.31.0-eks-a737599   trn1.32xlarge
-    ip-10-0-43-172.us-east-2.compute.internal   Ready    <none>   75m   v1.31.0-eks-a737599   trn1.32xlarge
+    ip-10-0-12-200.us-east-2.compute.internal   Ready    <none>   82m   v1.32.0-eks-a737599   m5.large
+    ip-10-0-24-248.us-east-2.compute.internal   Ready    <none>   82m   v1.32.0-eks-a737599   m5.large
+    ip-10-0-39-213.us-east-2.compute.internal   Ready    <none>   75m   v1.32.0-eks-a737599   trn1.32xlarge
+    ip-10-0-43-172.us-east-2.compute.internal   Ready    <none>   75m   v1.32.0-eks-a737599   trn1.32xlarge
     ```
 
     You should see two EFA-enabled (in this example `trn1.32xlarge`) nodes in the list.
