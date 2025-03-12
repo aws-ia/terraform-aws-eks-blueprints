@@ -20,7 +20,7 @@ resource "aws_eks_addon" "cw_observability" {
     resource.kubectl_manifest.custom_nodeClass,
     resource.kubectl_manifest.custom_nodePool
   ]
-  
+
 }
 
 # EKS Pod Identity for cloudwatch observability pods
@@ -53,7 +53,7 @@ locals {
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "~> 1.2" # change this to version = 1.2.2 for oldder version of Karpenter deployment
+  version = "~> 1.2" # change this to version = 1.2.2 for older version of Karpenter deployment
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
@@ -82,7 +82,7 @@ module "eks_blueprints_addons" {
   }
 
   #---------------------------------------
-  # Prommetheus and Grafana stack
+  # Prometheus and Grafana stack
   #---------------------------------------
   #---------------------------------------------------------------
   # Install Monitoring Stack with Prometheus and Grafana

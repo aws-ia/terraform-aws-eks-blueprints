@@ -1,17 +1,17 @@
 # These yaml manifests are provided under folder ./eks-automode-config/
 locals {
-    storageclass_yamls = [
+  storageclass_yamls = [
     "ebs-storageclass.yaml"
   ]
   ingressclass_yamls = [
     "alb-ingressclass.yaml",
     "alb-ingressclassParams.yaml"
   ]
-  custom_nodeClass_yamls = [
+  custom_nodeclass_yamls = [
     "nodeclass-simple.yaml",
     "nodeclass-ebs.yaml"
   ]
-  custom_nodePool_yamls = [
+  custom_nodepool_yamls = [
     "nodepool-simple.yaml",
     "nodepool-compute-optimized.yaml",
     "nodepool-memory-optimized.yaml",
@@ -35,7 +35,7 @@ resource "kubectl_manifest" "ingressclass_yamls" {
 
 # Apply custom nodeClass objects
 resource "kubectl_manifest" "custom_nodeClass" {
-  for_each = toset(local.custom_nodeClass_yamls)
+  for_each = toset(local.custom_nodeclass_yamls)
 
   yaml_body = templatefile("${path.module}/eks-automode-config/${each.value}", {
     node_iam_role_name = aws_iam_role.custom_nodeclass_role.name
@@ -50,7 +50,7 @@ resource "kubectl_manifest" "custom_nodeClass" {
 
 # Apply custom nodePool objects
 resource "kubectl_manifest" "custom_nodePool" {
-  for_each = toset(local.custom_nodePool_yamls)
+  for_each = toset(local.custom_nodepool_yamls)
 
   yaml_body = file("${path.module}/eks-automode-config/${each.value}")
 }

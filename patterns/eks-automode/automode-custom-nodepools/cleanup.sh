@@ -24,6 +24,7 @@ done
 targets=(
   "aws_eks_addon.cw_observability"
   "module.eks_blueprints_addons"
+  "module.eks_data_addons"
   "module.eks"
 )
 

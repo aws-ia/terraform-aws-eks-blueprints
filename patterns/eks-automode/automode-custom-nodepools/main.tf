@@ -1,8 +1,5 @@
 provider "aws" {
   region = local.region
-
-  // This is necessary so that tags required for eks can be applied to the vpc without changes to the vpc wiping them out.
-  // https://registry.terraform.io/providers/hashicorp/aws/latest/docs/guides/resource-tagging
 }
 
 # ECR always authenticates with `us-east-1` region
@@ -42,17 +39,7 @@ data "aws_ecrpublic_authorization_token" "token" {
   provider = aws.ecr
 }
 
-# This ECR "registry_id" number refers to the AWS account ID for us-east-1 region
-# if you are using a different region, make sure to change it, you can get the account from the link below
-# https://docs.aws.amazon.com/emr/latest/EMR-on-EKS-DevelopmentGuide/docker-custom-images-tag.html
-data "aws_ecr_authorization_token" "token" {
-  registry_id = "755674844232"
-}
-
-data "aws_caller_identity" "current" {}
 data "aws_availability_zones" "available" {}
-data "aws_region" "current" {}
-data "aws_partition" "current" {}
 
 locals {
   name   = var.name
@@ -97,9 +84,9 @@ module "vpc" {
   single_nat_gateway = true
   #-------------------------------
 
-  public_subnet_tags = {"kubernetes.io/role/elb" = 1}
+  public_subnet_tags = { "kubernetes.io/role/elb" = 1 }
 
-  private_subnet_tags = {"kubernetes.io/role/internal-elb" = 1}
+  private_subnet_tags = { "kubernetes.io/role/internal-elb" = 1 }
 
   tags = local.tags
 }
@@ -120,9 +107,9 @@ module "eks" {
   # Alternatively, create a bastion host in the same VPC as the cluster to access the cluster API server over a private connection
   cluster_endpoint_public_access = true
 
-  vpc_id     = module.vpc.vpc_id
+  vpc_id = module.vpc.vpc_id
 
-  # If true, EKS cluster ENIs are placed in routable private subnets (10.1.0.0/24). 
+  # If true, EKS cluster ENIs are placed in routable private subnets (10.1.0.0/24).
   # If false, ENIs are placed in non_routable private subnets (100.64.0.0/16)
   subnet_ids = module.vpc.private_subnets
 

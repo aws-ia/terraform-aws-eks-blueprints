@@ -121,8 +121,8 @@ spec:
       nodeSelector:
         NodeGroupType: ComputeOptimized
       tolerations:
-      - key: compute-optimized
-        operator: "Exists"
+        - key: compute-optimized
+          operator: "Exists"
       serviceAccountName: catalog
       securityContext:
         fsGroup: 1000
@@ -136,7 +136,7 @@ spec:
           securityContext:
             capabilities:
               drop:
-              - ALL
+                - ALL
             readOnlyRootFilesystem: true
             runAsNonRoot: true
             runAsUser: 1000
@@ -220,8 +220,8 @@ spec:
               containerPort: 3306
               protocol: TCP
       volumes:
-      - name: data
-        emptyDir: {}
+        - name: data
+          emptyDir: {}
 
 ---
 # Source: retail-store-sample-cart-chart/templates/serviceaccount.yaml
@@ -350,7 +350,7 @@ spec:
           securityContext:
             capabilities:
               drop:
-              - ALL
+                - ALL
             readOnlyRootFilesystem: true
             runAsNonRoot: true
             runAsUser: 1000
@@ -591,7 +591,7 @@ spec:
           securityContext:
             capabilities:
               drop:
-              - ALL
+                - ALL
             readOnlyRootFilesystem: true
             runAsNonRoot: true
             runAsUser: 1000
@@ -676,8 +676,8 @@ spec:
               containerPort: 5432
               protocol: TCP
       volumes:
-      - name: data
-        emptyDir: {}
+        - name: data
+          emptyDir: {}
 ---
 # Source: retail-store-sample-orders-chart/templates/rabbitmq-statefulset.yaml
 apiVersion: apps/v1
@@ -713,18 +713,18 @@ spec:
           image: "public.ecr.aws/docker/library/rabbitmq:3-management"
           imagePullPolicy: IfNotPresent
           ports:
-          - name: amqp
-            containerPort: 5672
-            protocol: TCP
-          - name: http
-            containerPort: 15672
-            protocol: TCP
+            - name: amqp
+              containerPort: 5672
+              protocol: TCP
+            - name: http
+              containerPort: 15672
+              protocol: TCP
           volumeMounts:
-          - name: data
-            mountPath: "/var/lib/rabbitmq/mnesia"
+            - name: data
+              mountPath: "/var/lib/rabbitmq/mnesia"
       volumes:
-      - name: data
-        emptyDir: {}
+        - name: data
+          emptyDir: {}
 
 ---
 # Source: retail-store-sample-checkout-chart/templates/serviceaccount.yaml
@@ -847,7 +847,7 @@ spec:
           securityContext:
             capabilities:
               drop:
-              - ALL
+                - ALL
             readOnlyRootFilesystem: true
             runAsNonRoot: true
             runAsUser: 1000
@@ -934,8 +934,8 @@ metadata:
 data:
   RETAIL_UI_THEME: default
   RETAIL_UI_CHAT_ENABLED: "false"
-  RETAIL_UI_CHAT_PROVIDER: 
-  RETAIL_UI_CHAT_MODEL: 
+  RETAIL_UI_CHAT_PROVIDER:
+  RETAIL_UI_CHAT_MODEL:
   RETAIL_UI_ENDPOINTS_CATALOG: http://catalog
   RETAIL_UI_ENDPOINTS_CARTS: http://carts
   RETAIL_UI_ENDPOINTS_CHECKOUT: http://checkout
@@ -1006,8 +1006,8 @@ spec:
       nodeSelector:
         NodeGroupType: GravitonMemoryOptimized
       tolerations:
-      - key: graviton-memory-optimized
-        operator: "Exists"
+        - key: graviton-memory-optimized
+          operator: "Exists"
       serviceAccountName: ui
       securityContext:
         fsGroup: 1000
@@ -1034,9 +1034,9 @@ spec:
           securityContext:
             capabilities:
               add:
-              - NET_BIND_SERVICE
+                - NET_BIND_SERVICE
               drop:
-              - ALL
+                - ALL
             readOnlyRootFilesystem: true
             runAsNonRoot: true
             runAsUser: 1000
