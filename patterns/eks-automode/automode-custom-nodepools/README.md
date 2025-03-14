@@ -1,106 +1,92 @@
-EKS AutoMode using custom nodeclass and nodepool
+EKS Auto Mode with custom NodePool and NodeClass
 ---
 
-This pattern deploys an EKS AutoMode cluster and shows how to use custom nodeclass and nodepool objects.
+This pattern deploys an EKS Auto Mode cluster with custom NodeClass and NodePool objects. 
+
+By default, EKS Auto Mode has two built-in NodePools to cover general compute needs. However, users often need to further customize the compute options available for different types of workloads, and segregate specific workloads onto special types of EC2 compute options (ex: amd64, arm64, GPU, etc).
+
+This pattern provides an easy way to create EKS Auto Mode clusters with custom NodePools.
 
 **Main features of this pattern**
 
-- Creates an EKS AutoMode cluster
-  - Default AutoMode nodepools are disabled
-- Deploys different custom nodeclass and nodepool objects, which allow fine-grained configuration of compute parameters for different use cases
-- Creates node IAM role and EKS Access Entry for custom nodes
-- Installs default configuration to enable EBS and ELB provisioning in AutoMode
+- Creates an EKS Auto Mode cluster
+  - Default Auto Mode NodePools are disabled
+- Deploys different custom NodeClass and NodePool objects, which allow fine-grained configuration of compute parameters for different use cases
+  - amd64
+  - arm64
+  - gpu
+- Creates node IAM role and EKS Access Entry for custom NodePools
+- Installs default configuration to enable EBS and ELB provisioning in Auto Mode
   - EBS storage class
   - AWS LB ingress class
-- Installs common EKS addons
-  - Metrics-server
-  - Prometheus
-  - Grafana
-  - Fluent-bit
-  - Kubecost
 
-**Custom Nodepool and Nodeclass**
+**Custom NodePool and NodeClass**
 
-Nodeclass and Nodepool yaml manifests are provided under folder `eks-automode-config/`
+NodeClass and NodePool yaml manifests are provided under folder `eks-automode-config/`
 
-Nodeclass:
+NodeClass:
 
-- `nodeclass-simple.yaml` - minimum (default) EBS configuration
-- `nodeclass-ebs.yaml` - optimized EBS configuration for IOPS, Size, and Throughput
+- `nodeclass-basic.yaml` - minimum (default) EBS configuration
+- `nodeclass-ebs-optimized.yaml` - optimized EBS configuration for IOPS, Size, and Throughput
 
-Nodepool:
+NodePool:
 
-- `nodepool-simple.yaml` - default EC2 instance type configuration. Includes instance categories "c","m", and "r", and allows AutoMode to choose the most cost efficient instance type
-- `nodepool-compute-optimized.yaml` - instance family and size optimized for compute
-- `nodepool-memory-optimized.yaml` - instance family and size optimized for memory
-- `nodepool-graviton-memory-optimized.yaml` - graviton instance family
+- `nodepool-graviton.yaml` - instance families "c","r","m" using Graviton processors (arm64 architecture).
+- `nodepool-amd64.yaml` - instance families "c","r","m" using amd64 architecture.
 
-Terraform file `eks-automode-config.tf` applies nodeclass and nodepool objects. It also creates the node IAM role and EKS Access Entry for custom nodes, and applies default EBS storage class and AWS LB ingress class.
+Terraform file `eks-automode-config.tf` applies NodeClass and NodePool objects. It also creates the node IAM role and EKS Access Entry for custom nodes, and applies default EBS storage class and AWS LB ingress class.
+
+To add new Node Pools and Node Classes, just add theis yaml files to the folder and update file `eks-automode-config.tf` with the added yaml file names.
 
 Deploy
 ---
 Check file variables.tf for available configuration options such as region, version, etc.
-Then, execute `install.sh` script:
+Then, apply terraform files:
 
 ```bash
-./install.sh
+terraform apply
 ```
 
 Validate
 ---
-Deploy the sample application provided in this pattern to show how different nodepools create different nodes with optimized parameters
+Deploy the sample application provided in this pattern to use custom NodePools to provision nodes in the cluster.
 
 ```bash
 kubectl create ns sample-app
 kubectl apply -n sample-app -f sample-app.yaml
 ```
 
-This application creates a retail shopping website by deploying multiple microservices. You can get more details in the [retail app github page](https://github.com/aws-containers/retail-store-sample-app)
+This application creates StatefulSet pods using `amd64` Node Pool, and provisions EBS volumes and ALB as part of the deployment.
 
-Note that pods "catalog" and "ui" are running on different nodes than other pods.
-
-- Catalog yaml was updated to select Compute Optimized nodes
-- Ui yaml was updated to select Graviton Optimized nodes
-- Other pods don't define any selector or toleration, therefore AutoMode uses the simple Nodepool to provision nodes
+Note that Node Pools use label `NodeGroupType: amd64` and Taint `key: amd64`. The pod yaml definition includes relevant values for nodeSelector and Tolerations, to select the desired Node Pool that will provision nodes to run the pod.
 
 ```bash
-$ kubectl get pod -n sample-app -o wide
-NAME                              READY   STATUS    RESTARTS       AGE     IP           NODE                  NOMINATED NODE   READINESS GATES
-carts-75df8554fc-bfcx6            1/1     Running   2 (2m9s ago)   5m18s   10.1.0.48    i-0603e15b5e90a7522   <none>           <none>
-carts-dynamodb-5948dcbf5d-5pcj9   1/1     Running   0              5m18s   10.1.0.19    i-0603e15b5e90a7522   <none>           <none>
-catalog-5799dccc9d-dxbm7          1/1     Running   5 (109s ago)   5m18s   10.1.0.80    i-0bf725cda2be38a93   <none>           <none>
-catalog-mysql-0                   1/1     Running   0              5m14s   10.1.0.4     i-0603e15b5e90a7522   <none>           <none>
-checkout-f48668cc4-jpd95          1/1     Running   0              5m18s   10.1.0.16    i-0603e15b5e90a7522   <none>           <none>
-checkout-redis-669c468b68-lvw7s   1/1     Running   0              5m18s   10.1.0.32    i-0603e15b5e90a7522   <none>           <none>
-orders-695cc77456-zdc8f           1/1     Running   2 (2m8s ago)   5m18s   10.1.0.18    i-0603e15b5e90a7522   <none>           <none>
-orders-postgresql-0               1/1     Running   0              5m17s   10.1.0.51    i-0603e15b5e90a7522   <none>           <none>
-orders-rabbitmq-0                 1/1     Running   0              5m17s   10.1.0.46    i-0603e15b5e90a7522   <none>           <none>
-ui-698c7b7d76-bwcpq               1/1     Running   0              5m18s   10.1.0.119   i-0c0d754c90f4e1627   <none>           <none>
+$ kubectl get nodes,pods,pvc,ingress -n sample-app 
+NAME                       STATUS   ROLES    AGE   VERSION
+node/i-08347a1b1ae4f01c4   Ready    <none>   13m   v1.31.4-eks-0f56d01
+
+NAME          READY   STATUS    RESTARTS   AGE
+pod/httpd-0   1/1     Running   0          13m
+pod/httpd-1   1/1     Running   0          12m
+
+NAME                                       STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+persistentvolumeclaim/httpd-logs-httpd-0   Bound    pvc-8eec1429-850a-4b7c-bc78-cd399d583091   10Gi       RWO            auto-ebs-sc    <unset>                 18m
+persistentvolumeclaim/httpd-logs-httpd-1   Bound    pvc-d86f1913-49fd-4a3f-b7a5-01da69e3ac20   10Gi       RWO            auto-ebs-sc    <unset>                 12m
+
+NAME                                      CLASS   HOSTS   ADDRESS                                                                  PORTS   AGE
+ingress.networking.k8s.io/httpd-ingress   alb     *       k8s-sampleap-httpding-58bda13bc0-763023517.us-east-1.elb.amazonaws.com   80      13m
 ```
-
-Check node descriptions to see the instance type used for each node:
-
-```bash
-$ kubectl describe node | egrep 'Name:|instance-type=|nodepool='
-Name:               i-0603e15b5e90a7522
-                    beta.kubernetes.io/instance-type=c6a.large
-                    karpenter.sh/nodepool=simple
-                    node.kubernetes.io/instance-type=c6a.large
-Name:               i-0bf725cda2be38a93
-                    beta.kubernetes.io/instance-type=c6a.2xlarge
-                    karpenter.sh/nodepool=compute-optimized
-                    node.kubernetes.io/instance-type=c6a.2xlarge
-Name:               i-0c0d754c90f4e1627
-                    beta.kubernetes.io/instance-type=r6gd.xlarge
-                    karpenter.sh/nodepool=graviton-memory-optimized
-                    node.kubernetes.io/instance-type=r6gd.xlarge
-```
-
 
 Destroy
 ---
-Execute `cleanup.sh` script to delete the infrastructure
+First, remove the sample app and/or any other application that you deployed ot the cluster:
 
 ```bash
-./cleanup.sh
+kubectl delete -n sample-app -f sample-app.yaml
+```
+
+Then, destroy the infrastructure created with terraform:
+
+```bash
+terraform destroy
 ```

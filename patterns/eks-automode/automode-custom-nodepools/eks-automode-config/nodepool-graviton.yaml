@@ -1,17 +1,17 @@
 apiVersion: karpenter.sh/v1
 kind: NodePool
 metadata:
-  name: compute-optimized
+  name: graviton
 spec:
   template:
     metadata:
       labels:
         type: karpenter
-        provisioner: compute-optimized
-        NodeGroupType: ComputeOptimized
+        provisioner: graviton
+        NodeGroupType: Graviton
     spec:
       taints:
-        - key: compute-optimized
+        - key: graviton
           effect: NoSchedule
       requirements:
         - key: "karpenter.sh/capacity-type"
@@ -19,19 +19,19 @@ spec:
           values: ["on-demand"]
         - key: "kubernetes.io/arch"
           operator: In
-          values: ["amd64"]
+          values: ["arm64"]
         - key: "eks.amazonaws.com/instance-category"
           operator: In
-          values: ["c"]
+          values: ["c", "m", "r"]
         - key: "eks.amazonaws.com/instance-cpu"
           operator: In
-          values: ["8", "16", "36"]
+          values: ["4", "8", "16", "32"]
         - key: "eks.amazonaws.com/instance-hypervisor"
           operator: In
           values: ["nitro"]
         - key: "eks.amazonaws.com/instance-generation"
           operator: Gt
-          values: ["2"]
+          values: ["4"]
       nodeClassRef:
         name: ebs-optimized
         group: eks.amazonaws.com

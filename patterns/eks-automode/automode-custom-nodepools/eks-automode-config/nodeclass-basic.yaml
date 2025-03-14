@@ -1,7 +1,7 @@
 apiVersion: eks.amazonaws.com/v1
 kind: NodeClass
 metadata:
-  name: ebs-optimized
+  name: basic
 spec:
   # Use role name here
   role: "${node_iam_role_name}"
@@ -10,8 +10,8 @@ spec:
         Name: "${cluster_name}-private*"
   securityGroupSelectorTerms:
     - tags:
-        Name: ${cluster_name}-node
+        Name: "${cluster_name}-node"
   ephemeralStorage:
-    size: "100Gi"    # Range: 1-9000Gi or 1-64000G or 1-58Ti or 1-64T
-    iops: 5000      # Range: 3000-16000
+    size: "80Gi"    # Range: 1-9000Gi or 1-64000G or 1-58Ti or 1-64T
+    iops: 3000      # Range: 3000-16000
     throughput: 125 # Range: 125-1000

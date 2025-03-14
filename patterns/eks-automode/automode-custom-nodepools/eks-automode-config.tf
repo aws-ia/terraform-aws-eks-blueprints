@@ -1,4 +1,4 @@
-# These yaml manifests are provided under folder ./eks-automode-config/
+# Yaml manifests are provided under folder ./eks-automode-config/
 locals {
   storageclass_yamls = [
     "ebs-storageclass.yaml"
@@ -8,33 +8,31 @@ locals {
     "alb-ingressclassParams.yaml"
   ]
   custom_nodeclass_yamls = [
-    "nodeclass-simple.yaml",
-    "nodeclass-ebs.yaml"
+    "nodeclass-basic.yaml",
+    "nodeclass-ebs-optimized.yaml"
   ]
   custom_nodepool_yamls = [
-    "nodepool-simple.yaml",
-    "nodepool-compute-optimized.yaml",
-    "nodepool-memory-optimized.yaml",
-    "nodepool-graviton-memory-optimized.yaml"
+    "nodepool-amd64.yaml",
+    "nodepool-graviton.yaml"
   ]
 }
 
-# Apply dfault storage class for EKS AutoMode. EBS CSI Driver runs on AWS side, managed by AWS.
+# Apply default storage class for EKS AutoMode. EBS CSI Driver runs on AWS side, managed by AWS.
 resource "kubectl_manifest" "storageclass_yamls" {
   for_each = toset(local.storageclass_yamls)
 
   yaml_body = file("${path.module}/eks-automode-config/${each.value}")
 }
 
-# Apply default storage class for EKS AutoMode. AWS Load Balancer Controller runs on AWS side, managed by AWS.
+# Apply default ingress class for EKS AutoMode plus ingress class paramters. AWS Load Balancer Controller runs on AWS side, managed by AWS.
 resource "kubectl_manifest" "ingressclass_yamls" {
   for_each = toset(local.ingressclass_yamls)
 
   yaml_body = file("${path.module}/eks-automode-config/${each.value}")
 }
 
-# Apply custom nodeClass objects
-resource "kubectl_manifest" "custom_nodeClass" {
+# Apply custom nodeclass objects
+resource "kubectl_manifest" "custom_nodeclass" {
   for_each = toset(local.custom_nodeclass_yamls)
 
   yaml_body = templatefile("${path.module}/eks-automode-config/${each.value}", {
@@ -43,34 +41,38 @@ resource "kubectl_manifest" "custom_nodeClass" {
   })
 
   depends_on = [
-    aws_iam_role.custom_nodeclass_role,
-    resource.aws_eks_access_entry.custom_nodeclass
+    aws_eks_access_entry.custom_nodeclass
   ]
 }
 
-# Apply custom nodePool objects
-resource "kubectl_manifest" "custom_nodePool" {
+# Apply custom nodepool objects
+resource "kubectl_manifest" "custom_nodepool" {
   for_each = toset(local.custom_nodepool_yamls)
 
   yaml_body = file("${path.module}/eks-automode-config/${each.value}")
+
+  depends_on = [
+    kubectl_manifest.custom_nodeclass
+  ]
 }
 
 
-#---------------------------------------------------------------
-# Creating IAM Role and EKS Access Entry for custom nodeClass
-#---------------------------------------------------------------
+###############################################################
+# Creating IAM Role and EKS Access Entry for custom nodeclass
+###############################################################
 
-# Create nodeClass Access Entry
+# Create nodeclass Access Entry
 resource "aws_eks_access_entry" "custom_nodeclass" {
   cluster_name  = module.eks.cluster_name
   principal_arn = aws_iam_role.custom_nodeclass_role.arn
   type          = "EC2"
 
-  depends_on = [aws_iam_role.custom_nodeclass_role]
+  tags       = local.tags
+
 }
 
-# Associate nodeClass Access Entry with AutoNode policy
-resource "aws_eks_access_policy_association" "example" {
+# Associate nodeclass Access Entry with AutoNode policy
+resource "aws_eks_access_policy_association" "AmazonEKSAutoNodePolicy" {
   cluster_name  = module.eks.cluster_name
   policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSAutoNodePolicy"
   principal_arn = aws_iam_role.custom_nodeclass_role.arn
@@ -80,7 +82,7 @@ resource "aws_eks_access_policy_association" "example" {
   }
 }
 
-# Create nodeClass role and associate with IAM policies
+# Create nodeclass role and associate with IAM policies
 resource "aws_iam_role" "custom_nodeclass_role" {
   name = "custom_nodeclass_role"
 
