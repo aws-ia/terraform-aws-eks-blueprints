@@ -40,8 +40,7 @@ To add new Node Pools and Node Classes, just add theis yaml files to the folder 
 
 Deploy
 ---
-Check file variables.tf for available configuration options such as region, version, etc.
-Then, apply terraform files:
+Apply terraform files:
 
 ```bash
 terraform apply
