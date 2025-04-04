@@ -89,6 +89,15 @@ related projects that users should be aware of:
    - [`karpenter-blueprints`](https://github.com/aws-samples/karpenter-blueprints) - includes a list of common workload scenarios,
    some of them go in depth with the explanation of why configuring Karpenter and Kubernetes objects in such a way is important.
 
+5. Amazon EKS Blueprints With GitLab Lifecycle Managed Environments CD Component
+   - Deploys, Manages, Updates and Destroys EKS Blueprints using GitLab Lifecycle Managed Environments.
+   - Terraform code overrides so that environments are named after GitLab branches and project id for global uniqueness within an AWS account and therefore allowing deployment of many clusters in the same AWS Account and Region (especially helpful for classrooms and highly shared developer AWS Accounts)
+   - Terraform state is stored on GitLab backend, so the environment becomes a shared team asset
+   - Can be used to develop new blueprints
+   - Can be used for Developer Self-Service (IDP like) provisioning of EKS Blueprints as a baseline environment
+   - [Amazon EKS Blueprints With GitLab Lifecycle Managed Environments CD Component](https://gitlab.com/explore/catalog/guided-explorations/ci-components/aws/terraform-aws-eks-blueprints) - Click "Readme" tab for further documentation on benefits and features.
+   - [Calling AWS EKS Blueprints CD Component](https://gitlab.com/guided-explorations/ci-components/working-code-examples/calling-aws-eks-blueprints-cd-component) - example of this component being used.
+
 ## Terraform Caveats
 
 EKS Blueprints for Terraform does not intend to teach users the recommended practices for Terraform
