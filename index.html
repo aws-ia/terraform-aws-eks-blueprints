@@ -1663,8 +1663,20 @@ Managed Grafana, AWS Distro for OpenTelemetry (ADOT) and Amazon CloudWatch</li>
 <li>
 <p>Karpenter Blueprints</p>
 </li>
-<li><a href="https://github.com/aws-samples/karpenter-blueprints"><code>karpenter-blueprints</code></a> - includes a list of common workload scenarios,
-   some of them go in depth with the explanation of why configuring Karpenter and Kubernetes objects in such a way is important.</li>
+<li>
+<p><a href="https://github.com/aws-samples/karpenter-blueprints"><code>karpenter-blueprints</code></a> - includes a list of common workload scenarios,
+   some of them go in depth with the explanation of why configuring Karpenter and Kubernetes objects in such a way is important.</p>
+</li>
+<li>
+<p>Amazon EKS Blueprints With GitLab Lifecycle Managed Environments CD Component (<a href="https://gitlab.com/guided-explorations/ci-components/aws/terraform-aws-eks-blueprints">Community Maintained Here</a>)</p>
+</li>
+<li>Deploys, Manages, Updates and Destroys EKS Blueprints using GitLab Lifecycle Managed Environments.</li>
+<li>Terraform code overrides so that environments are named after GitLab branches and project id for global uniqueness within an AWS account and therefore allowing deployment of many clusters in the same AWS Account and Region (especially helpful for classrooms and highly shared developer AWS Accounts)</li>
+<li>Terraform state is stored on GitLab backend, so the environment becomes a shared team asset</li>
+<li>Can be used to develop new blueprints</li>
+<li>Can be used for Developer Self-Service (IDP like) provisioning of EKS Blueprints as a baseline environment</li>
+<li><a href="https://gitlab.com/explore/catalog/guided-explorations/ci-components/aws/terraform-aws-eks-blueprints">Amazon EKS Blueprints With GitLab Lifecycle Managed Environments CD Component</a> - Click "Readme" tab for further documentation on benefits and features.</li>
+<li><a href="https://gitlab.com/guided-explorations/ci-components/working-code-examples/calling-aws-eks-blueprints-cd-component">Calling AWS EKS Blueprints CD Component</a> - example of this component being used.</li>
 </ol>
 <h2 id="terraform-caveats">Terraform Caveats<a class="headerlink" href="#terraform-caveats" title="Permanent link">&para;</a></h2>
 <p>EKS Blueprints for Terraform does not intend to teach users the recommended practices for Terraform
