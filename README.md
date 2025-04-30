@@ -1,3 +1,7 @@
+> # Archival Notice
+>
+> This repository will no longer be maintained by UserTesting, and will be archived in the near future. The most recent version of this module will still be published and available to use. Thank you to everyone who contributed to this project!
+
 # Amazon EKS Blueprints for Terraform
 
 [![e2e-terratest](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/e2e-terratest.yml/badge.svg)](https://github.com/aws-ia/terraform-aws-eks-blueprints/actions/workflows/e2e-terratest.yml)
