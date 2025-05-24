@@ -1,7 +1,7 @@
 EKS Auto Mode with custom NodePool and NodeClass
 ---
 
-This pattern deploys an EKS Auto Mode cluster with custom NodeClass and NodePool objects. 
+This pattern deploys an EKS Auto Mode cluster with custom NodeClass and NodePool objects.
 
 By default, EKS Auto Mode has two built-in NodePools to cover general compute needs. However, users often need to further customize the compute options available for different types of workloads, and segregate specific workloads onto special types of EC2 compute options (ex: amd64, arm64, GPU, etc).
 
@@ -60,7 +60,7 @@ This application creates StatefulSet pods using `amd64` Node Pool, and provision
 Note that Node Pools use label `NodeGroupType: amd64` and Taint `key: amd64`. The pod yaml definition includes relevant values for nodeSelector and Tolerations, to select the desired Node Pool that will provision nodes to run the pod.
 
 ```bash
-$ kubectl get nodes,pods,pvc,ingress -n sample-app 
+$ kubectl get nodes,pods,pvc,ingress -n sample-app
 NAME                       STATUS   ROLES    AGE   VERSION
 node/i-08347a1b1ae4f01c4   Ready    <none>   13m   v1.31.4-eks-0f56d01
 
