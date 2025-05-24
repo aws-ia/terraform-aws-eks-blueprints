@@ -15,6 +15,6 @@ spec:
     size: "80Gi"    # Range: 1-9000Gi or 1-64000G or 1-58Ti or 1-64T
     iops: 3000      # Range: 3000-16000
     throughput: 125 # Range: 125-1000
-tags:
-  Environment: "production"
-  Team: "platform"
+  tags:
+    Environment: "production"
+    Team: "platform"

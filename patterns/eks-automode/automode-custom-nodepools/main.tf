@@ -45,7 +45,7 @@ provider "helm" {
 }
 
 provider "kubectl" {
-  apply_retry_count      = 30
+  apply_retry_count      = 5
   host                   = module.eks.cluster_endpoint
   cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
   load_config_file       = false
@@ -129,6 +129,43 @@ module "eks" {
   }
 
   tags = local.tags
+}
+
+###############################################################
+# Creating IAM Role for custom nodeclass nodes
+###############################################################
+
+# Create nodeclass role and associate with IAM policies
+resource "aws_iam_role" "custom_nodeclass_role" {
+  name = "${local.name}-AmazonEKSAutoNodeRole"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid    = ""
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      },
+    ]
+  })
+
+  tags = local.tags
+}
+
+# Attach AmazonEKSWorkerNodeMinimalPolicy
+resource "aws_iam_role_policy_attachment" "eks_worker_node_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodeMinimalPolicy"
+  role       = aws_iam_role.custom_nodeclass_role.name
+}
+
+# Attach AmazonEC2ContainerRegistryPullOnly
+resource "aws_iam_role_policy_attachment" "ecr_pull_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPullOnly"
+  role       = aws_iam_role.custom_nodeclass_role.name
 }
 
 ###############################################################
