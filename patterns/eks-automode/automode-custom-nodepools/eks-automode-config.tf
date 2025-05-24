@@ -40,9 +40,6 @@ resource "kubectl_manifest" "custom_nodeclass" {
     cluster_name       = module.eks.cluster_name
   })
 
-  depends_on = [
-    aws_eks_access_entry.custom_nodeclass
-  ]
 }
 
 # Apply custom nodepool objects
@@ -51,40 +48,17 @@ resource "kubectl_manifest" "custom_nodepool" {
 
   yaml_body = file("${path.module}/eks-automode-config/${each.value}")
 
-  depends_on = [
-    kubectl_manifest.custom_nodeclass
-  ]
 }
 
 
 ###############################################################
-# Creating IAM Role and EKS Access Entry for custom nodeclass
+# Creating IAM Role for custom nodeclass nodes
 ###############################################################
 
-# Create nodeclass Access Entry
-resource "aws_eks_access_entry" "custom_nodeclass" {
-  cluster_name  = module.eks.cluster_name
-  principal_arn = aws_iam_role.custom_nodeclass_role.arn
-  type          = "EC2"
-
-  tags       = local.tags
-
-}
-
-# Associate nodeclass Access Entry with AutoNode policy
-resource "aws_eks_access_policy_association" "AmazonEKSAutoNodePolicy" {
-  cluster_name  = module.eks.cluster_name
-  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSAutoNodePolicy"
-  principal_arn = aws_iam_role.custom_nodeclass_role.arn
-
-  access_scope {
-    type = "cluster"
-  }
-}
 
 # Create nodeclass role and associate with IAM policies
 resource "aws_iam_role" "custom_nodeclass_role" {
-  name = "custom_nodeclass_role"
+  name = "${local.name}-AmazonEKSAutoNodeRole"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"

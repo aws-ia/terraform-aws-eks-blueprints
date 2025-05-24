@@ -111,6 +111,23 @@ module "eks" {
     node_pools = []
   }
 
+  access_entries = {
+    # One access entry with a policy associated
+    custom_nodeclass_access = {
+      principal_arn = aws_iam_role.custom_nodeclass_role.arn
+      type          = "EC2"
+
+      policy_associations = {
+        auto = {
+          policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSAutoNodePolicy"
+          access_scope = {
+            type       = "cluster"
+          }
+        }
+      }
+    }
+  }
+
   tags = local.tags
 }
 
