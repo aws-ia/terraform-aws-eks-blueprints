@@ -1,0 +1,78 @@
+---
+# StatefulSet
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: httpd
+spec:
+  serviceName: httpd-service
+  replicas: 2
+  selector:
+    matchLabels:
+      app: httpd
+  template:
+    metadata:
+      labels:
+        app: httpd
+    spec:
+      tolerations:
+        - key: amd64
+          operator: "Exists"
+      nodeSelector:
+        NodeGroupType: amd64
+      containers:
+        - name: httpd
+          image: httpd:2.4
+          ports:
+            - containerPort: 80
+              name: http
+          volumeMounts:
+            - name: httpd-logs
+              mountPath: /usr/local/apache2/logs
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+  volumeClaimTemplates:
+    - metadata:
+        name: httpd-logs
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: auto-ebs-sc
+        resources:
+          requests:
+            storage: 10Gi
+---
+# Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: httpd-service
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+  selector:
+    app: httpd
+---
+# Ingress
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: httpd-ingress
+spec:
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: httpd-service
+                port:
+                  number: 80
