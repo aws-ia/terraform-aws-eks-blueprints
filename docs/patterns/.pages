@@ -1,5 +1,6 @@
 nav:
   - Agones Game Controller: agones-game-controller.md
+  - Auto Mode: eks-automode
   - Blue/Green Upgrade: blue-green-upgrade.md
   - Bottlerocket: bottlerocket.md
   - ECR Pull Through Cache: ecr-pull-through-cache.md
