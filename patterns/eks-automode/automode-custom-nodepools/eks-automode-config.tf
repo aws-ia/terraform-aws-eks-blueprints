@@ -24,7 +24,7 @@ resource "kubectl_manifest" "storageclass_yamls" {
   yaml_body = file("${path.module}/eks-automode-config/${each.value}")
 }
 
-# Apply default ingress class for EKS AutoMode plus ingress class paramters. AWS Load Balancer Controller runs on AWS side, managed by AWS.
+# Apply default ingress class for EKS AutoMode plus ingress class parameters. AWS Load Balancer Controller runs on AWS side, managed by AWS.
 resource "kubectl_manifest" "ingressclass_yamls" {
   for_each = toset(local.ingressclass_yamls)
 

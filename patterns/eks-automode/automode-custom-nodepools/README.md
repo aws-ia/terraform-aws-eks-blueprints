@@ -36,10 +36,11 @@ NodePool:
 
 Terraform file `eks-automode-config.tf` applies NodeClass and NodePool objects. It also creates the node IAM role and EKS Access Entry for custom nodes, and applies default EBS storage class and AWS LB ingress class.
 
-To add new Node Pools and Node Classes, just add theis yaml files to the folder and update file `eks-automode-config.tf` with the added yaml file names.
+To add new Node Pools and Node Classes, just add the yaml files to the folder and update file `eks-automode-config.tf` with the added yaml file names.
 
 Deploy
 ---
+
 Apply terraform files:
 
 ```bash
@@ -48,6 +49,7 @@ terraform apply
 
 Validate
 ---
+
 Deploy the sample application provided in this pattern to use custom NodePools to provision nodes in the cluster.
 
 ```bash
@@ -78,6 +80,7 @@ ingress.networking.k8s.io/httpd-ingress   alb     *       k8s-sampleap-httpding-
 
 Destroy
 ---
+
 First, remove the sample app and/or any other application that you deployed ot the cluster:
 
 ```bash

@@ -20,6 +20,7 @@ argoproj
 athenaaccess
 athenacurcfn
 autoscaler
+automode
 awscli
 awscliv2
 awslabs
@@ -59,6 +60,7 @@ datasource
 dcgm
 distro
 dockerhub
+dshm
 ecrpublic
 ecsdemo
 ecsfrontend
@@ -87,6 +89,7 @@ iedn
 iezn
 ingressgateway
 instanceids
+ingressclass
 ipam
 irsa
 istio
@@ -99,7 +102,9 @@ kubeconfig
 kubecost
 kubeflow
 kubelet
+ktime
 kyverno
+leaderworkerset
 libfabric
 logtag
 loglevel
@@ -114,13 +119,17 @@ mpijobs
 mpirun
 mtls
 nccl
+nvcr
 netcat
 nics
 nodeadm
+nodeclass
 nodegroup
 nodeport
+nodepool
 nopasswd
 nvme
+nvls
 odcr
 oidc
 openmpi
@@ -130,6 +139,7 @@ pkce
 pubkey
 pullthroughcache
 ecrpullthroughcache
+persistentvolumeclaim
 privateca
 privatelink
 prometheusservice
@@ -149,6 +159,7 @@ secretstore
 secretuser
 selfsigned
 serviceaccount
+serverside
 SHA512WITHRSA
 sleepdocs
 ssoadmin
@@ -168,6 +179,7 @@ vpclattice
 webfront
 wontfix
 yamlencode
+vllm
 xlarge
 xonotic
 xrds
