@@ -1606,7 +1606,7 @@
 <li><code>nodepool-amd64.yaml</code> - instance families "c","r","m" using amd64 architecture.</li>
 </ul>
 <p>Terraform file <code>eks-automode-config.tf</code> applies NodeClass and NodePool objects. It also creates the node IAM role and EKS Access Entry for custom nodes, and applies default EBS storage class and AWS LB ingress class.</p>
-<p>To add new Node Pools and Node Classes, just add theis yaml files to the folder and update file <code>eks-automode-config.tf</code> with the added yaml file names.</p>
+<p>To add new Node Pools and Node Classes, just add the yaml files to the folder and update file <code>eks-automode-config.tf</code> with the added yaml file names.</p>
 <h2 id="deploy">Deploy<a class="headerlink" href="#deploy" title="Permanent link">&para;</a></h2>
 <p>Apply terraform files:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>terraform<span class="w"> </span>apply
