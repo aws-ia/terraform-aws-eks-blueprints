@@ -4,22 +4,17 @@
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 20.34"
+  version = "~> 21.0"
 
-  cluster_name    = local.name
-  cluster_version = "1.32"
+  name               = local.name
+  kubernetes_version = "1.33"
 
   # Gives Terraform identity admin access to cluster which will
   # allow deploying resources into the cluster
   enable_cluster_creator_admin_permissions = true
-  cluster_endpoint_public_access           = true
+  endpoint_public_access                   = true
 
-  # These will become the default in the next major version of the module
-  bootstrap_self_managed_addons   = false
-  enable_irsa                     = false
-  enable_security_groups_for_pods = false
-
-  cluster_addons = {
+  addons = {
     coredns                   = {}
     eks-node-monitoring-agent = {}
     eks-pod-identity-agent = {
@@ -32,18 +27,8 @@ module "eks" {
     }
   }
 
-  # Add security group rules on the node group security group to
-  # allow EFA traffic
-  enable_efa_support = true
-
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
-
-  eks_managed_node_group_defaults = {
-    node_repair_config = {
-      enabled = true
-    }
-  }
 
   eks_managed_node_groups = {
     g6e = {
@@ -51,6 +36,10 @@ module "eks" {
       # for accelerated workloads w/ EFA
       ami_type       = "AL2023_x86_64_NVIDIA"
       instance_types = ["g6e.8xlarge"]
+
+      node_repair_config = {
+        enabled = true
+      }
 
       min_size     = 2
       max_size     = 5
@@ -77,6 +66,7 @@ module "eks" {
       # 1. Create a placement group to place the instances close to one another
       # 2. Ignore subnets that reside in AZs that do not support the instance type
       # 3. Expose all of the available EFA interfaces on the launch template
+      # 4. Add security group w/ rules to the node group to allow EFA traffic
       enable_efa_support = true
       subnet_ids         = [element(module.vpc.private_subnets, 2)]
 
