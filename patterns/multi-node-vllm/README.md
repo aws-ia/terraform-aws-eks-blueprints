@@ -22,13 +22,13 @@ The following components are demonstrated in this pattern:
 
 ### Cluster
 
-```terraform hl_lines="35-37 49-96"
+```terraform hl_lines="34-86"
 {% include  "../../patterns/multi-node-vllm/eks.tf" %}
 ```
 
 ### Helm Charts
 
-```terraform hl_lines="39-56"
+```terraform hl_lines="67-84"
 {% include  "../../patterns/multi-node-vllm/helm.tf" %}
 ```
 
