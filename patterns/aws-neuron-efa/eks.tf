@@ -66,6 +66,7 @@ module "eks" {
       # 1. Create a placement group to place the instances close to one another
       # 2. Ignore subnets that reside in AZs that do not support the instance type
       # 3. Expose all of the available EFA interfaces on the launch template
+      # 4. Add security group w/ rules to the node group to allow EFA traffic
       enable_efa_support = true
 
       labels = {
