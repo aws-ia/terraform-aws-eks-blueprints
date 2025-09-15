@@ -1,13 +1,13 @@
 module "ebs_snapshot_builder" {
   source  = "clowdhaus/ebs-snapshot-builder/aws"
-  version = "~> 1.1"
+  version = "~> 2.0"
 
   name = local.name
 
   # Images to cache
   public_images = [
-    "nvcr.io/nvidia/k8s-device-plugin:v0.17.1", # 120 MB compressed / 351 MB decompressed
-    "nvcr.io/nvidia/pytorch:25.02-py3",         # 9.5 GB compressed / 20.4 GB decompressed
+    "nvcr.io/nvidia/k8s-device-plugin:v0.17.4", # 120 MB compressed / 351 MB decompressed
+    "nvcr.io/nvidia/pytorch:25.08-py3",         # 9.5 GB compressed / 20.4 GB decompressed
   ]
 
   # AZs where EBS fast snapshot restore will be enabled

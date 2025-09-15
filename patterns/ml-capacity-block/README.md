@@ -13,7 +13,7 @@ This pattern demonstrates how to consume/utilize ML capacity block reservations 
 
 ## Code
 
-```terraform hl_lines="5-11 108-122"
+```terraform hl_lines="5-11 98-112"
 {% include  "../../patterns/ml-capacity-block/eks.tf" %}
 ```
 

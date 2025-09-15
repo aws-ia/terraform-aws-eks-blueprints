@@ -19,13 +19,13 @@ The following components are demonstrated in this pattern:
 
 ### Cluster
 
-```terraform hl_lines="35-37 49-95"
+```terraform hl_lines="34-85"
 {% include  "../../patterns/aws-neuron-efa/eks.tf" %}
 ```
 
 ### Device Plugins
 
-```terraform hl_lines="9-50"
+```terraform hl_lines="31-68"
 {% include  "../../patterns/aws-neuron-efa/helm.tf" %}
 ```
 
