@@ -8,7 +8,7 @@ Ensure that you have installed the following tools locally:
 
 - [awscli](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
 - [kubectl](https://Kubernetes.io/docs/tasks/tools/)
-- [terraform](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
+- [terraform](https://developer.hashicorp.com/terraform/tutorials/terraform/install-cli)
 
 ## Deploy
 
