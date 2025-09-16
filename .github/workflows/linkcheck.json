@@ -24,7 +24,7 @@
         ]
       },
       {
-      "pattern": "https://developer.hashicorp.com/terraform/tutorials/terraform/install-cli"
+      "pattern": "https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli"
       }
     ]
 }
