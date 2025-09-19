@@ -22,9 +22,6 @@
         "pattern": [
             "127.0.0.1"
         ]
-      },
-      {
-      "pattern": "https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli"
       }
     ]
 }
