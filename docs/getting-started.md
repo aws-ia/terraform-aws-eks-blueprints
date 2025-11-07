@@ -13,7 +13,7 @@ Ensure that you have installed the following tools locally:
 ## Deploy
 
 1. For consuming EKS Blueprints, please see the [Consumption](https://aws-ia.github.io/terraform-aws-eks-blueprints/#consumption) section. For exploring and trying out the patterns provided, please
-clone the project locally to quickly get up and running with a pattern. After cloning the project locally, `cd` into the pattern
+clone the project locally to quickly get up and running with a pattern. After cloning the project locally, `cd` into the `pattern`
 directory of your choice.
 
 2. To provision the pattern, the typical steps of execution are as follows:
