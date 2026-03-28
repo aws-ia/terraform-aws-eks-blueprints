@@ -63,7 +63,7 @@ module "eks" {
   self_managed_node_groups = {
     self_managed = {
       node_group_name    = "self_managed"
-      instance_type      = "m5.large"
+      instance_type      = "m7i.16xlarge"
       launch_template_os = "amazonlinux2eks"
 
       min_size     = 1
