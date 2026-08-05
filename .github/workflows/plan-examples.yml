@@ -28,7 +28,7 @@ jobs:
           egress-policy: audit
 
       - name: Checkout
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
       - name: Get Terraform directories for evaluation
         id: dirs
@@ -63,13 +63,13 @@ jobs:
 
       - name: checkout-merge
         if: "contains(github.event_name, 'pull_request')"
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           ref: refs/pull/${{github.event.pull_request.number}}/merge
 
       - name: checkout
         if: "!contains(github.event_name, 'pull_request')"
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
 
       - uses: dorny/paths-filter@v4
         id: changes
