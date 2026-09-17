@@ -1694,7 +1694,7 @@ If the previous command is empty, you may want to properly configure AWS identit
 </span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>kube-system<span class="w">        </span>kube-proxy-q1fmc<span class="w">            </span><span class="m">1</span>/1<span class="w">     </span>Running<span class="w">   </span><span class="m">0</span><span class="w">          </span>3h54m
 </span></code></pre></div>
 <p>If not revoked after the cluster creation, it's possible to use the <code>configure_kubectl</code> output to assume the <em>Cluster creator</em> role with <code>cluster-admin</code> access.</p>
-<div class="language-sh highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nv">configure_kubectl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;aws eks --region us-west-2 update-kubeconfig --name iam-identity-center&quot;</span>
+<div class="language-sh highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nv">configure_kubectl</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"aws eks --region us-west-2 update-kubeconfig --name iam-identity-center"</span>
 </span></code></pre></div>
 <h2 id="destroy">Destroy<a class="headerlink" href="#destroy" title="Permanent link">&para;</a></h2>
 <p>If you revoked the <em>Cluster creator</em> <code>cluster-admin</code> permission, you may need to re-associate the <code>AmazonEKSClusterAdminPolicy</code> access entry to run <code>terraform destroy</code>.</p>
