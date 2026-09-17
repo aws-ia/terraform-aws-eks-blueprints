@@ -42,6 +42,10 @@ def handler(event, context):
             unhealthyTargetIPAddress = targetHealthDescription["Target"]["Id"]
             unhealthyTargetIPAddresses.append(unhealthyTargetIPAddress)
 
+    if not unhealthyTargetIPAddresses:
+        logger.info("There are no unhealthy targets, quitting!")
+        return
+
     networkInterfaces = EC2_CLIENT.describe_network_interfaces(
         Filters=[
             {
